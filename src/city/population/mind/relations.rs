@@ -1,5 +1,5 @@
 pub mod relations {
-    use crate::mind::mind::*;
+    use crate::city::population::mind::mind::*;
     use crate::names::names::*;
     use rand::Rng;
     use rand::seq::SliceRandom;
@@ -49,7 +49,8 @@ pub mod relations {
             last_name,
             gender: gender.clone(),
             age,
-            relations
+            relations,
+            employer: None
         };
     }
 

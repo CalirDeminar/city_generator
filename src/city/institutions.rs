@@ -1,6 +1,7 @@
 pub mod institutions {
     use rand::Rng;
-    use crate::mind::mind::Gender;
+    use uuid::Uuid;
+    use crate::city::population::mind::mind::Gender;
     use crate::names::names::*;
 
     #[derive(PartialEq, Debug, Clone)]
@@ -29,9 +30,10 @@ pub mod institutions {
 
     #[derive(PartialEq, Debug, Clone)]
     pub struct Institution {
-        name: String,
-        public: bool,
-        institute_type: InstituteType
+        pub id: Uuid,
+        pub name: String,
+        pub public: bool,
+        pub institute_type: InstituteType
     }
 
     const PUBLIC_INSTITUTES: [InstituteType; 11] = [
@@ -64,6 +66,7 @@ pub mod institutions {
         for i in PUBLIC_INSTITUTES {
             let (_, prefix) = random_mind_name(&name_dict, &Gender::Ambiguous);
             output.push(Institution { 
+                id: Uuid::new_v4(),
                 name: format!("{} {}", prefix, label_insitute_type(&i)), 
                 public: true, 
                 institute_type: i
@@ -102,6 +105,7 @@ pub mod institutions {
         let mut output: Vec<Institution> = Vec::new();
         for _i in 0..i {
             output.push( Institution {
+                id: Uuid::new_v4(),
                 name: gen_food_service(&name_dict),
                 public: false,
                 institute_type: InstituteType::FoodService
@@ -114,6 +118,7 @@ pub mod institutions {
         let mut output: Vec<Institution> = Vec::new();
         for _i in 0..i {
             output.push( Institution {
+                id: Uuid::new_v4(),
                 name: gen_specialist_retail(&name_dict),
                 public: false,
                 institute_type: InstituteType::SpecialistRetail
@@ -122,28 +127,34 @@ pub mod institutions {
         return output;
     }
 
+    pub fn generate_population_institution(name_dict: &NameDictionary) -> Institution {
+        let mut rng = rand::thread_rng();
+        let roll: f32 = rng.gen();
+        if roll > 0.5 {
+            return Institution {    
+                id: Uuid::new_v4(),
+                name: gen_food_service(&name_dict), 
+                public: false, 
+                institute_type: InstituteType::FoodService 
+            };
+        } else {
+            return Institution { 
+                id: Uuid::new_v4(),
+                name: gen_specialist_retail(&name_dict), 
+                public: false, 
+                institute_type: InstituteType::SpecialistRetail 
+            };
+        }
+    }
+
     pub fn generate_population_institutions(size: usize) -> Vec<Institution> {
         let name_dict = gen_name_dict();
         let mut output: Vec<Institution> = Vec::new();
-        let mut rng = rand::thread_rng();
         for i in generate_public_institutions(&name_dict) {
             output.push(i);
         }
         for _i in 0..((size as i32 - output.len() as i32).max(1)) {
-            let roll: f32 = rng.gen();
-            if roll > 0.5 {
-                output.push(Institution { 
-                    name: gen_food_service(&name_dict), 
-                    public: false, 
-                    institute_type: InstituteType::FoodService 
-                });
-            } else {
-                output.push(Institution { 
-                    name: gen_specialist_retail(&name_dict), 
-                    public: false, 
-                    institute_type: InstituteType::SpecialistRetail 
-                });
-            }
+            output.push(generate_population_institution(&name_dict));
         } 
         return output;
     }

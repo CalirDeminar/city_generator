@@ -2,7 +2,7 @@ pub mod data_parser {
     use std::fs::File;
 
     use regex::Regex;
-    use crate::mind::mind::*;
+    use crate::city::population::mind::mind::*;
 
     const FREQUENCY_LIMIT: usize = 10;
 

@@ -1,14 +1,16 @@
-// pub mod relations;
 pub mod relations;
 pub mod mind {
     use rand::Rng;
     use rand_distr::{Normal, Distribution};
     use uuid::Uuid;
 
+    use crate::city::institutions;
+    use crate::city::institutions::institutions::Institution;
+    use crate::city::population::population::Population;
     use crate::names::names::*;
     // use super::relations::relations::*;
     
-    use crate::mind::relations::relations::*;
+    use crate::city::population::mind::relations::relations::*;
 
 
     #[derive(PartialEq, Debug, Clone)]
@@ -33,7 +35,8 @@ pub mod mind {
         pub last_name: String,
         pub gender: Gender,
         pub age: u32,
-        pub relations: Vec<Relation>
+        pub relations: Vec<Relation>,
+        pub employer: Option<Uuid>
     }
 
     pub fn get_name_from_id(id: &Uuid, population: &Vec<Mind>) -> String {
@@ -43,14 +46,22 @@ pub mod mind {
         }
         return format!("Missing ID: {}", id);
     }
-    pub fn print_mind(mind: &Mind, population: &Vec<Mind>) -> String {
+    pub fn print_mind(mind: &Mind, population: &Population, institutions: &Vec<Institution>) -> String {
         let mut output = String::from("");
+        // println!("{:#?}", mind);
+        // println!("{:?}", institutions);
         output.push_str("===========\n");
+        let workplace = institutions.iter().find(|i| mind.employer.is_some() && mind.employer.unwrap().eq(&i.id));
         let relations: Vec<(&RelationVerb, String)> = mind.relations.iter().map(|(verb, id)| (verb, get_name_from_id(&id, &population))).collect();
         // println!("ID: {}", mind.id);
         output.push_str(&format!("Name: {} {}\n", mind.first_name, mind.last_name));
         output.push_str(&format!("Gender: {:?}\n", mind.gender));
         output.push_str(&format!("Age: {}\n", mind.age));
+        if workplace.is_some() {
+            output.push_str(&format!("Employer: {}\n", workplace.unwrap().name));
+        }else{
+            output.push_str("Employer: None\n");
+        }
         output.push_str(&format!("Relations:\n"));
         if relations.len() < 1 {
             output.push_str(&format!("  None\n"));
@@ -59,7 +70,7 @@ pub mod mind {
                 output.push_str(&format!("  {:?}: {}\n", verb, name));
             }
         }
-        output.push_str(&format!("==========\n"));
+        output.push_str(&format!("===========\n"));
         return output;
     }
 
@@ -82,7 +93,8 @@ pub mod mind {
             last_name,
             gender,
             relations: Vec::new(),
-            age: (rng.gen::<f32>() * 40.0) as u32 + 15 + distribution.sample(&mut rand::thread_rng()) as u32
+            age: (rng.gen::<f32>() * 40.0) as u32 + 15 + distribution.sample(&mut rand::thread_rng()) as u32,
+            employer: None
         }
     }
 }

@@ -3,7 +3,7 @@ pub mod names {
     use std::fs::File;
     use rand::Rng;
 
-    use crate::mind::mind::*;
+    use crate::city::population::mind::mind::*;
 
     #[derive(PartialEq, Debug, Clone)]
     pub struct NameDefinition {
