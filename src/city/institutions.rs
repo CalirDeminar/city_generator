@@ -33,7 +33,7 @@ pub mod institutions {
         pub id: Uuid,
         pub name: String,
         pub public: bool,
-        pub institute_type: InstituteType
+        pub institute_type: InstituteType,
     }
 
     const PUBLIC_INSTITUTES: [InstituteType; 11] = [
@@ -78,26 +78,26 @@ pub mod institutions {
     fn gen_food_service(name_dict: &NameDictionary) -> String {
         let mut rng = rand::thread_rng();
         let roll: f32 = rng.gen();
-        let prefix = if roll < 0.5 { random_name(&name_dict.location_prefixes) } else { String::from("")};
+        let prefix = if roll < 0.5 { random_name(&name_dict.location_descriptors) } else { String::from("")};
         return String::from(format!(
                 "{} {} {}", 
                 &prefix, 
                 &random_name(&name_dict.last_names),
                 &random_name(&name_dict.food_service_suffixes)
-            )
+            ).trim()
         );
     }
 
     fn gen_specialist_retail(name_dict: &NameDictionary) -> String {
         let mut rng = rand::thread_rng();
         let roll: f32 = rng.gen();
-        let prefix = if roll < 0.5 { random_name(&name_dict.location_prefixes) } else { String::from("")};
+        let prefix = if roll < 0.5 { random_name(&name_dict.location_descriptors) } else { String::from("")};
         return String::from(format!(
                 "{} {} {}", 
                 &prefix, 
                 &random_name(&name_dict.last_names),
                 &random_name(&name_dict.specialist_retail_suffixes)
-            )
+            ).trim()
         );
     }
 
@@ -130,7 +130,7 @@ pub mod institutions {
     pub fn generate_population_institution(name_dict: &NameDictionary) -> Institution {
         let mut rng = rand::thread_rng();
         let roll: f32 = rng.gen();
-        if roll > 0.5 {
+        if roll > 0.3 {
             return Institution {    
                 id: Uuid::new_v4(),
                 name: gen_food_service(&name_dict), 

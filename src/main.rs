@@ -6,5 +6,5 @@ pub mod city;
 
 fn main() {
     let city = city::city::build(500);
-    output_population(city.citizens, city.institutions);
+    output_population(&city);
 }

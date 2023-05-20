@@ -4,6 +4,7 @@ pub mod mind {
     use rand_distr::{Normal, Distribution};
     use uuid::Uuid;
 
+    use crate::city::city::City;
     use crate::city::institutions;
     use crate::city::institutions::institutions::Institution;
     use crate::city::population::population::Population;
@@ -46,19 +47,20 @@ pub mod mind {
         }
         return format!("Missing ID: {}", id);
     }
-    pub fn print_mind(mind: &Mind, population: &Population, institutions: &Vec<Institution>) -> String {
+    pub fn print_mind(mind: &Mind, city: &City) -> String {
         let mut output = String::from("");
         // println!("{:#?}", mind);
         // println!("{:?}", institutions);
         output.push_str("===========\n");
-        let workplace = institutions.iter().find(|i| mind.employer.is_some() && mind.employer.unwrap().eq(&i.id));
-        let relations: Vec<(&RelationVerb, String)> = mind.relations.iter().map(|(verb, id)| (verb, get_name_from_id(&id, &population))).collect();
+        let workplace = city.institutions.iter().find(|i| mind.employer.is_some() && mind.employer.unwrap().eq(&i.id));
+        let workplace_location = city.areas.iter().find(|a| a.institutions.iter().any(|id| workplace.is_some() && id.eq(&workplace.unwrap().id)));
+        let relations: Vec<(&RelationVerb, String)> = mind.relations.iter().map(|(verb, id)| (verb, get_name_from_id(&id, &city.citizens))).collect();
         // println!("ID: {}", mind.id);
         output.push_str(&format!("Name: {} {}\n", mind.first_name, mind.last_name));
         output.push_str(&format!("Gender: {:?}\n", mind.gender));
         output.push_str(&format!("Age: {}\n", mind.age));
         if workplace.is_some() {
-            output.push_str(&format!("Employer: {}\n", workplace.unwrap().name));
+            output.push_str(&format!("Employer: {} in {}\n", workplace.unwrap().name, workplace_location.unwrap().name));
         }else{
             output.push_str("Employer: None\n");
         }

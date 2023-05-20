@@ -1,34 +1,43 @@
 pub mod institutions;
 pub mod population;
+pub mod locations;
 pub mod city {
     use rand::Rng;
     use rand::seq::SliceRandom;
     use crate::city::population::population::*;
     use crate::city::institutions::institutions::*;
+    use crate::city::locations::{locations, locations::*};
     use crate::names::names::*;
+
+    use super::locations::locations::gen_location_name_dict;
     // use crate::city::population::mind::relations::relations::*;
 
     #[derive(PartialEq, Debug, Clone)]
     pub struct City {
+        pub name: String,
         pub citizens: Population,
         pub institutions: Vec<Institution>,
+        pub areas: Vec<Location>
         // buildings
         // areas
     }
 
     pub fn build(size: usize) -> City {
         let name_dict = gen_name_dict();
+        let location_name_dict = gen_location_name_dict();
         let mut citizens = generate_population(&name_dict, size);
         let institutions: Vec<Institution>;
-        (citizens, institutions) = assign_workplaces(&name_dict, citizens);
+        (citizens, institutions) = assign_workplaces(&name_dict,  citizens);
         let output = City {
             citizens,
-            institutions: institutions
+            areas: gen_locations_from_institutions(&location_name_dict, &institutions),
+            institutions: institutions,
+            name: locations::gen_location_name(&location_name_dict, false),
         };
         return output;
     }
 
-    fn assign_workplaces(name_dict: &NameDictionary, population: Population) -> (Population, Vec<Institution> ) {
+    fn assign_workplaces(name_dict: &NameDictionary, population: Population) -> (Population, Vec<Institution>) {
         let mut public_institutions = generate_public_institutions(name_dict);
         let mut output_institutions: Vec<Institution> = Vec::new();
         let mut output_minds: Population = Vec::new();

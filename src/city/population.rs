@@ -1,6 +1,7 @@
 pub mod mind;
 pub mod population {
     use std::{fs::File, io::Write};
+    use crate::city::city::City;
     use crate::city::institutions::institutions::Institution;
     use crate::city::population::mind::mind::*;
     use crate::city::population::mind::relations::relations::*;
@@ -8,10 +9,10 @@ pub mod population {
 
     pub type Population = Vec<Mind>;
 
-    fn print_population(population: &Population, institutions: &Vec<Institution>) -> String {
+    fn print_population(city: &City) -> String {
         let mut output = String::from("");
-        for mind in population {
-            output.push_str(&print_mind(&mind, &population, &institutions));
+        for mind in &city.citizens {
+            output.push_str(&print_mind(&mind, &city));
         }
         return output;
     }
@@ -32,9 +33,9 @@ pub mod population {
         return population
     }
 
-    pub fn output_population(population: Population, institutions: Vec<Institution>) {
+    pub fn output_population(city: &City) {
         let mut file = File::create("./export.txt").unwrap();
-        let pop_log = print_population(&population, &institutions);
+        let pop_log = print_population(&city);
         file.write_all(pop_log.into_bytes().as_slice()).unwrap();
     }
 }

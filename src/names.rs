@@ -16,7 +16,7 @@ pub mod names {
         pub first_names: Vec<NameDefinition>,
         pub last_names: Vec<NameDefinition>,
         pub food_service_suffixes: Vec<NameDefinition>,
-        pub location_prefixes: Vec<NameDefinition>,
+        pub location_descriptors: Vec<NameDefinition>,
         pub specialist_retail_suffixes: Vec<NameDefinition>,
 
     }
@@ -26,7 +26,7 @@ pub mod names {
             first_names: parse_file(String::from("./static_data/english_first_names.csv")),
             last_names: parse_file(String::from("./static_data/english_last_names.csv")),
             food_service_suffixes: parse_file(String::from("./static_data/food_service_suffixes.csv")),
-            location_prefixes: parse_file(String::from("./static_data/location_prefixes.csv")),
+            location_descriptors: parse_file(String::from("./static_data/location_descriptors.csv")),
             specialist_retail_suffixes: parse_file(String::from("./static_data/specialist_retail_suffixes.csv"))
         }
     }
