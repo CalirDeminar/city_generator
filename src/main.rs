@@ -1,10 +1,10 @@
-use city::population::population::output_population;
+use city::{city::{print_city, export_city}};
 
 pub mod names;
 pub mod data_parser;
 pub mod city;
 
 fn main() {
-    let city = city::city::build(500);
-    output_population(&city);
+    let city = city::city::build(250);
+    export_city(&city);
 }

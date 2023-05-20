@@ -49,13 +49,10 @@ pub mod mind {
     }
     pub fn print_mind(mind: &Mind, city: &City) -> String {
         let mut output = String::from("");
-        // println!("{:#?}", mind);
-        // println!("{:?}", institutions);
-        output.push_str("===========\n");
+        output.push_str("====Mind===\n");
         let workplace = city.institutions.iter().find(|i| mind.employer.is_some() && mind.employer.unwrap().eq(&i.id));
         let workplace_location = city.areas.iter().find(|a| a.institutions.iter().any(|id| workplace.is_some() && id.eq(&workplace.unwrap().id)));
         let relations: Vec<(&RelationVerb, String)> = mind.relations.iter().map(|(verb, id)| (verb, get_name_from_id(&id, &city.citizens))).collect();
-        // println!("ID: {}", mind.id);
         output.push_str(&format!("Name: {} {}\n", mind.first_name, mind.last_name));
         output.push_str(&format!("Gender: {:?}\n", mind.gender));
         output.push_str(&format!("Age: {}\n", mind.age));

@@ -9,7 +9,7 @@ pub mod population {
 
     pub type Population = Vec<Mind>;
 
-    fn print_population(city: &City) -> String {
+    pub fn print_population(city: &City) -> String {
         let mut output = String::from("");
         for mind in &city.citizens {
             output.push_str(&print_mind(&mind, &city));

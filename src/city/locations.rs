@@ -5,11 +5,13 @@ pub mod locations {
     use std::fs::File;
     use rand::Rng;
     use rand::seq::SliceRandom;
+    use rand_distr::{Normal, Distribution};
     use uuid::Uuid;
 
+    use crate::city::city::City;
     use crate::city::institutions::institutions::Institution;
 
-    const LOCATION_MAX_INSTITUTIONS: usize = 8;
+    const LOCATION_MEAN_INSTITUTIONS: f32 = 10.0;
 
     #[derive(PartialEq, Debug, Clone)]
     pub struct Location {
@@ -30,6 +32,19 @@ pub mod locations {
         pub descriptors: Vec<LocationNameDefinition>,
         pub major_features: Vec<LocationNameDefinition>,
         pub minor_features: Vec<LocationNameDefinition>
+    }
+
+    pub fn print_location(location: &Location, city: &City) -> String {
+        let mut output: String = String::new();
+        output.push_str("==Location=\n");
+        output.push_str(&format!("Name: {}\n", location.name));
+        output.push_str("Institutions: \n");
+        for inst_id in &location.institutions {
+            let inst = city.institutions.iter().find(|i| i.id.eq(inst_id)).unwrap();
+            output.push_str(&format!("  {}\n", &inst.name));
+        }
+        output.push_str("===========\n");
+        return output;
     }
 
 
@@ -113,16 +128,23 @@ pub mod locations {
         }
     }
 
+
+    fn get_institute_count_for_area() -> usize {
+        return (Normal::new(LOCATION_MEAN_INSTITUTIONS, LOCATION_MEAN_INSTITUTIONS / 2.0).unwrap().sample(&mut rand::thread_rng()) as usize).max(1);
+    }
     pub fn gen_locations_from_institutions(name_dict: &LocationNameDictionary, insts: &Vec<Institution>) -> Vec<Location> {
         let mut rng = rand::thread_rng();
 
         let mut output: Vec<Location> = Vec::new();
         let mut curr = gen_location(&name_dict);
-        let mut remaining = ((rng.gen::<f32>() * LOCATION_MAX_INSTITUTIONS as f32) as usize).max(1);
+        let mut remaining = get_institute_count_for_area();
 
-        for inst in insts {
+        let mut institutions = insts.clone();
+        institutions.shuffle(&mut rng);
+
+        for inst in institutions {
             if remaining <= 0 {
-                remaining = ((rng.gen::<f32>() * LOCATION_MAX_INSTITUTIONS as f32) as usize).max(1);
+                remaining = get_institute_count_for_area();
                 output.push(curr.clone());
                 curr = gen_location(&name_dict);
             }

@@ -1,5 +1,5 @@
 pub mod relations {
-    use crate::city::population::mind::mind::*;
+    use crate::city::population::{mind::mind::*, population::Population};
     use crate::names::names::*;
     use rand::Rng;
     use rand::seq::SliceRandom;
@@ -18,7 +18,7 @@ pub mod relations {
         // business
         Employer,
         Employee,
-        Coleague,
+        Colleague,
         // social
         Acquaintance,
         Friend,
@@ -197,6 +197,24 @@ pub mod relations {
                 mind.relations.push((RelationVerb::Friend, friend.id.clone()));
             }
         }
+        return output;
+    }
+
+    pub fn link_colleagues(population: Population) -> Population {
+        let ref_pop = population.clone();
+        let mut output: Population = Vec::new();
+
+        for m in population {
+            let mut mind = m.clone();
+            if mind.employer.is_some() {
+                let colleagues: Vec<&Mind> = ref_pop.iter().filter(|c| c.employer.is_some() && c.employer.unwrap().eq(&mind.employer.unwrap())).collect();
+                for c in colleagues {
+                    mind.relations.push((RelationVerb::Colleague, c.id.clone()))
+                }
+            }
+            output.push(mind);
+        }
+
         return output;
     }
 }
