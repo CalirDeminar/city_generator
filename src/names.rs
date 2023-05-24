@@ -25,9 +25,9 @@ pub mod names {
         return NameDictionary {
             first_names: parse_file(String::from("./static_data/english_first_names.csv")),
             last_names: parse_file(String::from("./static_data/english_last_names.csv")),
-            food_service_suffixes: parse_file(String::from("./static_data/food_service_suffixes.csv")),
+            food_service_suffixes: parse_file(String::from("./static_data/institutions_food_service_suffixes.csv")),
             location_descriptors: parse_file(String::from("./static_data/location_descriptors.csv")),
-            specialist_retail_suffixes: parse_file(String::from("./static_data/specialist_retail_suffixes.csv"))
+            specialist_retail_suffixes: parse_file(String::from("./static_data/institutions_specialist_retail_suffixes.csv"))
         }
     }
 
