@@ -47,7 +47,7 @@ pub mod mind {
         let mut output = String::from("");
         output.push_str("====Mind===\n");
         let workplace = city.institutions.iter().find(|i| mind.employer.is_some() && mind.employer.unwrap().eq(&i.id));
-        let workplace_location = city.areas.iter().find(|a| workplace.is_some() && workplace.unwrap().locationId.eq(&a.id));
+        let workplace_location = city.areas.iter().find(|a| workplace.is_some() && workplace.unwrap().location_id.eq(&a.id));
         let relations: Vec<(&RelationVerb, String)> = mind.relations.iter().map(|(verb, id)| (verb, get_name_from_id(&id, &city.citizens))).collect();
         output.push_str(&format!("Name: {} {}\n", mind.first_name, mind.last_name));
         output.push_str(&format!("Gender: {:?}\n", mind.gender));

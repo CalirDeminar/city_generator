@@ -25,7 +25,7 @@ pub mod locations {
         output.push_str("==Location=\n");
         output.push_str(&format!("Name: {}\n", location.name));
         output.push_str("Institutions: \n");
-        let institutions: Vec<&Institution> = city.institutions.iter().filter(|i| i.locationId.eq(&location.id)).collect();
+        let institutions: Vec<&Institution> = city.institutions.iter().filter(|i| i.location_id.eq(&location.id)).collect();
         for inst in &institutions {
             output.push_str(&format!("  {}\n", &inst.name));
         }

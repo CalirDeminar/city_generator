@@ -30,13 +30,20 @@ pub mod institutions {
         Publishers
     }
 
+    pub const LARGE_SCALE_INSTITUTE_TYPES: [InstituteType;4] = [
+        InstituteType::PowerStation,
+        InstituteType::WaterTreatmentWorks,
+        InstituteType::SewageWorks,
+        InstituteType::IndustrialManufacturers
+    ];
+
     #[derive(PartialEq, Debug, Clone)]
     pub struct Institution {
         pub id: Uuid,
         pub name: String,
         pub public: bool,
         pub institute_type: InstituteType,
-        pub locationId: Uuid
+        pub location_id: Uuid
     }
 
     const PUBLIC_INSTITUTES: [InstituteType; 11] = [
@@ -72,7 +79,7 @@ pub mod institutions {
                 name: format!("{} {}", random_pick(&name_dict.last_names).name, label_insitute_type(&i)), 
                 public: true, 
                 institute_type: i,
-                locationId: locationId.clone()
+                location_id: locationId.clone()
              });
         }
         return output;
@@ -89,7 +96,7 @@ pub mod institutions {
             name,
             public: false,
             institute_type: InstituteType::FoodService,
-            locationId: locationId.clone()
+            location_id: locationId.clone()
         };
     }
 
@@ -104,7 +111,7 @@ pub mod institutions {
             name,
             public: false,
             institute_type: InstituteType::SpecialistRetail,
-            locationId: locationId.clone()
+            location_id: locationId.clone()
         };
     }
 
@@ -119,7 +126,7 @@ pub mod institutions {
             name,
             public: false,
             institute_type: InstituteType::GeneralRetail,
-            locationId: locationId.clone()
+            location_id: locationId.clone()
         };
     }
 
