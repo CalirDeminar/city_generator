@@ -1,6 +1,7 @@
 pub mod institutions;
 pub mod population;
 pub mod locations;
+pub mod building;
 pub mod city {
     use std::{fs::File, io::Write};
 
