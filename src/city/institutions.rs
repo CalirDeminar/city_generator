@@ -104,13 +104,29 @@ pub mod institutions {
         };
     }
 
+    pub fn generate_general_retailer(name_dict: &NameDictionary) -> Institution {
+        let templates = vec![
+            "{{LocationDescriptor}}{{LastName}}{{InstitutionRetailGeneralSuffix}}",
+            "{{LastName}}{{InstitutionRetailGeneralSuffix}}"
+        ];
+        let name = render_template(random_pick(&templates), &name_dict.total_list);
+        return Institution {
+            id: Uuid::new_v4(),
+            name,
+            public: false,
+            institute_type: InstituteType::GeneralRetail
+        };
+    }
+
     pub fn generate_population_institution(name_dict: &NameDictionary) -> Institution {
         let mut rng = rand::thread_rng();
         let roll: f32 = rng.gen();
-        if roll > 0.3 {
+        if roll > 0.4 {
             return generate_restaurant(&name_dict);
-        } else {
+        } else if roll > 0.2 {
             return generate_specialist_retailer(&name_dict)
+        } else {
+            return generate_general_retailer(&name_dict)
         }
     }
 

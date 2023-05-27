@@ -21,7 +21,7 @@ pub mod names {
         StyleUK,
         InstitutionFoodServiceSuffix,
         InstitutionRetailSpecificSuffix,
-        InstititutionRetailGeneralSuffix,
+        InstitutionRetailGeneralSuffix,
         Suffixable,
         Prefixable,
         LocationMajorFeature,
