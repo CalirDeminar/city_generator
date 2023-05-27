@@ -5,11 +5,7 @@ pub mod mind {
     use uuid::Uuid;
 
     use crate::city::city::City;
-    use crate::city::institutions;
-    use crate::city::institutions::institutions::Institution;
-    use crate::city::population::population::Population;
     use crate::names::names::*;
-    // use super::relations::relations::*;
     
     use crate::city::population::mind::relations::relations::*;
 

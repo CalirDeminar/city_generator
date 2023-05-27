@@ -2,16 +2,16 @@
 pub mod names {
     use std::{fs::File};
     use std::io::{self, BufRead};
-    use rand::Rng;
     use regex::Regex;
     use strum::IntoEnumIterator; // 0.17.1
     use strum_macros::{EnumIter, Display}; // 0.17.1
 
     use crate::city::population::mind::mind::*;
+    use crate::utils::utils::random_pick;
 
     // name files have a line comment start of //
 
-    #[derive(PartialEq, Debug, Clone, EnumIter, Display)]
+    #[derive(PartialEq, Debug, Clone, EnumIter, Display, Copy)]
     pub enum NameTag {
         MaleGender,
         FemaleGender,
@@ -26,7 +26,7 @@ pub mod names {
         Prefixable,
         LocationMajorFeature,
         LocationMinorFeature,
-        LocationDesciptor
+        LocationDescriptor
     }
 
     #[derive(PartialEq, Debug, Clone)]
@@ -88,42 +88,22 @@ pub mod names {
         return match gender {
             &Gender::Male => random_name_definition_exclude_tag(&input, &NameTag::FemaleGender).name,
             &Gender::Female => random_name_definition_exclude_tag(&input, &NameTag::MaleGender).name,
-            _ => random_name_definition(&input).name
+            _ => random_pick(&input).name
         };
-    }
-
-    pub fn random_name(list: &Vec<NameDefinition>) -> String {
-        let mut rng = rand::thread_rng();
-        let roll: f32 = rng.gen();
-        let result = list[(roll*list.len() as f32) as usize].clone();
-        return result.name;
-    }
-
-    pub fn random_name_definition(list: &Vec<NameDefinition>) -> NameDefinition {
-        let mut rng = rand::thread_rng();
-        let roll: f32 = rng.gen();
-        let result = list[(roll*list.len() as f32) as usize].clone();
-        return result;
     }
 
     pub fn random_name_definition_filter_tag(list: &Vec<NameDefinition>, tag: &NameTag) -> NameDefinition {
         let filtered_list = filter_on_tag(&list, &tag);
-        let mut rng = rand::thread_rng();
-        let roll: f32 = rng.gen();
-        let result = filtered_list[(roll*filtered_list.len() as f32) as usize].clone();
-        return result;
+        return random_pick(&filtered_list);
     }
 
     pub fn random_name_definition_exclude_tag(list: &Vec<NameDefinition>, tag: &NameTag) -> NameDefinition {
         let filtered_list = exclude_on_tag(&list, &tag);
-        let mut rng = rand::thread_rng();
-        let roll: f32 = rng.gen();
-        let result = filtered_list[(roll*filtered_list.len() as f32) as usize].clone();
-        return result;
+        return random_pick(&filtered_list);
     }
 
     pub fn random_mind_name<'a>(dict: &'a NameDictionary, gender: &Gender) -> (String, String) {
-        return (random_name_for_gender(&dict.first_names, &gender), random_name(&dict.last_names));
+        return (random_name_for_gender(&dict.first_names, &gender), random_pick(&dict.last_names).name);
     }
 
     fn string_match_name_tag(token: &str) -> Option<NameTag> {
@@ -167,14 +147,4 @@ pub mod names {
         }
         return output;
     }
-
-
-
-    // #[test]
-    // fn random_name_test() {
-    //     let dict = gen_name_dict();
-    //     for _i in 0..10 {
-    //         println!("{:?}", random_name(&dict, &Gender::Male));
-    //     }
-    // }
 }

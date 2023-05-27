@@ -1,7 +1,10 @@
 pub mod institutions {
     use rand::Rng;
     use uuid::Uuid;
+    
     use crate::names::names::*;
+    use crate::templater::templater::*;
+    use crate::utils::utils::random_pick;
 
     #[derive(PartialEq, Debug, Clone)]
     pub enum InstituteType {
@@ -65,7 +68,7 @@ pub mod institutions {
         for i in PUBLIC_INSTITUTES {
             output.push(Institution { 
                 id: Uuid::new_v4(),
-                name: format!("{} {}", random_name_definition(&name_dict.last_names).name, label_insitute_type(&i)), 
+                name: format!("{} {}", random_pick(&name_dict.last_names).name, label_insitute_type(&i)), 
                 public: true, 
                 institute_type: i
              });
@@ -73,83 +76,41 @@ pub mod institutions {
         return output;
     }
 
-    fn gen_food_service(name_dict: &NameDictionary) -> String {
-        let mut rng = rand::thread_rng();
-        let roll: f32 = rng.gen();
-        let prefix = if roll < 0.5 { 
-            random_name_definition_filter_tag(&name_dict.location_descriptors, &NameTag::LocationDesciptor).name 
-        } else { 
-            String::from("")
+    pub fn generate_restaurant(name_dict: &NameDictionary) -> Institution {
+        let templates = vec![
+            "{{LocationDescriptor}}{{LastName}}{{InstitutionFoodServiceSuffix}}",
+            "{{LastName}}{{InstitutionFoodServiceSuffix}}"
+        ];
+        let name = render_template(random_pick(&templates), &name_dict.total_list);
+        return Institution {
+            id: Uuid::new_v4(),
+            name,
+            public: false,
+            institute_type: InstituteType::FoodService
         };
-        return String::from(format!(
-                "{} {} {}", 
-                &prefix, 
-                &random_name(&name_dict.last_names),
-                &random_name_definition_filter_tag(&name_dict.institution_suffixes, &NameTag::InstitutionFoodServiceSuffix).name
-            ).trim()
-        );
     }
 
-    fn gen_specialist_retail(name_dict: &NameDictionary) -> String {
-        let mut rng = rand::thread_rng();
-        let roll: f32 = rng.gen();
-        let prefix = if roll < 0.5 { 
-            random_name_definition_filter_tag(&name_dict.location_descriptors, &NameTag::LocationDesciptor).name 
-        } else { 
-            String::from("")
+    pub fn generate_specialist_retailer(name_dict: &NameDictionary) -> Institution {
+        let templates = vec![
+            "{{LocationDescriptor}}{{LastName}}{{InstitutionRetailSpecificSuffix}}",
+            "{{LastName}}{{InstitutionRetailSpecificSuffix}}"
+        ];
+        let name = render_template(random_pick(&templates), &name_dict.total_list);
+        return Institution {
+            id: Uuid::new_v4(),
+            name,
+            public: false,
+            institute_type: InstituteType::SpecialistRetail
         };
-        return String::from(format!(
-                "{} {} {}", 
-                &prefix, 
-                &random_name(&name_dict.last_names),
-                &random_name_definition_filter_tag(&name_dict.institution_suffixes, &NameTag::InstitutionRetailSpecificSuffix).name
-            ).trim()
-        );
-    }
-
-    pub fn generate_restaurants(i: usize, name_dict: &NameDictionary) -> Vec<Institution> {
-        let mut output: Vec<Institution> = Vec::new();
-        for _i in 0..i {
-            output.push( Institution {
-                id: Uuid::new_v4(),
-                name: gen_food_service(&name_dict),
-                public: false,
-                institute_type: InstituteType::FoodService
-            });
-        }
-        return output;
-    }
-
-    pub fn generate_specialist_retailers(i: usize, name_dict: &NameDictionary) -> Vec<Institution> {
-        let mut output: Vec<Institution> = Vec::new();
-        for _i in 0..i {
-            output.push( Institution {
-                id: Uuid::new_v4(),
-                name: gen_specialist_retail(&name_dict),
-                public: false,
-                institute_type: InstituteType::SpecialistRetail
-            });
-        }
-        return output;
     }
 
     pub fn generate_population_institution(name_dict: &NameDictionary) -> Institution {
         let mut rng = rand::thread_rng();
         let roll: f32 = rng.gen();
         if roll > 0.3 {
-            return Institution {    
-                id: Uuid::new_v4(),
-                name: gen_food_service(&name_dict), 
-                public: false, 
-                institute_type: InstituteType::FoodService 
-            };
+            return generate_restaurant(&name_dict);
         } else {
-            return Institution { 
-                id: Uuid::new_v4(),
-                name: gen_specialist_retail(&name_dict), 
-                public: false, 
-                institute_type: InstituteType::SpecialistRetail 
-            };
+            return generate_specialist_retailer(&name_dict)
         }
     }
 

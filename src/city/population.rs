@@ -2,7 +2,6 @@ pub mod mind;
 pub mod population {
     use std::{fs::File, io::Write};
     use crate::city::city::City;
-    use crate::city::institutions::institutions::Institution;
     use crate::city::population::mind::mind::*;
     use crate::city::population::mind::relations::relations::*;
     use crate::names::names::*;

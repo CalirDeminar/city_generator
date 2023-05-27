@@ -1,14 +1,15 @@
 pub mod locations {
     // {descriptor?} {name?} {large_natural_feature} {smaller_feature}
     //  Hampton   River                 Valley
-    use rand::Rng;
     use rand::seq::SliceRandom;
     use rand_distr::{Normal, Distribution};
     use uuid::Uuid;
 
     use crate::city::city::City;
     use crate::city::institutions::institutions::Institution;
-    use crate::names::names::{NameDictionary, random_name_definition, NameTag, gen_name_dict};
+    use crate::names::names::{NameDictionary, gen_name_dict};
+    use crate::templater::templater::render_template;
+    use crate::utils::utils::random_pick;
 
     const LOCATION_MEAN_INSTITUTIONS: f32 = 10.0;
 
@@ -35,47 +36,16 @@ pub mod locations {
 
 
     pub fn gen_location_name(name_dict: &NameDictionary, long: bool) -> String {
-        let mut rng = rand::thread_rng();
-        let has_name = rng.gen::<f32>() < 0.5;
-        let has_descriptor = !has_name || rng.gen::<f32>() < 0.5;
-        let has_minor_feature = long && rng.gen::<f32>() < 0.5;
-        let has_major_feature = !has_minor_feature || rng.gen::<f32>() < 0.5;
-        let mut output = String::new();
-        if has_descriptor {
-            let name = random_name_definition(&name_dict.location_descriptors);
-            if name.tags.contains(&NameTag::Suffixable) {
-                output.push_str(&format!("{}", name.name.to_lowercase()));
-            } else {
-                output.push_str(&format!(" {}", name.name));
-            }
+        let long_templates = vec!["{{LocationDescriptor}}{{LastName}}{{LocationMajorFeature}}{{LocationMinorFeature}}"];
+        let short_templates = vec![
+            "{{LastName}}{{LocationMajorFeature}}{{LocationMinorFeature}}",
+            "{{LocationDescriptor}}{{LastName}}{{LocationMinorFeature}}",
+            "{{LocationDescriptor}}{{LastName}}{{LocationMajorFeature}}"
+        ];
+        if long {
+            return render_template(random_pick(&long_templates), &name_dict.total_list);
         }
-        if has_name {
-            let name = random_name_definition(&name_dict.last_names);
-            if name.tags.contains(&NameTag::Suffixable) {
-                output.push_str(&format!("{}", name.name.to_lowercase()));
-            } else {
-                output.push_str(&format!(" {}", name.name));
-            }
-        }
-        if has_major_feature {
-            let name = random_name_definition(&name_dict.major_features);
-            if name.tags.contains(&NameTag::Suffixable) {
-                output.push_str(&format!("{}", name.name.to_lowercase()));
-            } else {
-                output.push_str(&format!(" {}", name.name));
-            }
-        }
-
-        if has_minor_feature {
-            let name = random_name_definition(&name_dict.minor_features);
-            if name.tags.contains(&NameTag::Suffixable) {
-                output.push_str(&format!("{}", name.name.to_lowercase()));
-            } else {
-                output.push_str(&format!(" {}", name.name));
-            }
-        }
-
-        return String::from(output.trim());
+        return render_template(random_pick(&short_templates), &name_dict.total_list);
     }
 
     pub fn gen_location(name_dict: &NameDictionary) -> Location {
@@ -117,7 +87,7 @@ pub mod locations {
     fn test_gen_location_name() {
         let name_dict = gen_name_dict();
         for _i in 0..10 {
-            println!("{}", gen_location_name(&name_dict, false));
+            println!("{}", gen_location_name(&name_dict, true));
         }
     }
 
