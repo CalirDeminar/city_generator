@@ -1,7 +1,6 @@
 pub mod institutions {
     use rand::Rng;
     use uuid::Uuid;
-    use crate::city::population::mind::mind::Gender;
     use crate::names::names::*;
 
     #[derive(PartialEq, Debug, Clone)]
@@ -64,10 +63,9 @@ pub mod institutions {
     pub fn generate_public_institutions(name_dict: &NameDictionary) -> Vec<Institution>{
         let mut output: Vec<Institution> = Vec::new();
         for i in PUBLIC_INSTITUTES {
-            let (_, prefix) = random_mind_name(&name_dict, &Gender::Ambiguous);
             output.push(Institution { 
                 id: Uuid::new_v4(),
-                name: format!("{} {}", prefix, label_insitute_type(&i)), 
+                name: format!("{} {}", random_name_definition(&name_dict.last_names).name, label_insitute_type(&i)), 
                 public: true, 
                 institute_type: i
              });
@@ -78,12 +76,16 @@ pub mod institutions {
     fn gen_food_service(name_dict: &NameDictionary) -> String {
         let mut rng = rand::thread_rng();
         let roll: f32 = rng.gen();
-        let prefix = if roll < 0.5 { random_name(&name_dict.location_descriptors) } else { String::from("")};
+        let prefix = if roll < 0.5 { 
+            random_name_definition_filter_tag(&name_dict.location_descriptors, &NameTag::LocationDesciptor).name 
+        } else { 
+            String::from("")
+        };
         return String::from(format!(
                 "{} {} {}", 
                 &prefix, 
                 &random_name(&name_dict.last_names),
-                &random_name(&name_dict.food_service_suffixes)
+                &random_name_definition_filter_tag(&name_dict.institution_suffixes, &NameTag::InstitutionFoodServiceSuffix).name
             ).trim()
         );
     }
@@ -91,12 +93,16 @@ pub mod institutions {
     fn gen_specialist_retail(name_dict: &NameDictionary) -> String {
         let mut rng = rand::thread_rng();
         let roll: f32 = rng.gen();
-        let prefix = if roll < 0.5 { random_name(&name_dict.location_descriptors) } else { String::from("")};
+        let prefix = if roll < 0.5 { 
+            random_name_definition_filter_tag(&name_dict.location_descriptors, &NameTag::LocationDesciptor).name 
+        } else { 
+            String::from("")
+        };
         return String::from(format!(
                 "{} {} {}", 
                 &prefix, 
                 &random_name(&name_dict.last_names),
-                &random_name(&name_dict.specialist_retail_suffixes)
+                &random_name_definition_filter_tag(&name_dict.institution_suffixes, &NameTag::InstitutionRetailSpecificSuffix).name
             ).trim()
         );
     }
