@@ -10,8 +10,6 @@ pub mod city {
     use crate::city::institutions::institutions::*;
     use crate::city::locations::{locations, locations::*};
     use crate::names::names::*;
-
-    use super::locations::locations::gen_location_name_dict;
     use super::population::mind::relations::relations::link_colleagues;
     // use crate::city::population::mind::relations::relations::*;
 
@@ -43,16 +41,15 @@ pub mod city {
 
     pub fn build(size: usize) -> City {
         let name_dict = gen_name_dict();
-        let location_name_dict = gen_location_name_dict();
         let mut citizens = generate_population(&name_dict, size);
         let institutions: Vec<Institution>;
         (citizens, institutions) = assign_workplaces(&name_dict,  citizens);
         citizens = link_colleagues(citizens);
         let output = City {
             citizens,
-            areas: gen_locations_from_institutions(&location_name_dict, &institutions),
+            areas: gen_locations_from_institutions(&name_dict, &institutions),
             institutions: institutions,
-            name: locations::gen_location_name(&location_name_dict, false),
+            name: locations::gen_location_name(&name_dict, false),
         };
         return output;
     }

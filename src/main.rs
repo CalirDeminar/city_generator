@@ -5,6 +5,7 @@ pub mod data_parser;
 pub mod city;
 
 fn main() {
+    std::env::set_var("RUST_BACKTRACE", "1");
     let city = city::city::build(250);
     export_city(&city);
 }
