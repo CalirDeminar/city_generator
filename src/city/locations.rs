@@ -17,7 +17,6 @@ pub mod locations {
     pub struct Location {
         pub id: Uuid,
         pub name: String,
-        pub institutions: Vec<Uuid>
     }
 
 
@@ -26,8 +25,8 @@ pub mod locations {
         output.push_str("==Location=\n");
         output.push_str(&format!("Name: {}\n", location.name));
         output.push_str("Institutions: \n");
-        for inst_id in &location.institutions {
-            let inst = city.institutions.iter().find(|i| i.id.eq(inst_id)).unwrap();
+        let institutions: Vec<&Institution> = city.institutions.iter().filter(|i| i.locationId.eq(&location.id)).collect();
+        for inst in &institutions {
             output.push_str(&format!("  {}\n", &inst.name));
         }
         output.push_str("===========\n");
@@ -52,35 +51,12 @@ pub mod locations {
         return Location {
             id: Uuid::new_v4(),
             name: gen_location_name(&name_dict, true),
-            institutions: Vec::new(),
         }
     }
 
 
     fn get_institute_count_for_area() -> usize {
         return (Normal::new(LOCATION_MEAN_INSTITUTIONS, LOCATION_MEAN_INSTITUTIONS / 2.0).unwrap().sample(&mut rand::thread_rng()) as usize).max(1);
-    }
-    pub fn gen_locations_from_institutions(name_dict: &NameDictionary, insts: &Vec<Institution>) -> Vec<Location> {
-        let mut rng = rand::thread_rng();
-
-        let mut output: Vec<Location> = Vec::new();
-        let mut curr = gen_location(&name_dict);
-        let mut remaining = get_institute_count_for_area();
-
-        let mut institutions = insts.clone();
-        institutions.shuffle(&mut rng);
-
-        for inst in institutions {
-            if remaining <= 0 {
-                remaining = get_institute_count_for_area();
-                output.push(curr.clone());
-                curr = gen_location(&name_dict);
-            }
-            curr.institutions.push(inst.id.clone());
-            remaining = remaining - 1;
-        }
-        output.push(curr);
-        return output;
     }
 
     #[test]

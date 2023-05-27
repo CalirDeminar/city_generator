@@ -36,6 +36,7 @@ pub mod institutions {
         pub name: String,
         pub public: bool,
         pub institute_type: InstituteType,
+        pub locationId: Uuid
     }
 
     const PUBLIC_INSTITUTES: [InstituteType; 11] = [
@@ -63,20 +64,21 @@ pub mod institutions {
         });
     }
 
-    pub fn generate_public_institutions(name_dict: &NameDictionary) -> Vec<Institution>{
+    pub fn generate_public_institutions(name_dict: &NameDictionary, locationId: &Uuid) -> Vec<Institution>{
         let mut output: Vec<Institution> = Vec::new();
         for i in PUBLIC_INSTITUTES {
             output.push(Institution { 
                 id: Uuid::new_v4(),
                 name: format!("{} {}", random_pick(&name_dict.last_names).name, label_insitute_type(&i)), 
                 public: true, 
-                institute_type: i
+                institute_type: i,
+                locationId: locationId.clone()
              });
         }
         return output;
     }
 
-    pub fn generate_restaurant(name_dict: &NameDictionary) -> Institution {
+    pub fn generate_restaurant(name_dict: &NameDictionary, locationId: &Uuid) -> Institution {
         let templates = vec![
             "{{LocationDescriptor}}{{LastName}}{{InstitutionFoodServiceSuffix}}",
             "{{LastName}}{{InstitutionFoodServiceSuffix}}"
@@ -86,11 +88,12 @@ pub mod institutions {
             id: Uuid::new_v4(),
             name,
             public: false,
-            institute_type: InstituteType::FoodService
+            institute_type: InstituteType::FoodService,
+            locationId: locationId.clone()
         };
     }
 
-    pub fn generate_specialist_retailer(name_dict: &NameDictionary) -> Institution {
+    pub fn generate_specialist_retailer(name_dict: &NameDictionary, locationId: &Uuid) -> Institution {
         let templates = vec![
             "{{LocationDescriptor}}{{LastName}}{{InstitutionRetailSpecificSuffix}}",
             "{{LastName}}{{InstitutionRetailSpecificSuffix}}"
@@ -100,11 +103,12 @@ pub mod institutions {
             id: Uuid::new_v4(),
             name,
             public: false,
-            institute_type: InstituteType::SpecialistRetail
+            institute_type: InstituteType::SpecialistRetail,
+            locationId: locationId.clone()
         };
     }
 
-    pub fn generate_general_retailer(name_dict: &NameDictionary) -> Institution {
+    pub fn generate_general_retailer(name_dict: &NameDictionary, locationId: &Uuid) -> Institution {
         let templates = vec![
             "{{LocationDescriptor}}{{LastName}}{{InstitutionRetailGeneralSuffix}}",
             "{{LastName}}{{InstitutionRetailGeneralSuffix}}"
@@ -114,30 +118,31 @@ pub mod institutions {
             id: Uuid::new_v4(),
             name,
             public: false,
-            institute_type: InstituteType::GeneralRetail
+            institute_type: InstituteType::GeneralRetail,
+            locationId: locationId.clone()
         };
     }
 
-    pub fn generate_population_institution(name_dict: &NameDictionary) -> Institution {
+    pub fn generate_population_institution(name_dict: &NameDictionary, locationId: &Uuid) -> Institution {
         let mut rng = rand::thread_rng();
         let roll: f32 = rng.gen();
         if roll > 0.4 {
-            return generate_restaurant(&name_dict);
+            return generate_restaurant(&name_dict, &locationId);
         } else if roll > 0.2 {
-            return generate_specialist_retailer(&name_dict)
+            return generate_specialist_retailer(&name_dict, &locationId)
         } else {
-            return generate_general_retailer(&name_dict)
+            return generate_general_retailer(&name_dict, &locationId)
         }
     }
 
     pub fn generate_population_institutions(size: usize) -> Vec<Institution> {
         let name_dict = gen_name_dict();
         let mut output: Vec<Institution> = Vec::new();
-        for i in generate_public_institutions(&name_dict) {
+        for i in generate_public_institutions(&name_dict, &Uuid::new_v4()) {
             output.push(i);
         }
         for _i in 0..((size as i32 - output.len() as i32).max(1)) {
-            output.push(generate_population_institution(&name_dict));
+            output.push(generate_population_institution(&name_dict, &Uuid::new_v4()));
         } 
         return output;
     }

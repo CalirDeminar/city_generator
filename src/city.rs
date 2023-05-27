@@ -43,37 +43,52 @@ pub mod city {
         let name_dict = gen_name_dict();
         let mut citizens = generate_population(&name_dict, size);
         let institutions: Vec<Institution>;
-        (citizens, institutions) = assign_workplaces(&name_dict,  citizens);
+        let areas: Vec<Location>;
+        (citizens, institutions, areas) = assign_workplaces(&name_dict,  citizens);
         citizens = link_colleagues(citizens);
         let output = City {
             citizens,
-            areas: gen_locations_from_institutions(&name_dict, &institutions),
+            areas,
             institutions: institutions,
             name: locations::gen_location_name(&name_dict, false),
         };
         return output;
     }
 
-    fn assign_workplaces(name_dict: &NameDictionary, population: Population) -> (Population, Vec<Institution>) {
-        let mut public_institutions = generate_public_institutions(name_dict);
+    fn assign_workplaces(name_dict: &NameDictionary, population: Population) -> (Population, Vec<Institution>, Vec<Location>) {
+        let mut rng = rand::thread_rng();
         let mut output_institutions: Vec<Institution> = Vec::new();
-        let mut output_minds: Population = Vec::new();
 
+        let mut working_location = gen_location(&name_dict);
+        let mut output_locations: Vec<Location> = Vec::new();
+        let mut remaining_institutions = ((rng.gen::<f32>() * 10.0) as i32).max(1);
+
+
+        let mut output_minds: Population = Vec::new();
         let mut p = population;
 
 
-        let mut rng = rand::thread_rng();
+
+        let mut public_institutions = generate_public_institutions(name_dict, &working_location.id);
         let mut inst = public_institutions.pop().unwrap();
+        
+        
         output_institutions.push(inst.clone());
-        let mut remaining_employees = ((rng.gen::<f32>() * 10.0) as usize).max(1);
+        let mut remaining_employees = ((rng.gen::<f32>() * 10.0) as i32).max(1);
+        remaining_institutions -= public_institutions.len() as i32;
 
         p.shuffle(&mut rng);
         for m in p {
             // println!("Remaining Employees: {:?}", remaining_employees);
             if remaining_employees < 1 {
-                inst = if public_institutions.len() > 0 {public_institutions.pop().unwrap()} else {generate_population_institution(&name_dict)};
+                inst = if public_institutions.len() > 0 {public_institutions.pop().unwrap()} else {generate_population_institution(&name_dict, &working_location.id)};
                 output_institutions.push(inst.clone());
-                remaining_employees = ((rng.gen::<f32>() * 10.0) as usize).max(1);
+                remaining_employees = ((rng.gen::<f32>() * 10.0) as i32).max(1);
+                remaining_institutions -= 1;
+                if remaining_institutions < 1 {
+                    
+                    working_location = gen_location(&name_dict);
+                }
             }
             let mut mind = m.clone();
             if mind.age < 60 {
@@ -81,10 +96,11 @@ pub mod city {
                 remaining_employees -= 1;
             }
             // println!("{:#?}", mind);
+            output_locations.push(working_location.clone());
             output_minds.push(mind);
 
         }
 
-        return (output_minds, output_institutions);
+        return (output_minds, output_institutions, output_locations);
     }
 }
