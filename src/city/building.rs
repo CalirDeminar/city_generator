@@ -32,6 +32,7 @@ pub mod building {
     #[derive(PartialEq, Debug, Clone)]
     pub struct BuildingFloorArea {
         pub id: Uuid,
+        pub name: String,
         pub area_type: FloorAreaType,
         pub rooms: Vec<BuildingFloorAreaRoom>
     }
@@ -57,12 +58,14 @@ pub mod building {
             if level==0 && i==0 {
                 areas.push(BuildingFloorArea {
                     id: Uuid::new_v4(),
+                    name: format!("{}", i),
                     area_type: FloorAreaType::Lobby,
                     rooms: Vec::new()
                 });
             } else if level==-1 && i==0 {
                 areas.push(BuildingFloorArea {
                     id: Uuid::new_v4(),
+                    name: format!("B{}", i),
                     area_type: FloorAreaType::Utilities,
                     rooms: Vec::new()
                 });
@@ -70,12 +73,14 @@ pub mod building {
                 if floor_type.eq(&FloorType::Residential) {
                     areas.push(BuildingFloorArea {
                         id: Uuid::new_v4(),
+                        name: format!("{}{}", level, i),
                         area_type: FloorAreaType::Apartment,
                         rooms: Vec::new()
                     });
                 } else {
                     areas.push(BuildingFloorArea {
                         id: Uuid::new_v4(),
+                        name: format!("{}{}", level, i),
                         area_type: FloorAreaType::Commercial,
                         rooms: Vec::new()
                     });
