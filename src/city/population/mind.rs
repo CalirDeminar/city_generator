@@ -1,7 +1,11 @@
 pub mod relations;
 pub mod mind {
+    use html_builder::*;
+    use std::fmt::Write as fmtWrite;
+
     use rand::Rng;
     use rand_distr::{Normal, Distribution};
+    use strum_macros::Display;
     use uuid::Uuid;
 
     use crate::city::city::City;
@@ -10,7 +14,7 @@ pub mod mind {
     use crate::city::population::mind::relations::relations::*;
 
 
-    #[derive(PartialEq, Debug, Clone)]
+    #[derive(PartialEq, Debug, Clone, Display)]
     pub enum Gender {
         Male,
         Female,
@@ -67,6 +71,41 @@ pub mod mind {
         }
         output.push_str(&format!("===========\n"));
         return output;
+    }
+
+    pub fn print_mind_html<'a>(node: &'a mut Node<'a>, mind: &Mind, city: &City) -> &'a mut Node<'a> {
+        let workplace = city.institutions.iter().find(|i| mind.employer.is_some() && mind.employer.unwrap().eq(&i.id));
+        let workplace_location = city.areas.iter().find(|a| workplace.is_some() && workplace.unwrap().location_id.eq(&a.id));
+
+        let relations: Vec<(&RelationVerb, String, Uuid)> = mind.relations.iter().map(|(verb, id)| (verb, get_name_from_id(&id, &city.citizens), id.clone())).collect();
+
+        let mut list_element = node.div().attr(&format!("id='{}'", mind.id));
+        writeln!(list_element.h3(), "Name: {} {}", &mind.first_name, &mind.last_name).unwrap();
+        writeln!(list_element.p(), "Gender: {}", &mind.gender).unwrap();
+        writeln!(list_element.p(), "Age: {}", &mind.age).unwrap();
+
+        if workplace.is_some() && workplace_location.is_some() {
+            let mut p = list_element.p();
+            writeln!(p, "Employer: {} in", workplace.unwrap().name).unwrap();
+            writeln!(p.a().attr(&format!("href='#{}'", workplace_location.unwrap().id)), "{}", workplace_location.unwrap().name).unwrap();
+        } else {
+            writeln!(list_element.p(), "Employer: None").unwrap();
+        }
+
+        if relations.len() < 1 {
+            writeln!(list_element.p(), "Relations: None").unwrap();
+        } else {
+            writeln!(list_element.p(), "Relations:").unwrap();
+            let mut relation_list = list_element.ul();
+            for (verb, name, id) in  relations {
+                let mut list_el = relation_list.li();
+                let mut list_el_para = list_el.p();
+                writeln!(list_el_para, "{:?}:", verb).unwrap();
+                writeln!(list_el_para.a().attr(&format!("href='#{}'", id)), "{}", name).unwrap();
+            }
+        }
+
+        return node;
     }
 
 

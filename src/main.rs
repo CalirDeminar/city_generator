@@ -1,4 +1,4 @@
-use city::{city::{ export_city}};
+use city::{city::{ export_city, export_city_html}};
 
 pub mod names;
 pub mod data_parser;
@@ -10,4 +10,5 @@ fn main() {
     std::env::set_var("RUST_BACKTRACE", "1");
     let city = city::city::build(250);
     export_city(&city);
+    export_city_html(&city);
 }

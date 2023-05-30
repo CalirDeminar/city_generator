@@ -13,6 +13,7 @@ regex = "1"
 json = "0.12.4"
 strum = "0.24"
 strum_macros = "0.24"
+html-builder =  "0.5.1"
 
 [dependencies.uuid]
 version = "1.3.2"

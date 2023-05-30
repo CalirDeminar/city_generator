@@ -3,15 +3,21 @@ pub mod population;
 pub mod locations;
 pub mod building;
 pub mod city {
-    use std::{fs::File, io::Write};
+    use std::fs::File;
+    use std::io::Write;
 
     use rand::Rng;
     use rand::seq::SliceRandom;
+    use html_builder::*;
+    use uuid::Uuid;
+    use std::fmt::Write as fmtWrite;
+
     use crate::city::population::population::*;
     use crate::city::institutions::institutions::*;
     use crate::city::locations::{locations, locations::*};
     use crate::names::names::*;
-    use super::population::mind::relations::relations::link_colleagues;
+    use super::population::mind::mind::{get_name_from_id, print_mind_html};
+    use super::population::mind::relations::relations::{link_colleagues, RelationVerb};
     // use crate::city::population::mind::relations::relations::*;
 
     #[derive(PartialEq, Debug, Clone)]
@@ -38,6 +44,28 @@ pub mod city {
         let mut file = File::create("./export.txt").unwrap();
         let output = print_city(&city);
         file.write_all(output.into_bytes().as_slice()).unwrap();
+    }
+
+    pub fn export_city_html(city: &City) {
+        let mut document = Buffer::new();
+        document.doctype();
+        let mut html = document.html().attr("lang='en'");
+        writeln!(html.head().title(), "City Name: {}", &city.name).unwrap();
+        html.link().attr("rel='stylesheet' href='./style.css'");
+        let mut body = html.body();
+        let mut loc_list = body.ul();
+        for area in &city.areas {
+            print_location_html(&mut loc_list.li(), &area, &city);
+        }
+
+        writeln!(body.h2(), "Citizens").unwrap();
+        let mut citizen_list = body.ul();
+        for m in &city.citizens {
+            print_mind_html(&mut citizen_list.li(), &m, &city);
+        }
+
+        let mut file = File::create("./export.html").unwrap();
+        file.write_all(document.finish().into_bytes().as_slice()).unwrap();
     }
 
     pub fn build(size: usize) -> City {
@@ -87,8 +115,9 @@ pub mod city {
                 remaining_employees = ((rng.gen::<f32>() * 10.0) as i32).max(1);
                 remaining_institutions -= 1;
                 if remaining_institutions < 1 {
-                    
+                    output_locations.push(working_location.clone());
                     working_location = gen_location(&name_dict);
+                    remaining_institutions = ((rng.gen::<f32>() * 10.0) as i32).max(1);
                 }
             }
             let mut mind = m.clone();
@@ -97,10 +126,11 @@ pub mod city {
                 remaining_employees -= 1;
             }
             // println!("{:#?}", mind);
-            output_locations.push(working_location.clone());
             output_minds.push(mind);
 
         }
+        output_locations.push(working_location.clone());
+        output_institutions.push(inst.clone());
 
         return (output_minds, output_institutions, output_locations);
     }

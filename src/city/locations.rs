@@ -4,6 +4,8 @@ pub mod locations {
     use rand::seq::SliceRandom;
     use rand_distr::{Normal, Distribution};
     use uuid::Uuid;
+    use html_builder::*;
+    use std::fmt::Write as fmtWrite;
 
     use crate::city::city::City;
     use crate::city::institutions::institutions::Institution;
@@ -31,6 +33,20 @@ pub mod locations {
         }
         output.push_str("===========\n");
         return output;
+    }
+
+    pub fn print_location_html<'a>(node: &'a mut Node<'a>, location: &Location, city: &City) -> &'a mut Node<'a> {
+        let institutions: Vec<&Institution> = city.institutions.iter().filter(|i| i.location_id.eq(&location.id)).collect();
+
+        let mut list_element = node.div().attr(&format!("id='{}'", location.id));
+        writeln!(list_element.h3(), "Location: {}", location.name).unwrap();
+        writeln!(list_element.p(), "Institutions: ").unwrap();
+        let mut inst_list = list_element.ul();
+        for inst in institutions {
+            let mut element = inst_list.li();
+            writeln!(element.a().attr(&format!("href='#{}'", inst.id)), "{}", inst.name).unwrap();
+        }
+        return node;
     }
 
 
