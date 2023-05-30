@@ -51,11 +51,16 @@ pub mod locations {
 
 
     pub fn gen_location_name(name_dict: &NameDictionary, long: bool) -> String {
-        let long_templates = vec!["{{LocationDescriptor}}{{LastName}}{{LocationMajorFeature}}{{LocationMinorFeature}}"];
-        let short_templates = vec![
+        let long_templates = vec![
+            "{{LocationDescriptor}}{{LastName}}{{LocationMajorFeature}}{{LocationMinorFeature}}",
             "{{LastName}}{{LocationMajorFeature}}{{LocationMinorFeature}}",
             "{{LocationDescriptor}}{{LastName}}{{LocationMinorFeature}}",
-            "{{LocationDescriptor}}{{LastName}}{{LocationMajorFeature}}"
+            "{{LocationDescriptor}}{{LastName}}{{LocationMajorFeature}}",
+            ];
+        let short_templates = vec![
+            "{{LocationDescriptor}}{{LastName}}",
+            "{{LastName}}{{LocationMinorFeature}}",
+            "{{LocationDescriptor}}{{LocationMinorFeature}}"
         ];
         if long {
             return render_template(random_pick(&long_templates), &name_dict.total_list);
@@ -66,7 +71,7 @@ pub mod locations {
     pub fn gen_location(name_dict: &NameDictionary) -> Location {
         return Location {
             id: Uuid::new_v4(),
-            name: gen_location_name(&name_dict, true),
+            name: gen_location_name(&name_dict, false),
         }
     }
 
