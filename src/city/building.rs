@@ -1,5 +1,7 @@
 pub mod building {
+    use html_builder::*;
     use rand::Rng;
+    use std::fmt::Write as fmtWrite;
     use uuid::Uuid;
 
     use crate::{
@@ -60,6 +62,36 @@ pub mod building {
             }
         }
         return output;
+    }
+
+    pub fn print_building_html<'a>(
+        node: &'a mut Node<'a>,
+        building: &Building,
+        city: &City,
+    ) -> &'a mut Node<'a> {
+        let mut base = node.div().attr(&format!("id='{}'", building.id));
+        writeln!(base.h5(), "{}", building.name).unwrap();
+        let mut floors = base.ul();
+        for floor in &building.floors {
+            let mut f = floors.li();
+            writeln!(f.h6(), "Floor {}", floor.level).unwrap();
+            for area in &floor.areas {
+                let inst = city.institutions.iter().find(|i| {
+                    area.owning_institution.is_some() && i.id.eq(&area.owning_institution.unwrap())
+                });
+                if inst.is_some() {
+                    let mut a = f.li();
+                    writeln!(
+                        a.a().attr(&format!("href='#{}'", inst.unwrap().id)),
+                        "{}: {}",
+                        area.name,
+                        inst.unwrap().name
+                    )
+                    .unwrap();
+                }
+            }
+        }
+        return node;
     }
 
     fn new_floor(level: i32, floor_type: FloorType) -> BuildingFloor {

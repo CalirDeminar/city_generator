@@ -112,7 +112,6 @@ pub mod mind {
             .institutions
             .iter()
             .find(|i| mind.employer.is_some() && mind.employer.unwrap().eq(&i.id));
-        // let workplace_location = city.areas.iter().find(|a| workplace.is_some() && workplace.unwrap().location_id.eq(&a.id));
 
         let relations: Vec<(&RelationVerb, String, Uuid)> = mind
             .relations
@@ -132,8 +131,27 @@ pub mod mind {
         writeln!(list_element.p(), "Age: {}", &mind.age).unwrap();
 
         if workplace.is_some() {
+            let (building, _floor, area) = find_institution_address(&workplace.unwrap(), &city);
+            let location = city
+                .areas
+                .iter()
+                .find(|a| a.id.eq(&building.location_id.unwrap()))
+                .unwrap();
             let mut p = list_element.p();
-            writeln!(p, "Employer: {}", workplace.unwrap().name).unwrap();
+            writeln!(p, "Employer: {} at", workplace.unwrap().name).unwrap();
+            writeln!(
+                p.a().attr(&format!("href='#{}'", building.id)),
+                "{}",
+                building.name
+            )
+            .unwrap();
+            writeln!(p, " in ").unwrap();
+            writeln!(
+                p.a().attr(&format!("href='#{}'", location.id)),
+                "{}",
+                location.name
+            )
+            .unwrap();
         } else {
             writeln!(list_element.p(), "Employer: None").unwrap();
         }

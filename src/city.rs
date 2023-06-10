@@ -55,6 +55,8 @@ pub mod city {
         writeln!(html.head().title(), "City Name: {}", &city.name).unwrap();
         html.link().attr("rel='stylesheet' href='./style.css'");
         let mut body = html.body();
+        writeln!(body.h1(), "{}", city.name).unwrap();
+        writeln!(body.h2(), "Locations:").unwrap();
         let mut loc_list = body.ul();
         for area in &city.areas {
             print_location_html(&mut loc_list.li(), &area, &city);

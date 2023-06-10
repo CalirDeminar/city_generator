@@ -8,7 +8,7 @@ pub mod locations {
     use std::fmt::Write as fmtWrite;
     use uuid::Uuid;
 
-    use crate::city::building::building::{print_building, Building};
+    use crate::city::building::building::{print_building, print_building_html, Building};
     use crate::city::city::City;
     use crate::city::institutions::institutions::Institution;
     use crate::names::names::{gen_name_dict, NameDictionary};
@@ -53,17 +53,12 @@ pub mod locations {
             .collect();
 
         let mut list_element = node.div().attr(&format!("id='{}'", location.id));
-        writeln!(list_element.h3(), "Location: {}", location.name).unwrap();
-        writeln!(list_element.p(), "Institutions: ").unwrap();
-        let mut inst_list = list_element.ul();
+        writeln!(list_element.h3(), "{}", location.name).unwrap();
+        writeln!(list_element.h4(), "Buildings: ").unwrap();
+        let mut building_list = list_element.ul();
         for building in buildings {
-            let mut element = inst_list.li();
-            writeln!(
-                element.a().attr(&format!("href='#{}'", building.id)),
-                "{}",
-                building.name
-            )
-            .unwrap();
+            let mut element = building_list.li();
+            print_building_html(&mut element, &building, &city);
         }
         return node;
     }
