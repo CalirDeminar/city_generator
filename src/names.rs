@@ -26,7 +26,8 @@ pub mod names {
         Prefixable,
         LocationMajorFeature,
         LocationMinorFeature,
-        LocationDescriptor
+        LocationDescriptor,
+        BuildingSuffix
     }
 
     #[derive(PartialEq, Debug, Clone)]
@@ -53,8 +54,9 @@ pub mod names {
         let location_descriptors = parse_file(String::from("./static_data/location_descriptors.csv"));
         let major_features =  parse_file(String::from("./static_data/location_major_features.csv"));
         let minor_features = parse_file(String::from("./static_data/location_minor_features.csv"));
+        let building_suffixes = parse_file(String::from("./static_data/building_suffixes.csv"));
         return NameDictionary {
-            total_list: vec![first_names.clone(), last_names.clone(), institution_suffixes.clone(), location_descriptors.clone(), major_features.clone(), minor_features.clone()].concat(),
+            total_list: vec![first_names.clone(), last_names.clone(), institution_suffixes.clone(), location_descriptors.clone(), major_features.clone(), minor_features.clone(), building_suffixes].concat(),
             first_names,
             last_names,
             institution_suffixes,

@@ -16,6 +16,7 @@ pub mod city {
     use crate::city::institutions::institutions::*;
     use crate::city::locations::{locations, locations::*};
     use crate::names::names::*;
+    use super::building::building::Building;
     use super::population::mind::mind::{get_name_from_id, print_mind_html};
     use super::population::mind::relations::relations::{link_colleagues, RelationVerb};
     // use crate::city::population::mind::relations::relations::*;
@@ -25,7 +26,8 @@ pub mod city {
         pub name: String,
         pub citizens: Population,
         pub institutions: Vec<Institution>,
-        pub areas: Vec<Location>
+        pub areas: Vec<Location>,
+        pub buildings: Vec<Building>
         // buildings
         // areas
     }
@@ -80,6 +82,7 @@ pub mod city {
             areas,
             institutions: institutions,
             name: locations::gen_location_name(&name_dict, false),
+            buildings: Vec::new(),
         };
         return output;
     }
@@ -111,9 +114,11 @@ pub mod city {
             // println!("Remaining Employees: {:?}", remaining_employees);
             if remaining_employees < 1 {
                 inst = if public_institutions.len() > 0 {public_institutions.pop().unwrap()} else {generate_population_institution(&name_dict, &working_location.id)};
+                inst.location_id=working_location.id;
                 output_institutions.push(inst.clone());
                 remaining_employees = ((rng.gen::<f32>() * 10.0) as i32).max(1);
                 remaining_institutions -= 1;
+                // println!("Institution: {} in: {}", inst.name, working_location.name);
                 if remaining_institutions < 1 {
                     output_locations.push(working_location.clone());
                     working_location = gen_location(&name_dict);
