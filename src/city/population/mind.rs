@@ -8,10 +8,12 @@ pub mod mind {
     use strum_macros::Display;
     use uuid::Uuid;
 
+    use crate::city::building::building::{Building, BuildingFloorArea};
     use crate::city::city::City;
     use crate::city::institutions::institutions::{
         find_institution_address, find_institution_building, Institution,
     };
+    use crate::city::locations::locations::Location;
     use crate::names::names::*;
 
     use crate::city::population::mind::relations::relations::*;
@@ -40,6 +42,37 @@ pub mod mind {
         pub age: u32,
         pub relations: Vec<Relation>,
         pub employer: Option<Uuid>,
+        pub residence: Option<Uuid>,
+    }
+
+    pub fn find_address<'a>(
+        mind: &Mind,
+        city: &'a City,
+    ) -> (&'a Building, &'a BuildingFloorArea, &'a Location) {
+        let city_floor_areas: Vec<&BuildingFloorArea> = city
+            .buildings
+            .iter()
+            .flat_map(|b| b.floors.iter().flat_map(|f| f.areas.iter()))
+            .collect();
+        let area = city_floor_areas
+            .iter()
+            .find(|a| a.id.eq(&mind.residence.unwrap()))
+            .unwrap();
+        let building = city
+            .buildings
+            .iter()
+            .find(|b| {
+                b.floors
+                    .iter()
+                    .any(|f| f.areas.iter().any(|a| a.id.eq(&area.id)))
+            })
+            .unwrap();
+        let location = city
+            .areas
+            .iter()
+            .find(|a| a.id.eq(&building.location_id.unwrap()))
+            .unwrap();
+        return (building, area, location);
     }
 
     pub fn get_name_from_id(id: &Uuid, population: &Vec<Mind>) -> String {
@@ -75,19 +108,22 @@ pub mod mind {
         output.push_str(&format!("Gender: {:?}\n", mind.gender));
         output.push_str(&format!("Age: {}\n", mind.age));
         if workplace.is_some() {
-            let (building, _floor, area) = find_institution_address(&workplace.unwrap(), &city);
-            let location = city
-                .areas
-                .iter()
-                .find(|a| a.id.eq(&building.location_id.unwrap()))
-                .unwrap();
+            let (building, _floor, area, workplace_location) =
+                find_institution_address(&workplace.unwrap(), &city);
             output.push_str(&format!(
                 "Employer: {} at {} {} in {}\n",
                 workplace.unwrap().name,
                 area.name,
                 building.name,
-                location.name
+                workplace_location.name
             ));
+            if mind.residence.is_some() {
+                let (building, apartment, residential_location) = find_address(mind, city);
+                output.push_str(&format!(
+                    "Lives at {} {} in {}\n",
+                    apartment.name, building.name, residential_location.name
+                ));
+            }
         } else {
             output.push_str("Employer: None\n");
         }
@@ -131,12 +167,8 @@ pub mod mind {
         writeln!(list_element.p(), "Age: {}", &mind.age).unwrap();
 
         if workplace.is_some() {
-            let (building, _floor, area) = find_institution_address(&workplace.unwrap(), &city);
-            let location = city
-                .areas
-                .iter()
-                .find(|a| a.id.eq(&building.location_id.unwrap()))
-                .unwrap();
+            let (building, _floor, area, location) =
+                find_institution_address(&workplace.unwrap(), &city);
             let mut p = list_element.p();
             writeln!(p, "Employer: {} at", workplace.unwrap().name).unwrap();
             writeln!(
@@ -154,6 +186,32 @@ pub mod mind {
             .unwrap();
         } else {
             writeln!(list_element.p(), "Employer: None").unwrap();
+        }
+        if mind.residence.is_some() {
+            let (building, apartment, residential_location) = find_address(mind, city);
+            let mut line = list_element.p();
+            writeln!(line, "Lives at: ").unwrap();
+            writeln!(
+                line.a().attr(&format!("href='#{}'", apartment.id)),
+                "{}",
+                apartment.name
+            )
+            .unwrap();
+            writeln!(line, " - ").unwrap();
+            writeln!(
+                line.a().attr(&format!("href='#{}'", building.id)),
+                "{}",
+                building.name
+            )
+            .unwrap();
+            writeln!(line, " - ").unwrap();
+            writeln!(
+                line.a()
+                    .attr(&format!("href='#{}'", residential_location.id)),
+                "{}",
+                residential_location.name
+            )
+            .unwrap();
         }
 
         if relations.len() < 1 {
@@ -199,6 +257,7 @@ pub mod mind {
                 + 15
                 + distribution.sample(&mut rand::thread_rng()) as u32,
             employer: None,
+            residence: None,
         };
     }
 }

@@ -4,6 +4,7 @@ pub mod institutions {
 
     use crate::city::building::building::{Building, BuildingFloor, BuildingFloorArea};
     use crate::city::city::City;
+    use crate::city::locations::locations::Location;
     use crate::names::names::*;
     use crate::templater::templater::*;
     use crate::utils::utils::random_pick;
@@ -92,7 +93,12 @@ pub mod institutions {
     pub fn find_institution_address<'a>(
         institution: &Institution,
         city: &'a City,
-    ) -> (&'a Building, &'a BuildingFloor, &'a BuildingFloorArea) {
+    ) -> (
+        &'a Building,
+        &'a BuildingFloor,
+        &'a BuildingFloorArea,
+        &'a Location,
+    ) {
         let building = city
             .buildings
             .iter()
@@ -122,7 +128,12 @@ pub mod institutions {
                 a.owning_institution.is_some() && a.owning_institution.unwrap().eq(&institution.id)
             })
             .unwrap();
-        return (building, floor, area);
+        let location = city
+            .areas
+            .iter()
+            .find(|a| a.id.eq(&building.location_id.unwrap()))
+            .unwrap();
+        return (building, floor, area, location);
     }
 
     pub fn generate_public_institutions(name_dict: &NameDictionary) -> Vec<Institution> {

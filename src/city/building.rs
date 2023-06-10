@@ -5,7 +5,7 @@ pub mod building {
     use uuid::Uuid;
 
     use crate::{
-        city::{city::City, institutions::institutions::Institution},
+        city::{city::City, institutions::institutions::Institution, population::mind::mind::Mind},
         names::names::{gen_name_dict, NameDictionary},
         templater::templater::render_template,
         utils::utils::random_pick,
@@ -30,7 +30,6 @@ pub mod building {
         pub name: String,
         pub area_type: FloorAreaType,
         pub owning_institution: Option<Uuid>,
-        pub owning_citizen: Option<Uuid>, // pub rooms: Vec<BuildingFloorAreaRoom>
     }
     #[derive(PartialEq, Debug, Clone)]
     pub struct BuildingFloor {
@@ -51,13 +50,42 @@ pub mod building {
         let mut output: String = String::new();
         output.push_str(&format!("  {}:\n", building.name));
         for floor in &building.floors {
-            output.push_str(&format!("      Floor {}\n", floor.level));
+            if floor.level > 0 {
+                output.push_str(&format!("      Floor {}\n", floor.level));
+            } else if floor.level.eq(&-1) {
+                output.push_str(&format!("      Basement\n"));
+            } else {
+                output.push_str(&format!("      Ground Floor\n"));
+            }
             for area in &floor.areas {
                 let inst = city.institutions.iter().find(|i| {
                     area.owning_institution.is_some() && i.id.eq(&area.owning_institution.unwrap())
                 });
                 if inst.is_some() {
-                    output.push_str(&format!("          {}\n", inst.unwrap().name));
+                    output.push_str(&format!(
+                        "          {}: {}\n",
+                        area.name,
+                        inst.unwrap().name
+                    ));
+                } else {
+                    let residents: Vec<&Mind> = city
+                        .citizens
+                        .iter()
+                        .filter(|m| m.residence.is_some() && m.residence.unwrap().eq(&area.id))
+                        .collect();
+                    if residents.len().eq(&0) {
+                        output.push_str(&format!("          {}: Empty\n", area.name));
+                    } else {
+                        let mut names: Vec<String> = Vec::new();
+                        for resident in residents {
+                            names.push(format!("{} {}", resident.first_name, resident.last_name));
+                        }
+                        output.push_str(&format!(
+                            "          {}: {}\n",
+                            area.name,
+                            names.join(", ")
+                        ));
+                    }
                 }
             }
         }
@@ -74,7 +102,14 @@ pub mod building {
         let mut floors = base.ul();
         for floor in &building.floors {
             let mut f = floors.li();
-            writeln!(f.h6(), "Floor {}", floor.level).unwrap();
+            if floor.level > 0 {
+                writeln!(f.h6(), "Floor {}", floor.level).unwrap();
+            } else if floor.level.eq(&-1) {
+                writeln!(f.h6(), "Basement").unwrap();
+            } else {
+                writeln!(f.h6(), "Ground Floor").unwrap();
+            }
+
             for area in &floor.areas {
                 let inst = city.institutions.iter().find(|i| {
                     area.owning_institution.is_some() && i.id.eq(&area.owning_institution.unwrap())
@@ -94,6 +129,13 @@ pub mod building {
         return node;
     }
 
+    pub fn building_area_is_owned<'a>(area: &'a BuildingFloorArea, city: &'a City) -> bool {
+        return city
+            .citizens
+            .iter()
+            .any(|c| c.residence.is_some() && c.residence.unwrap().eq(&area.id));
+    }
+
     fn new_floor(level: i32, floor_type: FloorType) -> BuildingFloor {
         let mut rng = rand::thread_rng();
         let mut areas: Vec<BuildingFloorArea> = Vec::new();
@@ -102,18 +144,16 @@ pub mod building {
             if level == 0 && i == 0 {
                 areas.push(BuildingFloorArea {
                     id: Uuid::new_v4(),
-                    name: format!("{}", i + 1),
+                    name: format!("{}{:0>2}", level, i + 1),
                     area_type: FloorAreaType::Lobby,
                     owning_institution: None,
-                    owning_citizen: None,
                 });
-            } else if level == -1 && i == 0 {
+            } else if level.eq(&(-1)) && i == 0 {
                 areas.push(BuildingFloorArea {
                     id: Uuid::new_v4(),
-                    name: format!("B{}", i + 1),
+                    name: format!("{}{:0>2}", level, i + 1),
                     area_type: FloorAreaType::Utilities,
                     owning_institution: None,
-                    owning_citizen: None,
                 });
             } else {
                 if floor_type.eq(&FloorType::Residential) {
@@ -122,15 +162,13 @@ pub mod building {
                         name: format!("{}{:0>2}", level, i + 1),
                         area_type: FloorAreaType::Apartment,
                         owning_institution: None,
-                        owning_citizen: None,
                     });
                 } else {
                     areas.push(BuildingFloorArea {
                         id: Uuid::new_v4(),
-                        name: format!("{}{}", level, i + 1),
+                        name: format!("{}{:0>2}", level, i + 1),
                         area_type: FloorAreaType::Commercial,
                         owning_institution: None,
-                        owning_citizen: None,
                     });
                 }
             }

@@ -1,9 +1,10 @@
 pub mod relations {
+    use crate::city::city::City;
     use crate::city::population::{mind::mind::*, population::Population};
     use crate::names::names::*;
-    use rand::Rng;
     use rand::seq::SliceRandom;
-    use rand_distr::{Normal, Distribution};
+    use rand::Rng;
+    use rand_distr::{Distribution, Normal};
     use uuid::Uuid;
 
     #[derive(PartialEq, Debug, Clone)]
@@ -34,6 +35,8 @@ pub mod relations {
     const PARTNER_SPLIT_RATE: f32 = 0.2;
     const HOMOSEXUALITY_CHANCE: f32 = 0.2;
 
+    pub const ADULT_AGE_FROM: u32 = 18;
+
     const PARENT_PRESENCE_CHANCE: f32 = 0.3;
 
     const FRIEND_OUTGOING_MAX: f32 = 3.0;
@@ -41,7 +44,12 @@ pub mod relations {
     const FRIEND_MULTIPLER_DIFFERENT_GENDER: f32 = 0.33;
     const FRIEND_RATE: f32 = 0.01;
 
-    fn gen_mind_with_gender_and_relation(name_dict: &NameDictionary, gender: &Gender, age: u32, relations: Vec<Relation>) -> Mind{
+    fn gen_mind_with_gender_and_relation(
+        name_dict: &NameDictionary,
+        gender: &Gender,
+        age: u32,
+        relations: Vec<Relation>,
+    ) -> Mind {
         let (first_name, last_name) = random_mind_name(&name_dict, &gender);
         return Mind {
             id: Uuid::new_v4(),
@@ -50,7 +58,8 @@ pub mod relations {
             gender: gender.clone(),
             age,
             relations,
-            employer: None
+            employer: None,
+            residence: None,
         };
     }
 
@@ -59,14 +68,53 @@ pub mod relations {
         let partner_type_roll = rng.gen::<f32>();
         let parnet_gender;
         if partner_type_roll > HOMOSEXUALITY_CHANCE {
-            parnet_gender = if input_gender.eq(&Gender::Male) {Gender::Female} else {Gender::Male};
+            parnet_gender = if input_gender.eq(&Gender::Male) {
+                Gender::Female
+            } else {
+                Gender::Male
+            };
         } else {
             parnet_gender = input_gender.clone();
         }
         return parnet_gender;
     }
 
-    pub fn add_partners_to_population(population: Vec<Mind>, name_dict: &NameDictionary) -> Vec<Mind> {
+    pub fn find_relation<'a>(
+        mind: &Mind,
+        relation: RelationVerb,
+        city: &'a City,
+    ) -> Option<&'a Mind> {
+        let match_relation = mind.relations.iter().find(|(r, _id)| r.eq(&relation));
+        if match_relation.is_some() {
+            let (_verb, id) = match_relation.unwrap();
+            return city.citizens.iter().find(|c| c.id.eq(&id));
+        }
+        return None;
+    }
+
+    pub fn find_relation_minor<'a>(
+        mind: &Mind,
+        relation: RelationVerb,
+        city: &'a City,
+    ) -> Option<&'a Mind> {
+        let match_relation: Vec<&(RelationVerb, Uuid)> = mind
+            .relations
+            .iter()
+            .filter(|(r, _id)| r.eq(&relation))
+            .collect();
+        for (_relation, id) in match_relation {
+            let rel = city.citizens.iter().find(|c| c.id.eq(&id)).unwrap();
+            if rel.age < ADULT_AGE_FROM {
+                return Some(rel);
+            }
+        }
+        return None;
+    }
+
+    pub fn add_partners_to_population(
+        population: Vec<Mind>,
+        name_dict: &NameDictionary,
+    ) -> Vec<Mind> {
         let mut rng = rand::thread_rng();
         let mut output: Vec<Mind> = Vec::new();
         for mind in population {
@@ -95,13 +143,13 @@ pub mod relations {
                 let mut target = mind.clone();
                 let distribution = Normal::new(mind.age.clone() as f32, 4.0).unwrap();
                 let relation = gen_mind_with_gender_and_relation(
-                    &name_dict, 
-                    &partner_gender, 
-                    distribution.sample(&mut rand::thread_rng()) as u32, 
-                    vec![(verb.clone(), target.id.clone())]
+                    &name_dict,
+                    &partner_gender,
+                    distribution.sample(&mut rand::thread_rng()) as u32,
+                    vec![(verb.clone(), target.id.clone())],
                 );
                 target.relations.push((verb.clone(), relation.id.clone()));
-                assert!(relation.relations.iter().any(|(_,m)| m==&target.id));
+                assert!(relation.relations.iter().any(|(_, m)| m == &target.id));
                 output.push(target);
                 output.push(relation);
             }
@@ -109,7 +157,10 @@ pub mod relations {
         return output;
     }
 
-    pub fn add_parents_to_population(population: Vec<Mind>, name_dict: &NameDictionary) -> Vec<Mind> {
+    pub fn add_parents_to_population(
+        population: Vec<Mind>,
+        name_dict: &NameDictionary,
+    ) -> Vec<Mind> {
         let mut rng = rand::thread_rng();
         let mut output: Vec<Mind> = Vec::new();
 
@@ -119,30 +170,45 @@ pub mod relations {
                 output.push(mind);
             } else {
                 let mut mind_m = mind.clone();
-                let parent_age_distribution = Normal::new(mind.age.clone() as f32 + 30.0, 5.0).unwrap();
+                let parent_age_distribution =
+                    Normal::new(mind.age.clone() as f32 + 30.0, 5.0).unwrap();
                 let mut parent_one = gen_mind_with_gender_and_relation(
                     &name_dict,
-                    &Gender::Female, 
-                    parent_age_distribution.sample(&mut rand::thread_rng()) as u32, 
-                    vec![(RelationVerb::Child, mind.id.clone())]
+                    &Gender::Female,
+                    parent_age_distribution.sample(&mut rand::thread_rng()) as u32,
+                    vec![(RelationVerb::Child, mind.id.clone())],
                 );
                 parent_one.last_name = String::from(&mind_m.last_name);
                 let mut parent_two = gen_mind_with_gender_and_relation(
                     &name_dict,
-                    &Gender::Male, 
-                    parent_age_distribution.sample(&mut rand::thread_rng()) as u32, 
-                    vec![(RelationVerb::Child, mind.id.clone())]
+                    &Gender::Male,
+                    parent_age_distribution.sample(&mut rand::thread_rng()) as u32,
+                    vec![(RelationVerb::Child, mind.id.clone())],
                 );
                 parent_two.last_name = String::from(&parent_one.last_name);
-                let parent_one_alive = parent_one.age < Normal::new(65.0, 10.0).unwrap().sample(&mut rand::thread_rng()) as u32;
+                let parent_one_alive = parent_one.age
+                    < Normal::new(65.0, 10.0)
+                        .unwrap()
+                        .sample(&mut rand::thread_rng()) as u32;
                 if parent_one_alive {
-                    mind_m.relations.push((RelationVerb::Parent, parent_one.id.clone()));
-                    parent_two.relations.push((RelationVerb::Partner, parent_one.id.clone()));
+                    mind_m
+                        .relations
+                        .push((RelationVerb::Parent, parent_one.id.clone()));
+                    parent_two
+                        .relations
+                        .push((RelationVerb::Partner, parent_one.id.clone()));
                 }
-                let parent_two_alive = parent_two.age < Normal::new(65.0, 10.0).unwrap().sample(&mut rand::thread_rng()) as u32;
+                let parent_two_alive = parent_two.age
+                    < Normal::new(65.0, 10.0)
+                        .unwrap()
+                        .sample(&mut rand::thread_rng()) as u32;
                 if parent_two_alive {
-                    mind_m.relations.push((RelationVerb::Parent, parent_two.id.clone()));
-                    parent_one.relations.push((RelationVerb::Partner, parent_two.id.clone()));
+                    mind_m
+                        .relations
+                        .push((RelationVerb::Parent, parent_two.id.clone()));
+                    parent_one
+                        .relations
+                        .push((RelationVerb::Partner, parent_two.id.clone()));
                 }
                 if parent_one_alive {
                     output.push(parent_one);
@@ -165,9 +231,12 @@ pub mod relations {
         } else {
             gender_modifier = FRIEND_MULTIPLER_DIFFERENT_GENDER;
         }
-        let age_gap_modifier = 1.0/((mind_1.age.abs_diff(mind_2.age) as f32)*5.0).min(1.0).max(0.0);
+        let age_gap_modifier = 1.0
+            / ((mind_1.age.abs_diff(mind_2.age) as f32) * 5.0)
+                .min(1.0)
+                .max(0.0);
         let mind_1_knows_2 = mind_1.relations.iter().any(|(_r, id)| id.eq(&mind_2.id));
-        return !mind_1_knows_2 && roll > (FRIEND_RATE*gender_modifier*age_gap_modifier);
+        return !mind_1_knows_2 && roll > (FRIEND_RATE * gender_modifier * age_gap_modifier);
     }
 
     pub fn link_friends_within_population(population: Vec<Mind>) -> Vec<Mind> {
@@ -176,12 +245,14 @@ pub mod relations {
         let mut output: Vec<Mind> = Vec::new();
         // add outcoming friendships to the population
         for mind in population {
-            let friend_count = (rng.gen::<f32>()*FRIEND_OUTGOING_MAX) as u32;
+            let friend_count = (rng.gen::<f32>() * FRIEND_OUTGOING_MAX) as u32;
             let mut mind_m = mind.clone();
             for _i in 0..friend_count {
                 let match_f = population_ref.iter().find(|m| match_friend(&mind_m, m));
                 if match_f.is_some() {
-                    mind_m.relations.push((RelationVerb::Friend, match_f.unwrap().id.clone()));
+                    mind_m
+                        .relations
+                        .push((RelationVerb::Friend, match_f.unwrap().id.clone()));
                 }
                 population_ref.shuffle(&mut rng);
             }
@@ -190,11 +261,17 @@ pub mod relations {
         // reflect those outgoing friendships back
         let output_ref = output.clone();
         for mind in output.iter_mut() {
-            let incoming_friends: Vec<&Mind> = output_ref.iter().filter(
-                |m| m.relations.iter().any(|(verb, id)| verb.eq(&RelationVerb::Friend) && id.eq(&mind.id))
-            ).collect();
+            let incoming_friends: Vec<&Mind> = output_ref
+                .iter()
+                .filter(|m| {
+                    m.relations
+                        .iter()
+                        .any(|(verb, id)| verb.eq(&RelationVerb::Friend) && id.eq(&mind.id))
+                })
+                .collect();
             for friend in incoming_friends {
-                mind.relations.push((RelationVerb::Friend, friend.id.clone()));
+                mind.relations
+                    .push((RelationVerb::Friend, friend.id.clone()));
             }
         }
         return output;
@@ -207,7 +284,12 @@ pub mod relations {
         for m in population {
             let mut mind = m.clone();
             if mind.employer.is_some() {
-                let colleagues: Vec<&Mind> = ref_pop.iter().filter(|c| c.employer.is_some() && c.employer.unwrap().eq(&mind.employer.unwrap())).collect();
+                let colleagues: Vec<&Mind> = ref_pop
+                    .iter()
+                    .filter(|c| {
+                        c.employer.is_some() && c.employer.unwrap().eq(&mind.employer.unwrap())
+                    })
+                    .collect();
                 for c in colleagues {
                     mind.relations.push((RelationVerb::Colleague, c.id.clone()))
                 }

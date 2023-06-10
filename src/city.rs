@@ -10,10 +10,15 @@ pub mod city {
     use rand::seq::SliceRandom;
     use rand::Rng;
     use std::fmt::Write as fmtWrite;
+    use uuid::Uuid;
 
-    use super::building::building::{new_building, Building};
+    use super::building::building::{
+        building_area_is_owned, new_building, Building, BuildingFloorArea,
+    };
     use super::population::mind::mind::*;
-    use super::population::mind::relations::relations::link_colleagues;
+    use super::population::mind::relations::relations::{
+        find_relation, find_relation_minor, link_colleagues, RelationVerb, ADULT_AGE_FROM,
+    };
     use crate::city::institutions::institutions::*;
     use crate::city::locations::{locations, locations::*};
     use crate::city::population::population::*;
@@ -80,7 +85,7 @@ pub mod city {
                     .eq(&super::building::building::FloorType::Commercial)
                     && f.areas
                         .iter()
-                        .any(|a| a.owning_citizen.is_none() && a.owning_institution.is_none())
+                        .any(|a| a.owning_institution.is_none() && a.owning_institution.is_none())
             })
         });
     }
@@ -107,7 +112,7 @@ pub mod city {
                     .eq(&super::building::building::FloorType::Commercial)
             })
             .flat_map(|f| &mut f.areas)
-            .find(|a| a.owning_citizen.is_none() && a.owning_institution.is_none());
+            .find(|a| a.owning_institution.is_none());
         free_area.unwrap().owning_institution = Some(institution.id.clone());
         return building;
     }
@@ -149,6 +154,29 @@ pub mod city {
         return city;
     }
 
+    fn add_public_institution_to_city<'a>(
+        city: &'a mut City,
+        institution: Institution,
+        name_dict: &NameDictionary,
+    ) -> &'a mut City {
+        let mut rng = rand::thread_rng();
+        let employee_count = ((rng.gen::<f32>() * 10.0) as i32).max(1);
+        let all_workers = find_workers(&city);
+        let workers = all_workers.iter().take(employee_count as usize);
+
+        add_building_to_city(city, &name_dict);
+        add_institution_to_building(city.buildings.last_mut().unwrap(), &institution);
+
+        for w in workers {
+            let mut worker = city.citizens.iter_mut().find(|m| m.id.eq(&w.id)).unwrap();
+            worker.employer = Some(institution.id.clone());
+        }
+
+        city.institutions.push(institution);
+
+        return city;
+    }
+
     fn find_workers<'a>(city: &'a City) -> Population {
         let mut output: Population = Vec::new();
         for mind in &city.citizens {
@@ -158,6 +186,64 @@ pub mod city {
         }
         output.shuffle(&mut rand::thread_rng());
         return output;
+    }
+
+    fn assign_residences<'a>(city: &'a mut City) -> &'a mut City {
+        let mut new_residences: Vec<(Uuid, Uuid)> = Vec::new();
+        let mut owned_ids: Vec<Uuid> = city
+            .citizens
+            .iter()
+            .filter(|c| c.residence.is_some())
+            .map(|c| c.residence.unwrap().clone())
+            .collect();
+        for citizen in city.citizens.iter() {
+            let guardian = if citizen.age < ADULT_AGE_FROM {
+                find_relation(&citizen, RelationVerb::Parent, &city)
+            } else {
+                None
+            };
+            let ward = find_relation_minor(&citizen, RelationVerb::Child, &city);
+            let spouse = find_relation(&citizen, RelationVerb::Spouse, &city);
+
+            // TODO - Currently broken, output looks very wrong
+            if guardian.is_some() && guardian.unwrap().residence.is_some() {
+                new_residences.push((
+                    citizen.id.clone(),
+                    guardian.unwrap().residence.clone().unwrap(),
+                ));
+            } else if ward.is_some() && ward.unwrap().residence.is_some() {
+                new_residences.push((citizen.id.clone(), ward.unwrap().residence.clone().unwrap()));
+            } else if spouse.is_some() && spouse.unwrap().residence.is_some() {
+                new_residences.push((
+                    citizen.id.clone(),
+                    spouse.unwrap().residence.clone().unwrap(),
+                ));
+            } else {
+                let mut all_areas: Vec<&BuildingFloorArea> = city
+                    .buildings
+                    .iter()
+                    .flat_map(|b| b.floors.iter().flat_map(|f| f.areas.iter()))
+                    .collect();
+
+                all_areas.shuffle(&mut rand::thread_rng());
+
+                let apartment = all_areas
+                    .iter()
+                    .find(|a| a.owning_institution.is_none() && !owned_ids.contains(&a.id));
+                if apartment.is_some() {
+                    new_residences.push((citizen.id.clone(), apartment.unwrap().id.clone()));
+                }
+            }
+        }
+        for (citizen_id, residence_id) in new_residences {
+            let citizen = city
+                .citizens
+                .iter_mut()
+                .find(|c| c.id.eq(&citizen_id))
+                .unwrap();
+            citizen.residence = Some(residence_id);
+        }
+        return city;
     }
 
     pub fn build(size: usize) -> City {
@@ -171,19 +257,20 @@ pub mod city {
             institutions: Vec::new(),
         };
 
-        let mut public_institutions = generate_public_institutions(&name_dict);
+        let public_institutions = generate_public_institutions(&name_dict);
+
+        for pub_inst in public_institutions {
+            add_public_institution_to_city(&mut city, pub_inst, &name_dict);
+        }
+
         let mut workers = find_workers(&city);
         while workers.len() > 0 {
-            let next_public = public_institutions.pop();
-            let institution = if next_public.is_some() {
-                next_public.unwrap()
-            } else {
-                generate_population_institution(&name_dict)
-            };
+            let institution = generate_population_institution(&name_dict);
             add_institution_to_city(&mut city, institution, &name_dict);
             workers = find_workers(&city);
         }
         city.citizens = link_colleagues(city.citizens);
+        assign_residences(&mut city);
 
         return city;
     }
