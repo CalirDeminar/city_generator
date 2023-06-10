@@ -1,25 +1,26 @@
-pub mod institutions;
-pub mod population;
-pub mod locations;
 pub mod building;
+pub mod institutions;
+pub mod locations;
+pub mod population;
 pub mod city {
     use std::fs::File;
     use std::io::Write;
 
-    use rand::Rng;
-    use rand::seq::SliceRandom;
     use html_builder::*;
-    use uuid::Uuid;
+    use rand::seq::SliceRandom;
+    use rand::Rng;
     use std::fmt::Write as fmtWrite;
 
-    use crate::city::population::population::*;
+    use super::building::building::{new_building, Building};
+    use super::population::mind::mind::*;
+    use super::population::mind::relations::relations::link_colleagues;
     use crate::city::institutions::institutions::*;
     use crate::city::locations::{locations, locations::*};
+    use crate::city::population::population::*;
     use crate::names::names::*;
-    use super::building::building::Building;
-    use super::population::mind::mind::{get_name_from_id, print_mind_html};
-    use super::population::mind::relations::relations::{link_colleagues, RelationVerb};
     // use crate::city::population::mind::relations::relations::*;
+
+    const MAX_WORKING_AGE: u32 = 60;
 
     #[derive(PartialEq, Debug, Clone)]
     pub struct City {
@@ -27,9 +28,8 @@ pub mod city {
         pub citizens: Population,
         pub institutions: Vec<Institution>,
         pub areas: Vec<Location>,
-        pub buildings: Vec<Building>
-        // buildings
-        // areas
+        pub buildings: Vec<Building>, // buildings
+                                      // areas
     }
 
     pub fn print_city(city: &City) -> String {
@@ -67,76 +67,122 @@ pub mod city {
         }
 
         let mut file = File::create("./export.html").unwrap();
-        file.write_all(document.finish().into_bytes().as_slice()).unwrap();
+        file.write_all(document.finish().into_bytes().as_slice())
+            .unwrap();
+    }
+
+    fn find_free_building<'a>(city: &'a mut City) -> Option<&'a mut Building> {
+        return city.buildings.iter_mut().find(|b| {
+            b.floors.iter().any(|f| {
+                f.floor_type
+                    .eq(&super::building::building::FloorType::Commercial)
+                    && f.areas
+                        .iter()
+                        .any(|a| a.owning_citizen.is_none() && a.owning_institution.is_none())
+            })
+        });
+    }
+
+    fn find_free_area<'a>(city: &'a mut City) -> Option<&'a mut Location> {
+        return city.areas.iter_mut().find(|a| {
+            city.buildings
+                .iter_mut()
+                .filter(|b| b.location_id.is_some() && b.location_id.unwrap().eq(&a.id))
+                .count()
+                < a.size
+        });
+    }
+
+    fn add_institution_to_building<'a>(
+        building: &'a mut Building,
+        institution: &Institution,
+    ) -> &'a mut Building {
+        let free_area = building
+            .floors
+            .iter_mut()
+            .filter(|f| {
+                f.floor_type
+                    .eq(&super::building::building::FloorType::Commercial)
+            })
+            .flat_map(|f| &mut f.areas)
+            .find(|a| a.owning_citizen.is_none() && a.owning_institution.is_none());
+        free_area.unwrap().owning_institution = Some(institution.id.clone());
+        return building;
+    }
+
+    fn add_building_to_city<'a>(city: &'a mut City, name_dict: &NameDictionary) -> &'a mut City {
+        let mut free_location = find_free_area(city);
+        if free_location.is_none() {
+            city.areas.push(gen_location(&name_dict));
+            free_location = find_free_area(city);
+        }
+        let new_building = new_building(&name_dict, Some(free_location.unwrap().id.clone()));
+        city.buildings.push(new_building);
+        return city;
+    }
+
+    fn add_institution_to_city<'a>(
+        city: &'a mut City,
+        institution: Institution,
+        name_dict: &NameDictionary,
+    ) -> &'a mut City {
+        let mut rng = rand::thread_rng();
+        let employee_count = ((rng.gen::<f32>() * 10.0) as i32).max(1);
+        let all_workers = find_workers(&city);
+        let workers = all_workers.iter().take(employee_count as usize);
+        let mut building_with_space = find_free_building(city);
+
+        if building_with_space.is_none() {
+            add_building_to_city(city, &name_dict);
+            building_with_space = find_free_building(city);
+        }
+
+        add_institution_to_building(building_with_space.unwrap(), &institution.clone());
+
+        for w in workers {
+            let mut worker = city.citizens.iter_mut().find(|m| m.id.eq(&w.id)).unwrap();
+            worker.employer = Some(institution.id.clone());
+        }
+        city.institutions.push(institution);
+        return city;
+    }
+
+    fn find_workers<'a>(city: &'a City) -> Population {
+        let mut output: Population = Vec::new();
+        for mind in &city.citizens {
+            if mind.age < MAX_WORKING_AGE && mind.employer.is_none() {
+                output.push(mind.clone());
+            }
+        }
+        output.shuffle(&mut rand::thread_rng());
+        return output;
     }
 
     pub fn build(size: usize) -> City {
         let name_dict = gen_name_dict();
-        let mut citizens = generate_population(&name_dict, size);
-        let institutions: Vec<Institution>;
-        let areas: Vec<Location>;
-        (citizens, institutions, areas) = assign_workplaces(&name_dict,  citizens);
-        citizens = link_colleagues(citizens);
-        let output = City {
-            citizens,
-            areas,
-            institutions: institutions,
+        let citizens = generate_population(&name_dict, size);
+        let mut city = City {
             name: locations::gen_location_name(&name_dict, false),
             buildings: Vec::new(),
+            citizens,
+            areas: Vec::new(),
+            institutions: Vec::new(),
         };
-        return output;
-    }
 
-    fn assign_workplaces(name_dict: &NameDictionary, population: Population) -> (Population, Vec<Institution>, Vec<Location>) {
-        let mut rng = rand::thread_rng();
-        let mut output_institutions: Vec<Institution> = Vec::new();
-
-        let mut working_location = gen_location(&name_dict);
-        let mut output_locations: Vec<Location> = Vec::new();
-        let mut remaining_institutions = ((rng.gen::<f32>() * 10.0) as i32).max(1);
-
-
-        let mut output_minds: Population = Vec::new();
-        let mut p = population;
-
-
-
-        let mut public_institutions = generate_public_institutions(name_dict, &working_location.id);
-        let mut inst = public_institutions.pop().unwrap();
-        
-        
-        output_institutions.push(inst.clone());
-        let mut remaining_employees = ((rng.gen::<f32>() * 10.0) as i32).max(1);
-        remaining_institutions -= public_institutions.len() as i32;
-
-        p.shuffle(&mut rng);
-        for m in p {
-            // println!("Remaining Employees: {:?}", remaining_employees);
-            if remaining_employees < 1 {
-                inst = if public_institutions.len() > 0 {public_institutions.pop().unwrap()} else {generate_population_institution(&name_dict, &working_location.id)};
-                inst.location_id=working_location.id;
-                output_institutions.push(inst.clone());
-                remaining_employees = ((rng.gen::<f32>() * 10.0) as i32).max(1);
-                remaining_institutions -= 1;
-                // println!("Institution: {} in: {}", inst.name, working_location.name);
-                if remaining_institutions < 1 {
-                    output_locations.push(working_location.clone());
-                    working_location = gen_location(&name_dict);
-                    remaining_institutions = ((rng.gen::<f32>() * 10.0) as i32).max(1);
-                }
-            }
-            let mut mind = m.clone();
-            if mind.age < 60 {
-                mind.employer = Some(inst.id.clone());
-                remaining_employees -= 1;
-            }
-            // println!("{:#?}", mind);
-            output_minds.push(mind);
-
+        let mut public_institutions = generate_public_institutions(&name_dict);
+        let mut workers = find_workers(&city);
+        while workers.len() > 0 {
+            let next_public = public_institutions.pop();
+            let institution = if next_public.is_some() {
+                next_public.unwrap()
+            } else {
+                generate_population_institution(&name_dict)
+            };
+            add_institution_to_city(&mut city, institution, &name_dict);
+            workers = find_workers(&city);
         }
-        output_locations.push(working_location.clone());
-        output_institutions.push(inst.clone());
+        city.citizens = link_colleagues(city.citizens);
 
-        return (output_minds, output_institutions, output_locations);
+        return city;
     }
 }
