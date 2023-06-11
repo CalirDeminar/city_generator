@@ -87,7 +87,7 @@ pub mod relations {
         let match_relation = mind.relations.iter().find(|(r, _id)| r.eq(&relation));
         if match_relation.is_some() {
             let (_verb, id) = match_relation.unwrap();
-            return city.citizens.iter().find(|c| c.id.eq(&id));
+            return city.citizens.iter().find(|c| c.id.eq(id));
         }
         return None;
     }

@@ -202,22 +202,36 @@ pub mod city {
             } else {
                 None
             };
+            let guardian_res = if guardian.is_some() {
+                new_residences
+                    .iter()
+                    .find(|(m_id, r_id)| m_id.eq(&guardian.unwrap().id))
+            } else {
+                None
+            };
             let ward = find_relation_minor(&citizen, RelationVerb::Child, &city);
+            let ward_res: Option<&(Uuid, Uuid)> = if ward.is_some() {
+                new_residences
+                    .iter()
+                    .find(|(m_id, r_id)| m_id.eq(&ward.unwrap().id))
+            } else {
+                None
+            };
             let spouse = find_relation(&citizen, RelationVerb::Spouse, &city);
-
+            let spouse_res: Option<&(Uuid, Uuid)> = if spouse.is_some() {
+                new_residences
+                    .iter()
+                    .find(|(m_id, r_id)| m_id.eq(&spouse.unwrap().id))
+            } else {
+                None
+            };
             // TODO - Currently broken, output looks very wrong
-            if guardian.is_some() && guardian.unwrap().residence.is_some() {
-                new_residences.push((
-                    citizen.id.clone(),
-                    guardian.unwrap().residence.clone().unwrap(),
-                ));
-            } else if ward.is_some() && ward.unwrap().residence.is_some() {
-                new_residences.push((citizen.id.clone(), ward.unwrap().residence.clone().unwrap()));
-            } else if spouse.is_some() && spouse.unwrap().residence.is_some() {
-                new_residences.push((
-                    citizen.id.clone(),
-                    spouse.unwrap().residence.clone().unwrap(),
-                ));
+            if guardian_res.is_some() {
+                new_residences.push((citizen.id.clone(), guardian_res.unwrap().clone().1));
+            } else if ward_res.is_some() {
+                new_residences.push((citizen.id.clone(), spouse_res.unwrap().clone().1));
+            } else if spouse_res.is_some() {
+                new_residences.push((citizen.id.clone(), spouse_res.unwrap().clone().1));
             } else {
                 let mut all_areas: Vec<&BuildingFloorArea> = city
                     .buildings
@@ -231,6 +245,7 @@ pub mod city {
                     .iter()
                     .find(|a| a.owning_institution.is_none() && !owned_ids.contains(&a.id));
                 if apartment.is_some() {
+                    owned_ids.push(apartment.unwrap().id);
                     new_residences.push((citizen.id.clone(), apartment.unwrap().id.clone()));
                 }
             }
@@ -241,7 +256,7 @@ pub mod city {
                 .iter_mut()
                 .find(|c| c.id.eq(&citizen_id))
                 .unwrap();
-            citizen.residence = Some(residence_id);
+            citizen.residence = Some(residence_id.clone());
         }
         return city;
     }
