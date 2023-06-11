@@ -40,6 +40,12 @@ pub mod city {
     pub fn print_city(city: &City) -> String {
         let mut output: String = String::new();
         output.push_str(&format!("City Name: {}\n", city.name));
+        output.push_str(&format!(
+            "Population: {}\nArea Count: {}\nBuilding Count: {}",
+            city.citizens.len(),
+            city.areas.len(),
+            city.buildings.len()
+        ));
         for a in &city.areas {
             output.push_str(&print_location(&a, &city));
         }
@@ -61,6 +67,9 @@ pub mod city {
         html.link().attr("rel='stylesheet' href='./style.css'");
         let mut body = html.body();
         writeln!(body.h1(), "{}", city.name).unwrap();
+        writeln!(body.p(), "Population: {}", city.citizens.len()).unwrap();
+        writeln!(body.p(), "Area Count: {}", city.areas.len()).unwrap();
+        writeln!(body.p(), "Building Count: {}", city.buildings.len()).unwrap();
         writeln!(body.h2(), "Locations:").unwrap();
         let mut loc_list = body.ul();
         for area in &city.areas {
@@ -76,6 +85,23 @@ pub mod city {
         let mut file = File::create("./export.html").unwrap();
         file.write_all(document.finish().into_bytes().as_slice())
             .unwrap();
+    }
+
+    fn count_residential_apartments(city: &City) -> usize {
+        let apartments: Vec<&BuildingFloorArea> = city
+            .buildings
+            .iter()
+            .flat_map(|b| {
+                b.floors
+                    .iter()
+                    .filter(|f| {
+                        f.floor_type
+                            .eq(&super::building::building::FloorType::Residential)
+                    })
+                    .flat_map(|f| f.areas.iter())
+            })
+            .collect();
+        return apartments.len();
     }
 
     fn find_free_building<'a>(city: &'a mut City) -> Option<&'a mut Building> {
@@ -196,7 +222,7 @@ pub mod city {
             .filter(|c| c.residence.is_some())
             .map(|c| c.residence.unwrap().clone())
             .collect();
-        for citizen in city.citizens.iter() {
+        for citizen in city.citizens.iter().filter(|c| c.residence.is_none()) {
             let guardian = if citizen.age < ADULT_AGE_FROM {
                 find_relation(&citizen, RelationVerb::Parent, &city)
             } else {
@@ -285,6 +311,15 @@ pub mod city {
             workers = find_workers(&city);
         }
         city.citizens = link_colleagues(city.citizens);
+        let mut apartment_count = count_residential_apartments(&city);
+        while (apartment_count as f32) < (city.citizens.len() as f32 * 1.1) {
+            city.areas.shuffle(&mut rand::thread_rng());
+            city.buildings.push(new_building(
+                &name_dict,
+                Some(city.areas.first().unwrap().id.clone()),
+            ));
+            apartment_count = count_residential_apartments(&city);
+        }
         assign_residences(&mut city);
 
         return city;
