@@ -33,8 +33,7 @@ pub mod city {
         pub citizens: Population,
         pub institutions: Vec<Institution>,
         pub areas: Vec<Location>,
-        pub buildings: Vec<Building>, // buildings
-                                      // areas
+        pub buildings: Vec<Building>,
     }
 
     pub fn print_city(city: &City) -> String {

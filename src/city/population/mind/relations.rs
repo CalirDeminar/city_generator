@@ -115,6 +115,7 @@ pub mod relations {
         population: Vec<Mind>,
         name_dict: &NameDictionary,
     ) -> Vec<Mind> {
+        // TODO - Ensure Last Name Consistency (Sometimes?)
         let mut rng = rand::thread_rng();
         let mut output: Vec<Mind> = Vec::new();
         for mind in population {
@@ -287,7 +288,9 @@ pub mod relations {
                 let colleagues: Vec<&Mind> = ref_pop
                     .iter()
                     .filter(|c| {
-                        c.employer.is_some() && c.employer.unwrap().eq(&mind.employer.unwrap())
+                        !c.id.eq(&mind.id)
+                            && c.employer.is_some()
+                            && c.employer.unwrap().eq(&mind.employer.unwrap())
                     })
                     .collect();
                 for c in colleagues {
