@@ -114,15 +114,37 @@ pub mod building {
                 let inst = city.institutions.iter().find(|i| {
                     area.owning_institution.is_some() && i.id.eq(&area.owning_institution.unwrap())
                 });
+                let residents: Vec<&Mind> = city
+                    .citizens
+                    .iter()
+                    .filter(|m| m.residence.is_some() && m.residence.unwrap().eq(&area.id))
+                    .collect();
+                let mut a = f.li().attr(&format!("id='{}'", area.id));
+                writeln!(a, "{}: ", area.name).unwrap();
                 if inst.is_some() {
-                    let mut a = f.li();
                     writeln!(
                         a.a().attr(&format!("href='#{}'", inst.unwrap().id)),
-                        "{}: {}",
-                        area.name,
+                        "{}",
                         inst.unwrap().name
                     )
                     .unwrap();
+                } else if residents.len() > 0 {
+                    let mut first = true;
+                    for resident in residents {
+                        if !first {
+                            writeln!(a, ", ").unwrap();
+                        }
+                        writeln!(
+                            a.a().attr(&format!("href='#{}'", resident.id)),
+                            "{} {}",
+                            resident.first_name,
+                            resident.last_name
+                        )
+                        .unwrap();
+                        first = false;
+                    }
+                } else {
+                    writeln!(a, " None").unwrap();
                 }
             }
         }

@@ -205,7 +205,7 @@ pub mod city {
             let guardian_res = if guardian.is_some() {
                 new_residences
                     .iter()
-                    .find(|(m_id, r_id)| m_id.eq(&guardian.unwrap().id))
+                    .find(|(m_id, _r_id)| m_id.eq(&guardian.unwrap().id))
             } else {
                 None
             };
@@ -213,7 +213,7 @@ pub mod city {
             let ward_res: Option<&(Uuid, Uuid)> = if ward.is_some() {
                 new_residences
                     .iter()
-                    .find(|(m_id, r_id)| m_id.eq(&ward.unwrap().id))
+                    .find(|(m_id, _r_id)| m_id.eq(&ward.unwrap().id))
             } else {
                 None
             };
@@ -221,7 +221,7 @@ pub mod city {
             let spouse_res: Option<&(Uuid, Uuid)> = if spouse.is_some() {
                 new_residences
                     .iter()
-                    .find(|(m_id, r_id)| m_id.eq(&spouse.unwrap().id))
+                    .find(|(m_id, _r_id)| m_id.eq(&spouse.unwrap().id))
             } else {
                 None
             };
