@@ -1,6 +1,6 @@
 pub mod parser {
     use regex::Regex;
-    use std::fs::File;
+    use std::fs::{self, File};
     use std::io::{self, BufRead, Write};
 
     pub type ParserOutput = Vec<(String, Vec<String>)>;
@@ -57,15 +57,19 @@ pub mod parser {
                 }
             }
         }
+        working_group.1.sort();
+        groups.push(working_group);
         let mut output: String = String::new();
         for group in groups {
-            output.push_str(&format!("{}\n", group.0));
+            if group.0.len() > 0 {
+                output.push_str(&format!("{}\n", group.0));
+            }
             for i in group.1 {
                 output.push_str(&format!("{}\n", i));
             }
         }
-        let mut write_file =
-            File::create(&format!("./static_data/formatted-{}", filename)).unwrap();
+        output.trim();
+        let mut write_file = File::create(&format!("./static_data/{}", filename)).unwrap();
         write_file
             .write_all(output.into_bytes().as_slice())
             .unwrap();
@@ -73,6 +77,11 @@ pub mod parser {
 
     #[test]
     fn format_data_files() {
-        format_file(String::from("language_nouns.csv"));
+        let paths = fs::read_dir("./static_data").unwrap();
+        for path in paths {
+            let filename = path.unwrap().file_name();
+            println!("{}", filename.to_str().unwrap());
+            format_file(String::from(filename.to_str().unwrap()));
+        }
     }
 }

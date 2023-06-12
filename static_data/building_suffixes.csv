@@ -1,9 +1,9 @@
-House,BuildingSuffix
-Tower,BuildingSuffix
-Hall,BuildingSuffix
 Building,BuildingSuffix
 Center,BuildingSuffix
-Heights,BuildingSuffix
-View,BuildingSuffix
+Hall,BuildingSuffix
 Halls,BuildingSuffix
+Heights,BuildingSuffix
+House,BuildingSuffix
 Point,BuildingSuffix
+Tower,BuildingSuffix
+View,BuildingSuffix

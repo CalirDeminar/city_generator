@@ -81,6 +81,6 @@ pub mod nouns {
 
     #[test]
     fn test_noun_parser() {
-        println!("{:#?}", build_nouns());
+        // println!("{:#?}", build_nouns());
     }
 }
