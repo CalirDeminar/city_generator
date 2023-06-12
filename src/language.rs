@@ -36,4 +36,24 @@ pub mod language {
         pub text: String,
         pub tags: Vec<WordTag>,
     }
+
+    pub fn filter_words_by_tag_and(words: &Vec<Word>, tags: Vec<WordTag>) -> Vec<Word> {
+        let mut output: Vec<Word> = Vec::new();
+        for word in words {
+            if tags.iter().all(|t| word.tags.contains(&t)) {
+                output.push(word.clone());
+            }
+        }
+        return output;
+    }
+
+    pub fn filter_words_by_tag_or(words: Vec<&Word>, tags: Vec<WordTag>) -> Vec<Word> {
+        let mut output: Vec<Word> = Vec::new();
+        for word in words {
+            if tags.iter().any(|t| word.tags.contains(&t)) {
+                output.push(word.clone());
+            }
+        }
+        return output;
+    }
 }

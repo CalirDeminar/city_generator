@@ -4,38 +4,38 @@ Arch, AbstractConcept
 Bravery, AbstractConcept
 Business, AbstractConcept
 Chance, AbstractConcept
-Chaos, AbstractConcept
+Chaos, AbstractConcept, Symbolic
 Charity, AbstractConcept, Good
 Coincidence, AbstractConcept
 Comedy, AbstractConcept
-Compassion, AbstractConcept
+Compassion, AbstractConcept, Symbolic
 Competition, AbstractConcept
 Complexity, AbstractConcept
 Confidence, AbstractConcept
-Conflict, AbstractConcept
-Courage, AbstractConcept
+Conflict, AbstractConcept, Symbolic
+Courage, AbstractConcept, Symbolic
 Courtesy, AbstractConcept
-Creation, AbstractConcept
+Creation, AbstractConcept, Symbolic
 Creed, AbstractConcept
 Cruelty, AbstractConcept
 Curiosity, AbstractConcept
 Danger, AbstractConcept
-Death, AbstractConcept, Affliction
-Decay, AbstractConcept, Affliction, Evil
+Death, AbstractConcept, Affliction, Symbolic
+Decay, AbstractConcept, Affliction, Evil, Symbolic
 Decency, AbstractConcept, Good
 Defense, AbstractConcept
-Destiny, AbstractConcept
-Destruction, AbstractConcept
-Devourer, AbstractConcept
+Destiny, AbstractConcept, Symbolic
+Destruction, AbstractConcept, Symbolic
+Devourer, AbstractConcept, Symbolic
 Dignity, AbstractConcept
 Direction, AbstractConcept
-Discovery, AbstractConcept
-Disloyalty, AbstractConcept
+Discovery, AbstractConcept, Symbolic
+Disloyalty, AbstractConcept, Symbolic
 Doctrine, AbstractConcept
-Domain, AbstractConcept
-Dominion, AbstractConcept
-Doom, AbstractConcept
-Equality, AbstractConcept
+Domain, AbstractConcept, Symbolic
+Dominion, AbstractConcept, Symbolic
+Doom, AbstractConcept, Symbolic
+Equality, AbstractConcept, Symbolic
 // professions
 Artificer, Profession
 Author, Profession
@@ -109,18 +109,18 @@ Axe, Weapon, Product, Tool, Era(Fantasy), Era(Medieval)
 Bow, Weapon, Product, Era(Fantasy), Era(Medieval)
 Crossbow, Weapon, Product, Era(Fantasy), Era(Medieval)
 Spear, Weapon, Product, Era(Fantasy), Era(Medieval)
-Sword, Weapon, Product, Era(Fantasy), Era(Medieval)
+Sword, Weapon, Product, Era(Fantasy), Era(Medieval), Symbolic
 Warhammer, Weapon, Product, Era(Fantasy), Era(Medieval)
 Club, Weapon, Product, Era(Fantasy), Era(Medieval)
 Cudgel, Weapon, Product, Era(Fantasy), Era(Medieval)
-Dagger, Weapon, Product, Era(Fantasy), Era(Medieval)
+Dagger, Weapon, Product, Era(Fantasy), Era(Medieval), Symbolic
 // Worn
-Armor, Worn, Product
+Armor, Worn, Product, Symbolic
 Belt, Worn, Product
 Boot, Worn, Product
 Breaches, Worn, Product
 Cloak, Worn, Product
-Crown, Worn, Product
+Crown, Worn, Product, Symbolic
 Dress, Worn, Product
 // furniture
 Basin, Furniture, Product
@@ -182,22 +182,22 @@ Entrance, SubConstruction
 Air, WorldFeature
 Autumn, WorldFeature, GlobalSingular
 Ground, WorldFeature, GlobalSingular
-Sky, WorldFeature, GlobalSingular
+Sky, WorldFeature, GlobalSingular, Symbolic
 Spring, WorldFeature, GlobalSingular
 Star, WorldFeature
-Stars, WorldFeature, GlobalSingular
+Stars, WorldFeature, GlobalSingular, Symbolic
 Summer, WorldFeature, GlobalSingular
-Sun, WorldFeature, GlobalSingular
+Sun, WorldFeature, GlobalSingular, Symbolic
 Winter, WorldFeature, GlobalSingular
 Continent, WorldFeature
-Cosmos, WorldFeature
-Light, WorldFeature, AbstractConcept
-Darkness, WorldFeature, AbstractConcept
-Dawn, WorldFeature
-Day, WorldFeature
-Dusk, WorldFeature
+Cosmos, WorldFeature, Symbolic
+Light, WorldFeature, AbstractConcept, Symbolic
+Darkness, WorldFeature, AbstractConcept, Symbolic
+Dawn, WorldFeature, Symbolic
+Day, WorldFeature, Symbolic
+Dusk, WorldFeature, Symbolic
 // geographic feature
-Abyss, GeographicFeature
+Abyss, GeographicFeature, Symblic
 Bank, GeographicFeature
 Basin, GeographicalFeature
 Beach, GeographicalFeature
@@ -234,15 +234,23 @@ Drought, Weather
 Monsoon, Weather
 // body parts
 Ankle, BodyPart
-Arm, BodyPart
+Arm, BodyPart, Symbolic
 Beak, BodyPart
 Beard, BodyPart
-Blood, BodyPart
-Bone, BodyPart
-Brain, BodyPart
+Blood, BodyPart, Symbolic
+Bone, BodyPart, Symbolic
+Brain, BodyPart, Symbolic
 Claw, BodyPart
-Ear, BodyPart
 Elbow, BodyPart
+Ear, BodyPart, Symbolic
+Chest, BodyPart
+Neck, BodyPart
+Head, BodyPart, Symbolic
+Leg, BodyPart
+Foot, BodyPart
+Nose, BodyPart, Symbolic
+Eye, BodyPart, Symbolic
+Knee, BodyPart
 // cloth
 Leather, Cloth
 Cotton, Plant, Cloth
@@ -250,32 +258,69 @@ Linen, Cloth
 Wool, Cloth
 Silk, Cloth
 // materials
-Ash, Material, Product
+Ash, Material, Product, Symbolic
 Charcoal, Material, Product
 Coal, Material
-Crystal, Material
+Crystal, Material, Symbolic
 Wood, Material
 Stone, Material
 Chalk, Material
 Clay, Material
 // metals
-Brass, Metal, Material, Product
+Brass, Metal, Material, Product, Symbolic
 Cobalt, Metal, Material, Product
 Copper, Metal, Material, Product
-Iron, Metal, Material, Product
-Steel, Metal, Material, Product
-Gold, Metal, Material, Product
+Iron, Metal, Material, Product, Symbolic
+Steel, Metal, Material, Product, Symbolic
+Gold, Metal, Material, Product, Symbolic
 Tin, Metal, Material, Product
 Bronze, Metal, Material, Product
 Aluminium, Metal, Material, Product
 Lead, Metal, Material, Product
 Nickel, Metal, Material, Product
 Platinum, Metal, Material, Product
-Silver, Metal, Material, Product
+Silver, Metal, Material, Product, Symbolic
 Zinc, Metal, Material, Product
 Pewter, Metal, Material, Product
 // plants
 Cactus, Plant
+// trees
+Alder, Plant, Tree
+Ash, Plant, Tree
+Aspen, Plant, Tree
+Beech, Plant, Tree
+Birch, Plant, Tree
+Blackthorn, Plant, Tree
+Buckthorn, Plant, Tree
+Cedar, Plant, Tree
+Cypress, Plant, Tree
+Elder, Plant, Tree
+Elm, Plant, Tree
+Fir, Plant, Tree
+Oak, Plant, Tree
+Hawthorn, Plant, Tree
+Hazel, Plant, Tree
+Hornbeam, Plant, Tree
+Maple, Plant, Tree
+Pine, Plant, Tree
+Rowan, Plant, Tree
+Willow, Plant, Tree
+Yew, Plant, Tree
+// flowers
+Lilly, Plant, Flower
+Bell Flower, Plant, Flower
+Carnation, Plant, Flower
+Columbine, Plant, Flower
+Daffodil, Plant, Flower
+Primrose, Plant, Flower
+Foxglove, Plant, Flower
+Hyacinth, Plant, Flower
+Iris, Plant, Flower
+Larkspur, Plant, Flower
+Lilac, Plant, Flower
+Marigold, Plant, Flower
+Mimosa, Plant, Flower
+Windflower, Plant, Flower
 // food
 Apple, Food, Plant
 Bean, Food, Plant
@@ -312,10 +357,10 @@ Donkey, Creature
 Eagle, Creature
 Eel, Creature
 // great creatures
-Angel, GreatCreature, Holy, Era(Fantasy)
-Demon, GreatCreature, Evil, Era(Fantasy)
-Dragon, GreatCreature, Era(Fantasy)
-Hydra, GreatCreature, Era(Fantasy)
+Angel, GreatCreature, Holy, Era(Fantasy), Symbolic
+Demon, GreatCreature, Evil, Era(Fantasy), Symbolic
+Dragon, GreatCreature, Era(Fantasy), Symbolic
+Hydra, GreatCreature, Era(Fantasy), Symbolic
 Roc, GreatCreature, Era(Fantasy)
 Titan, GreatCreature, Era(Fantasy)
-Devil, GreatCreature, Era(Fantasy), Evil
+Devil, GreatCreature, Era(Fantasy), Evil, Symbolic

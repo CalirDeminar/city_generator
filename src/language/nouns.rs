@@ -1,6 +1,6 @@
 pub mod nouns {
     use crate::{
-        language::language::{Era, Word, WordTag, WordType},
+        language::language::{filter_words_by_tag_and, Era, Word, WordTag, WordType},
         parser::parser::parse_file,
     };
     use strum::IntoEnumIterator; // 0.17.1
@@ -20,6 +20,7 @@ pub mod nouns {
         Emotion,
         Institution,
         Affliction,
+        Symbolic,
         // Constructed Objects
         Weapon,
         Worn,
@@ -41,6 +42,8 @@ pub mod nouns {
         Metal,
         Plant,
         Food,
+        Tree,
+        Flower,
         Creature,
         CreatureCategory,
         GreatCreature,
@@ -83,6 +86,9 @@ pub mod nouns {
 
     #[test]
     fn test_noun_parser() {
-        // println!("{:#?}", build_nouns());
+        println!(
+            "{:#?}",
+            filter_words_by_tag_and(&build_nouns(), vec![WordTag::Noun(NounTag::Food)])
+        );
     }
 }
