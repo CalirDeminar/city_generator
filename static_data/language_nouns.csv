@@ -107,13 +107,13 @@ Craziness, Affliction
 // weapons
 Axe, Weapon, Product, Tool, Era(Fantasy), Era(Medieval)
 Bow, Weapon, Product, Era(Fantasy), Era(Medieval)
+Club, Weapon, Product, Era(Fantasy), Era(Medieval)
 Crossbow, Weapon, Product, Era(Fantasy), Era(Medieval)
+Cudgel, Weapon, Product, Era(Fantasy), Era(Medieval)
+Dagger, Weapon, Product, Era(Fantasy), Era(Medieval), Symbolic
 Spear, Weapon, Product, Era(Fantasy), Era(Medieval)
 Sword, Weapon, Product, Era(Fantasy), Era(Medieval), Symbolic
 Warhammer, Weapon, Product, Era(Fantasy), Era(Medieval)
-Club, Weapon, Product, Era(Fantasy), Era(Medieval)
-Cudgel, Weapon, Product, Era(Fantasy), Era(Medieval)
-Dagger, Weapon, Product, Era(Fantasy), Era(Medieval), Symbolic
 // Worn
 Armor, Worn, Product, Symbolic
 Belt, Worn, Product
@@ -158,8 +158,8 @@ Dish, Product
 Drum, Product
 // construction
 Barricade, Construction
-Building, Construction
 Bridge, Construction
+Building, Construction
 Chapel, Construction, Holy
 Church, Construction, Holy
 Citadel, Construction
@@ -181,7 +181,14 @@ Entrance, SubConstruction
 // world feature
 Air, WorldFeature
 Autumn, WorldFeature, GlobalSingular
+Continent, WorldFeature
+Cosmos, WorldFeature, Symbolic
+Darkness, WorldFeature, AbstractConcept, Symbolic
+Dawn, WorldFeature, Symbolic
+Day, WorldFeature, Symbolic
+Dusk, WorldFeature, Symbolic
 Ground, WorldFeature, GlobalSingular
+Light, WorldFeature, AbstractConcept, Symbolic
 Sky, WorldFeature, GlobalSingular, Symbolic
 Spring, WorldFeature, GlobalSingular
 Star, WorldFeature
@@ -189,13 +196,6 @@ Stars, WorldFeature, GlobalSingular, Symbolic
 Summer, WorldFeature, GlobalSingular
 Sun, WorldFeature, GlobalSingular, Symbolic
 Winter, WorldFeature, GlobalSingular
-Continent, WorldFeature
-Cosmos, WorldFeature, Symbolic
-Light, WorldFeature, AbstractConcept, Symbolic
-Darkness, WorldFeature, AbstractConcept, Symbolic
-Dawn, WorldFeature, Symbolic
-Day, WorldFeature, Symbolic
-Dusk, WorldFeature, Symbolic
 // geographic feature
 Abyss, GeographicFeature, Symblic
 Bank, GeographicFeature
@@ -223,15 +223,15 @@ Blockade, Event
 Conjunction, Event
 // weather
 Blizzard, Weather
-Storm, Weather
-Hurricane, Weather
-Gale, Weather
-Snow-storm, Weather
-Sand-storm, Weather
-Thunder, Weather
-Lightning, Weather
 Drought, Weather
+Gale, Weather
+Hurricane, Weather
+Lightning, Weather
 Monsoon, Weather
+Sand-storm, Weather
+Snow-storm, Weather
+Storm, Weather
+Thunder, Weather
 // body parts
 Ankle, BodyPart
 Arm, BodyPart, Symbolic
@@ -240,48 +240,48 @@ Beard, BodyPart
 Blood, BodyPart, Symbolic
 Bone, BodyPart, Symbolic
 Brain, BodyPart, Symbolic
-Claw, BodyPart
-Elbow, BodyPart
-Ear, BodyPart, Symbolic
 Chest, BodyPart
-Neck, BodyPart
-Head, BodyPart, Symbolic
-Leg, BodyPart
-Foot, BodyPart
-Nose, BodyPart, Symbolic
+Claw, BodyPart
+Ear, BodyPart, Symbolic
+Elbow, BodyPart
 Eye, BodyPart, Symbolic
+Foot, BodyPart
+Head, BodyPart, Symbolic
 Knee, BodyPart
+Leg, BodyPart
+Neck, BodyPart
+Nose, BodyPart, Symbolic
 // cloth
-Leather, Cloth
 Cotton, Plant, Cloth
+Leather, Cloth
 Linen, Cloth
-Wool, Cloth
 Silk, Cloth
+Wool, Cloth
 // materials
 Ash, Material, Product, Symbolic
+Chalk, Material
 Charcoal, Material, Product
+Clay, Material
 Coal, Material
 Crystal, Material, Symbolic
-Wood, Material
 Stone, Material
-Chalk, Material
-Clay, Material
+Wood, Material
 // metals
+Aluminium, Metal, Material, Product
 Brass, Metal, Material, Product, Symbolic
+Bronze, Metal, Material, Product
 Cobalt, Metal, Material, Product
 Copper, Metal, Material, Product
-Iron, Metal, Material, Product, Symbolic
-Steel, Metal, Material, Product, Symbolic
 Gold, Metal, Material, Product, Symbolic
-Tin, Metal, Material, Product
-Bronze, Metal, Material, Product
-Aluminium, Metal, Material, Product
+Iron, Metal, Material, Product, Symbolic
 Lead, Metal, Material, Product
 Nickel, Metal, Material, Product
+Pewter, Metal, Material, Product
 Platinum, Metal, Material, Product
 Silver, Metal, Material, Product, Symbolic
+Steel, Metal, Material, Product, Symbolic
+Tin, Metal, Material, Product
 Zinc, Metal, Material, Product
-Pewter, Metal, Material, Product
 // plants
 Cactus, Plant
 // trees
@@ -297,29 +297,29 @@ Cypress, Plant, Tree
 Elder, Plant, Tree
 Elm, Plant, Tree
 Fir, Plant, Tree
-Oak, Plant, Tree
 Hawthorn, Plant, Tree
 Hazel, Plant, Tree
 Hornbeam, Plant, Tree
 Maple, Plant, Tree
+Oak, Plant, Tree
 Pine, Plant, Tree
 Rowan, Plant, Tree
 Willow, Plant, Tree
 Yew, Plant, Tree
 // flowers
-Lilly, Plant, Flower
 Bell Flower, Plant, Flower
 Carnation, Plant, Flower
 Columbine, Plant, Flower
 Daffodil, Plant, Flower
-Primrose, Plant, Flower
 Foxglove, Plant, Flower
 Hyacinth, Plant, Flower
 Iris, Plant, Flower
 Larkspur, Plant, Flower
 Lilac, Plant, Flower
+Lilly, Plant, Flower
 Marigold, Plant, Flower
 Mimosa, Plant, Flower
+Primrose, Plant, Flower
 Windflower, Plant, Flower
 // food
 Apple, Food, Plant
@@ -359,8 +359,8 @@ Eel, Creature
 // great creatures
 Angel, GreatCreature, Holy, Era(Fantasy), Symbolic
 Demon, GreatCreature, Evil, Era(Fantasy), Symbolic
+Devil, GreatCreature, Era(Fantasy), Evil, Symbolic
 Dragon, GreatCreature, Era(Fantasy), Symbolic
 Hydra, GreatCreature, Era(Fantasy), Symbolic
 Roc, GreatCreature, Era(Fantasy)
 Titan, GreatCreature, Era(Fantasy)
-Devil, GreatCreature, Era(Fantasy), Evil, Symbolic
