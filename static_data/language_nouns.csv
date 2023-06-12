@@ -1,11 +1,51 @@
 // abstract concepts
 Abyss, AbstractConcept, GlobalSingular
 Arch, AbstractConcept
+Bravery, AbstractConcept
+Business, AbstractConcept
+Chance, AbstractConcept
+Chaos, AbstractConcept
+Charity, AbstractConcept, Good
+Coincidence, AbstractConcept
+Comedy, AbstractConcept
+Compassion, AbstractConcept
+Competition, AbstractConcept
+Complexity, AbstractConcept
+Confidence, AbstractConcept
+Conflict, AbstractConcept
+Courage, AbstractConcept
+Courtesy, AbstractConcept
+Creation, AbstractConcept
+Creed, AbstractConcept
+Cruelty, AbstractConcept
+Curiosity, AbstractConcept
+Danger, AbstractConcept
+Death, AbstractConcept, Affliction
+Decay, AbstractConcept, Affliction, Evil
+Decency, AbstractConcept, Good
+Defense, AbstractConcept
+Destiny, AbstractConcept
+Destruction, AbstractConcept
+Devourer, AbstractConcept
+Dignity, AbstractConcept
+Direction, AbstractConcept
+Discovery, AbstractConcept
+Disloyalty, AbstractConcept
+Doctrine, AbstractConcept
+Domain, AbstractConcept
+Dominion, AbstractConcept
+Doom, AbstractConcept
+Equality, AbstractConcept
 // professions
 Artificer, Profession
 Author, Profession
 Baker, Profession
 Bandit, Profession
+Butcher, Profession
+Conjurer, Profession
+Cook, Profession
+Councellor, Profession
+Enchanter, Profession
 // relations
 Child, Relation
 Colleague, Relation
@@ -16,6 +56,14 @@ Partner, Relation
 Spouse, Relation
 // Cultural Group
 Band, CulturalGroup
+Clan, CulturalGroup
+Club, CulturalGroup
+Coalition, CulturalGroup
+Company, CulturalGroup
+Council, CulturalGroup
+Cult, CulturalGroup
+Dominion, CulturalGroup
+Empire, CulturalGroup
 // emotions
     Aggrivation, Emotion
     Amazement, Emotion
@@ -51,6 +99,11 @@ Bank, Institution
 Bar, Institution, Era(Modern)
 // afflictions
 Baldness, Affliction
+Bite, Affliction
+Blindness, Affliction
+Blister, Affliction
+Cancer, Affliction
+Craziness, Affliction
 // weapons
 Axe, Weapon, Product, Tool, Era(Fantasy), Era(Medieval)
 Bow, Weapon, Product, Era(Fantasy), Era(Medieval)
@@ -58,10 +111,27 @@ Crossbow, Weapon, Product, Era(Fantasy), Era(Medieval)
 Spear, Weapon, Product, Era(Fantasy), Era(Medieval)
 Sword, Weapon, Product, Era(Fantasy), Era(Medieval)
 Warhammer, Weapon, Product, Era(Fantasy), Era(Medieval)
+Club, Weapon, Product, Era(Fantasy), Era(Medieval)
+Cudgel, Weapon, Product, Era(Fantasy), Era(Medieval)
+Dagger, Weapon, Product, Era(Fantasy), Era(Medieval)
 // Worn
 Armor, Worn, Product
+Belt, Worn, Product
+Boot, Worn, Product
+Breaches, Worn, Product
+Cloak, Worn, Product
+Crown, Worn, Product
+Dress, Worn, Product
 // furniture
+Basin, Furniture, Product
+Bath, Furniture, Product
+Bath, Furniture, Product
+Closet, Furniture, Product
+Cradle, Furniture, Product
+Desk, Furniture, Product
+Door, Furniture, Product
 // tools
+Drill, Tool, Product
 // products
 Anvil, Product, Tool, Era(Fantasy), Era(Medieval)
 Arrow, Product, Era(Fantasy), Era(Medieval)
@@ -69,49 +139,178 @@ Ball, Product
 Band, Product
 Bar, Product
 Barb, Product
-Basin, Product
-Bath, Product
+Bell, Product
+Bin, Product
+Blade, Product
+Blanket, Product
+Block, Product
+Board, Product
+Boat, Product
+Book, Product
+Bottle, Product
+Bowl, Product
+Cage, Product
+Candle, product
+Chain, Product
+Clock, Product
+Cup, Product
+Dish, Product
+Drum, Product
 // construction
 Barricade, Construction
 Building, Construction
+Bridge, Construction
+Chapel, Construction, Holy
+Church, Construction, Holy
+Citadel, Construction
+Cottage, Construction
 // subconstruction
 Basement, SubConstruction
 Bath, Subconstruction
+Cavity, Subconstruction
+Ceiling, Subconstruction
+Cell, Subconstruction
+Chamber, Subconstruction
+Cloister, Subconstruction, Holy
+Column, Subconstruction
+Corridor, SubConstruction
+Crypt, Subconstruction
+Drain, SubConstruction
+Dungeon, SubConstruction
+Entrance, SubConstruction
 // world feature
 Air, WorldFeature
-Autumn, WorldFeature
+Autumn, WorldFeature, GlobalSingular
 Ground, WorldFeature, GlobalSingular
 Sky, WorldFeature, GlobalSingular
-Spring, WorldFeature
+Spring, WorldFeature, GlobalSingular
 Star, WorldFeature
 Stars, WorldFeature, GlobalSingular
-Summer, WorldFeature
+Summer, WorldFeature, GlobalSingular
 Sun, WorldFeature, GlobalSingular
-Winter, WorldFeature
+Winter, WorldFeature, GlobalSingular
+Continent, WorldFeature
+Cosmos, WorldFeature
+Light, WorldFeature, AbstractConcept
+Darkness, WorldFeature, AbstractConcept
+Dawn, WorldFeature
+Day, WorldFeature
+Dusk, WorldFeature
 // geographic feature
 Abyss, GeographicFeature
 Bank, GeographicFeature
 Basin, GeographicalFeature
 Beach, GeographicalFeature
+Bog, GeographicalFeature
+Canyon, GeographicalFeature
+Cave, GeographicalFeature, Settlement
+Cavern, GeographicalFeature, Settlement
+Chasm, GeographicalFeature
+Coast, GeographicalFeature
+Crater, GeographicalFeature
+Crevice, GeographicalFeature
+Desert, GeographicalFeature
 // settlement
+Camp, Settlement
+Castle, Settlement, Construction
+Cathedral, Settlement, Construction, Holy
+City, Settlement
+Town, Settlement
+Village, Settlement
 // event
 Battle, Event
+Blockade, Event
+Conjunction, Event
 // weather
+Blizzard, Weather
+Storm, Weather
+Hurricane, Weather
+Gale, Weather
+Snow-storm, Weather
+Sand-storm, Weather
+Thunder, Weather
+Lightning, Weather
+Drought, Weather
+Monsoon, Weather
 // body parts
 Ankle, BodyPart
 Arm, BodyPart
 Beak, BodyPart
 Beard, BodyPart
-// natural materials
-Ash, NaturalMaterial, Product
+Blood, BodyPart
+Bone, BodyPart
+Brain, BodyPart
+Claw, BodyPart
+Ear, BodyPart
+Elbow, BodyPart
+// cloth
+Leather, Cloth
+Cotton, Plant, Cloth
+Linen, Cloth
+Wool, Cloth
+Silk, Cloth
+// materials
+Ash, Material, Product
+Charcoal, Material, Product
+Coal, Material
+Crystal, Material
+Wood, Material
+Stone, Material
+Chalk, Material
+Clay, Material
 // metals
+Brass, Metal, Material, Product
+Cobalt, Metal, Material, Product
+Copper, Metal, Material, Product
+Iron, Metal, Material, Product
+Steel, Metal, Material, Product
+Gold, Metal, Material, Product
+Tin, Metal, Material, Product
+Bronze, Metal, Material, Product
+Aluminium, Metal, Material, Product
+Lead, Metal, Material, Product
+Nickel, Metal, Material, Product
+Platinum, Metal, Material, Product
+Silver, Metal, Material, Product
+Zinc, Metal, Material, Product
+Pewter, Metal, Material, Product
 // plants
+Cactus, Plant
 // food
 Apple, Food, Plant
 Bean, Food, Plant
+Berry, Food, Plant
+Bread, Food, Product
+Butter, Food, Product
+Cake, Food, Product
+Candy, Food, Product
+Cheese, Food, Product
+Chestnut, Food, Plant
+Chocolate, Food, Product
+Date, Food, Plant
+Dumpling, Food
+Egg, Food
+// creature categories
+Ape, CreatureCategory
+Beast, CreatureCategory
+Bird, CreatureCategory
 // creatures
-Ape, Creature
 Bear, Creature
+Bee, Creature
+Beetle, Creature
+Boar, Creature
+Butterfly, Creature
+Buzzard, Creature
+Cat, Creature
+Clam, Creature
+Cobra, Creature
+Crab, Creature
+Crow, Creature
+Deer, Creature
+Dog, Creature
+Donkey, Creature
+Eagle, Creature
+Eel, Creature
 // great creatures
 Angel, GreatCreature, Holy, Era(Fantasy)
 Demon, GreatCreature, Evil, Era(Fantasy)
@@ -119,3 +318,4 @@ Dragon, GreatCreature, Era(Fantasy)
 Hydra, GreatCreature, Era(Fantasy)
 Roc, GreatCreature, Era(Fantasy)
 Titan, GreatCreature, Era(Fantasy)
+Devil, GreatCreature, Era(Fantasy), Evil
