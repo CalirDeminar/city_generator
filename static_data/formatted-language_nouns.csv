@@ -1,3 +1,4 @@
+
 // abstract concepts
 Abyss, AbstractConcept, GlobalSingular
 Arch, AbstractConcept
@@ -7,57 +8,57 @@ Author, Profession
 Baker, Profession
 Bandit, Profession
 // relations
-Parent, Relation
 Child, Relation
-Friend, Relation
-Partner, Relation
-Spouse, Relation
 Colleague, Relation
 Deity, Relation
+Friend, Relation
+Parent, Relation
+Partner, Relation
+Spouse, Relation
 // Cultural Group
 Band, CulturalGroup
 // emotions
-Anger, Emotion
     Aggrivation, Emotion
-    Jeaolousy, Emotion
-    Disgust, Emotion
-Fear, Emotion
-    Dread, Emotion
-    Anxiety, Emotion
-    Terror, Emotion
-    Panic, Emotion
-Joy, Emotion
-    Pride, Emotion
-    Relief, Emotion
-    Contentment, Emotion
-    Satisfaction, Emotion
-Love, Emotion
-    Lust, Emotion
-    Longing, Emotion
-    Attraction, Emotion
-Sadness, Emotion
+    Amazement, Emotion
     Anguish, Emotion
+    Anxiety, Emotion
+    Attraction, Emotion
+    Confusion, Emotion
+    Contentment, Emotion
     Depression, Emotion
+    Disgust, Emotion
+    Dread, Emotion
     Grief, Emotion
     Guilt, Emotion
+    Jeaolousy, Emotion
     Loneliness, Emotion
+    Longing, Emotion
+    Lust, Emotion
+    Panic, Emotion
+    Pride, Emotion
+    Relief, Emotion
+    Satisfaction, Emotion
+    Terror, Emotion
+Anger, Emotion
+Fear, Emotion
+Joy, Emotion
+Love, Emotion
+Sadness, Emotion
 Surprise, Emotion
-    Amazement, Emotion
-    Confusion, Emotion
 // institutions
-Armoury, Institution
 Arena, Institution
+Armoury, Institution
 Bank, Institution
 Bar, Institution, Era(Modern)
 // afflictions
 Baldness, Affliction
 // weapons
 Axe, Weapon, Product, Tool, Era(Fantasy), Era(Medieval)
-Sword, Weapon, Product, Era(Fantasy), Era(Medieval)
-Spear, Weapon, Product, Era(Fantasy), Era(Medieval)
-Warhammer, Weapon, Product, Era(Fantasy), Era(Medieval)
-Crossbow, Weapon, Product, Era(Fantasy), Era(Medieval)
 Bow, Weapon, Product, Era(Fantasy), Era(Medieval)
+Crossbow, Weapon, Product, Era(Fantasy), Era(Medieval)
+Spear, Weapon, Product, Era(Fantasy), Era(Medieval)
+Sword, Weapon, Product, Era(Fantasy), Era(Medieval)
+Warhammer, Weapon, Product, Era(Fantasy), Era(Medieval)
 // Worn
 Armor, Worn, Product
 // furniture
@@ -72,22 +73,22 @@ Barb, Product
 Basin, Product
 Bath, Product
 // construction
-Building, Construction
 Barricade, Construction
+Building, Construction
 // subconstruction
 Basement, SubConstruction
 Bath, Subconstruction
 // world feature
-Sky, WorldFeature, GlobalSingular
-Ground, WorldFeature, GlobalSingular
-Sun, WorldFeature, GlobalSingular
-Star, WorldFeature
-Stars, WorldFeature, GlobalSingular
 Air, WorldFeature
 Autumn, WorldFeature
-Winter, WorldFeature
+Ground, WorldFeature, GlobalSingular
+Sky, WorldFeature, GlobalSingular
 Spring, WorldFeature
+Star, WorldFeature
+Stars, WorldFeature, GlobalSingular
 Summer, WorldFeature
+Sun, WorldFeature, GlobalSingular
+Winter, WorldFeature
 // geographic feature
 Abyss, GeographicFeature
 Bank, GeographicFeature
@@ -112,10 +113,3 @@ Bean, Food, Plant
 // creatures
 Ape, Creature
 Bear, Creature
-// great creatures
-Dragon, GreatCreature, Era(Fantasy)
-Hydra, GreatCreature, Era(Fantasy)
-Titan, GreatCreature, Era(Fantasy)
-Roc, GreatCreature, Era(Fantasy)
-Demon, GreatCreature, Evil, Era(Fantasy)
-Angel, GreatCreature, Holy, Era(Fantasy)

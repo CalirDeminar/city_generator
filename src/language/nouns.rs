@@ -27,6 +27,7 @@ pub mod nouns {
         Tool,
         Product,
         Construction,
+        SubConstruction,
         // World High
         WorldFeature,
         GeographicFeature,
