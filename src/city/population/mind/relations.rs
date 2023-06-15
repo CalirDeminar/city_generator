@@ -63,6 +63,30 @@ pub mod relations {
         };
     }
 
+    fn mind_is_single(mind: &Mind) -> bool {
+        return !mind.relations.iter().any(|(v, _i)|v.eq(&RelationVerb::Partner) || v.eq(&RelationVerb::Spouse));
+    }
+
+    fn find_partner_id(mind: &Mind, city: &City) -> Option<Uuid> {
+        let mut rng = rand::thread_rng();
+        let target_gender = gen_partner_gender(&mind.gender);
+        let max_age_gap = (rng.gen::<f32>() * 10.0) as u32;
+        let mut target_gender_population: Vec<&Mind> = city
+            .citizens
+            .iter()
+            .filter(|c| 
+                c.gender.eq(&target_gender) && 
+                mind_is_single(&c) && 
+                mind.age.abs_diff(c.age) < max_age_gap
+            ).collect();
+        target_gender_population.shuffle(&mut rng);
+        let rtn = target_gender_population.first();
+        if rtn.is_some() {
+            return Some(rtn.unwrap().id);
+        }
+        return None;
+    }
+
     fn gen_partner_gender(input_gender: &Gender) -> Gender {
         let mut rng = rand::thread_rng();
         let partner_type_roll = rng.gen::<f32>();
