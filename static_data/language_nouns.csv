@@ -356,6 +356,98 @@ Dog, Creature
 Donkey, Creature
 Eagle, Creature
 Eel, Creature
+Aardvark, Creature
+Adder, Creature
+Alligator, Creature
+Anaconda, Creature
+Armadillo, Creature
+Badger, Creature
+Barn Owl, Creature
+Black Bear, Creature
+Black Mamba, Creature
+Capybara, Creature
+Cassowary, Creature
+Blob, Creature, Era(Fantasy)
+Golem, Creature, Era(Fantasy)
+Cheetah, Creature
+CHimpanzee, Creature
+Chinchilla, Creature
+Coati, Creature
+Cockatiel, Creature
+Cow, Creature
+Coyote, Creature
+Deer, Creature
+Duck, Creature
+Elephant, Creature
+Elk, Creature
+Emu, Creature
+Firefly, Creature
+Fox, Creature
+Gazelle, Creature
+Giant Panda, Creature
+Gila Monster, Creature
+Giraffe, Creature
+Goose, Creature
+Gorilla, Creature
+Grasshopper, Creature
+Gibbon, Creature
+Horned Owl, Creature
+Grizzly Bear, Creature
+Groundhog, Creature
+Guineafowl, Creature
+Hare, Creature
+Honey Badger, Creature
+Horse, Creature
+Ibex, Creature
+Jaguar, creature
+Kiwi, Creature
+Koala, Creature
+Leopard, Creature
+Lion, Creature
+Lynx, Creature
+Mandrill, Creature
+Mongoose, Creature
+Moose, Creature
+Camel, Creature
+Osprey, Creature
+Ostrich, Creature
+Panda, Creature
+Pangolin, Creature
+Pig, Creature
+Polar Bear, Creature
+Porcupine, Creature
+Python, Creature
+Rabbit, Creature
+Rattlesname, Creature
+Raven, Creature
+Red Panda, Creature
+Reindeer, Creature
+Rhinoceros, Creature
+Sheep, Creature
+Skunk, Creature
+Sloth, Creature
+Slug, Creature
+Snail, Creature
+Snowy Owl, Creature
+Sparrow, Creature
+Swan, Creature
+Tapir, Creature
+Tiger, Creature
+Toad, Creature
+Turkey, Creature
+Unicorn, Creature, Era(Fantasy)
+Vulture, Creature
+Warthog, Creature
+Stork, Creature
+Wombat, Creature
+Worm, Creature
+Yak, Creature
+Albratross, Creature
+Beaver, Creature
+Hippo, Creature
+Dragonfly, Creature
+Tree Frog, Creature
+Penguin, Creature
 // great creatures
 Angel, GreatCreature, Holy, Era(Fantasy), Symbolic
 Demon, GreatCreature, Evil, Era(Fantasy), Symbolic
@@ -364,3 +456,13 @@ Dragon, GreatCreature, Era(Fantasy), Symbolic
 Hydra, GreatCreature, Era(Fantasy), Symbolic
 Roc, GreatCreature, Era(Fantasy)
 Titan, GreatCreature, Era(Fantasy)
+Colossus, GreateCreature, Era(Fantasy)
+// sentient creature
+Human, SentientCreature, Era(Fantasy), Era(Medieval), Era(Modern)
+Dwarf, SentientCreature, Era(Fantasy)
+Elf, SentientCreature, Era(Fantasy)
+Goblin, SentientCreature, Era(Fantasy)
+Troll, SentientCreature, Era(Fantasy)
+Kobold, SentientCreature, Era(Fantasy)
+Gnome, SentientCreature, Era(Fantasy)
+Orc, SentientCreature, Era(Fantasy)

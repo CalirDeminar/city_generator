@@ -1,0 +1,27 @@
+// normal
+Ash, Noun, Material(Solid, Powder), Product, Symbolic
+Chalk, Noun, Material(Solid, Solid)
+Charcoal, Noun, Material(Solid, Solid), Product
+Clay, Noun, Material(Solid, Solid)
+Coal, Noun, Material(Solid, Solid)
+Crystal, Noun, Material(Solid, Solid), Symbolic
+Stone, Noun, Material(Solid, Solid)
+Wood, Noun, Material(Solid, Solid)
+Glass, Noun, Material(Solid, Solid)
+// metals
+Aluminium, Noun, Material(Solid, Solid), Metal, Product
+Brass, Noun, Material(Solid, Solid), Metal, Product, Symbolic
+Bronze, Noun, Material(Solid, Solid), Metal, Product
+Cobalt, Noun, Material(Solid, Solid), Metal, Product
+Copper, Noun, Material(Solid, Solid), Metal, Product
+Gold, Noun, Material(Solid, Solid), Metal, Product, Symbolic
+Iron, Noun, Material(Solid, Solid), Metal, Product, Symbolic
+Lead, Noun, Material(Solid, Solid), Metal, Product
+Nickel, Noun, Material(Solid, Solid), Metal, Product
+Pewter, Noun, Material(Solid, Solid), Metal, Product
+Platinum, Noun, Material(Solid, Solid), Metal, Product
+Silver, Noun, Material(Solid, Solid), Metal, Product, Symbolic
+Steel, Noun, Material(Solid, Solid), Metal, Product, Symbolic
+Tin, Noun, Material(Solid, Solid), Metal, Product
+Zinc, Noun, Material(Solid, Solid), Metal, Product
+// Woods
