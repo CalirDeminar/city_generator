@@ -64,27 +64,84 @@ pub mod relations {
     }
 
     fn mind_is_single(mind: &Mind) -> bool {
-        return !mind.relations.iter().any(|(v, _i)|v.eq(&RelationVerb::Partner) || v.eq(&RelationVerb::Spouse));
+        return !mind
+            .relations
+            .iter()
+            .any(|(v, _i)| v.eq(&RelationVerb::Partner) || v.eq(&RelationVerb::Spouse));
     }
 
-    fn find_partner_id(mind: &Mind, city: &City) -> Option<Uuid> {
+    fn mind_without_these_relations(mind: &Mind, relations: &Vec<RelationVerb>) -> bool {
+        return relations.len() == 0
+            || mind
+                .relations
+                .iter()
+                .all(|(v, _id)| !relations.contains(&v));
+    }
+
+    fn mind_with_these_relations(mind: &Mind, relations: &Vec<RelationVerb>) -> bool {
+        return relations.len() == 0
+            || mind.relations.iter().any(|(v, _id)| relations.contains(&v));
+    }
+
+    fn find_id_for_relation(
+        target_gender: &Gender,
+        max_age: u32,
+        min_age: u32,
+        without_relations: Vec<RelationVerb>,
+        with_relations: Vec<RelationVerb>,
+        city: &City,
+    ) -> Option<Uuid> {
         let mut rng = rand::thread_rng();
-        let target_gender = gen_partner_gender(&mind.gender);
-        let max_age_gap = (rng.gen::<f32>() * 10.0) as u32;
+
         let mut target_gender_population: Vec<&Mind> = city
             .citizens
             .iter()
-            .filter(|c| 
-                c.gender.eq(&target_gender) && 
-                mind_is_single(&c) && 
-                mind.age.abs_diff(c.age) < max_age_gap
-            ).collect();
+            .filter(|c| {
+                c.gender.eq(&target_gender)
+                    && mind_without_these_relations(&c, &without_relations)
+                    && mind_with_these_relations(&c, &with_relations)
+                    && c.age > min_age
+                    && c.age < max_age
+            })
+            .collect();
         target_gender_population.shuffle(&mut rng);
         let rtn = target_gender_population.first();
         if rtn.is_some() {
             return Some(rtn.unwrap().id);
         }
         return None;
+    }
+
+    fn find_partner_id(mind: &Mind, city: &City) -> Option<Uuid> {
+        let mut rng = rand::thread_rng();
+        let target_gender = gen_partner_gender(&mind.gender);
+        let max_age_gap = (rng.gen::<f32>() * 10.0) as u32;
+        return find_id_for_relation(
+            &target_gender,
+            mind.age + max_age_gap,
+            mind.age - max_age_gap,
+            vec![RelationVerb::Partner, RelationVerb::Spouse],
+            vec![],
+            &city,
+        );
+    }
+
+    fn find_parent_id(mind: &Mind, city: &City) -> Option<Uuid> {
+        let mut rng = rand::thread_rng();
+        let target_gender = gen_partner_gender(&mind.gender);
+        return find_id_for_relation(
+            &target_gender,
+            mind.age + 50,
+            mind.age + 18,
+            vec![],
+            vec![
+                RelationVerb::Spouse,
+                RelationVerb::Partner,
+                RelationVerb::ExPartner,
+                RelationVerb::ExSpouse,
+            ],
+            &city,
+        );
     }
 
     fn gen_partner_gender(input_gender: &Gender) -> Gender {
