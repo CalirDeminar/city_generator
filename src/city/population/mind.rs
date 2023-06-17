@@ -18,6 +18,8 @@ pub mod mind {
 
     use crate::city::population::mind::relations::relations::*;
 
+    const HOMOSEXUALITY_CHANCE: f32 = 0.2;
+
     #[derive(PartialEq, Debug, Clone, Display)]
     pub enum Gender {
         Male,
@@ -34,6 +36,14 @@ pub mod mind {
     pub type Relation = (RelationVerb, Uuid);
 
     #[derive(PartialEq, Debug, Clone)]
+    pub enum Sexuality {
+        Hetrosexual,
+        Homosexual,
+        Asexual,
+        Bisexual,
+    }
+
+    #[derive(PartialEq, Debug, Clone)]
     pub struct Mind {
         pub id: Uuid,
         pub first_name: String,
@@ -43,6 +53,7 @@ pub mod mind {
         pub relations: Vec<Relation>,
         pub employer: Option<Uuid>,
         pub residence: Option<Uuid>,
+        pub sexuality: Sexuality,
     }
 
     pub fn find_address<'a>(
@@ -105,6 +116,7 @@ pub mod mind {
             .map(|(verb, id)| (verb, get_name_from_id(&id, &city.citizens)))
             .collect();
         output.push_str(&format!("Name: {} {}\n", mind.first_name, mind.last_name));
+        output.push_str(&format!("ID: {:?}\n", mind.id));
         output.push_str(&format!("Gender: {:?}\n", mind.gender));
         output.push_str(&format!("Age: {}\n", mind.age));
         if workplace.is_some() {
@@ -235,6 +247,16 @@ pub mod mind {
         return node;
     }
 
+    fn gen_sexuality() -> Sexuality {
+        let mut rng = rand::thread_rng();
+        let roll: f32 = rng.gen();
+        if roll < HOMOSEXUALITY_CHANCE {
+            return Sexuality::Homosexual;
+        } else {
+            return Sexuality::Hetrosexual;
+        }
+    }
+
     pub fn random_char<'a>(name_dict: &NameDictionary) -> Mind {
         let mut rng = rand::thread_rng();
         let roll: f32 = rng.gen();
@@ -258,6 +280,7 @@ pub mod mind {
                 + distribution.sample(&mut rand::thread_rng()) as u32,
             employer: None,
             residence: None,
+            sexuality: gen_sexuality(),
         };
     }
 }

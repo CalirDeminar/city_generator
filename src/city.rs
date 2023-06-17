@@ -38,10 +38,22 @@ pub mod city {
 
     pub fn print_city(city: &City) -> String {
         let mut output: String = String::new();
+        let partnered_list = vec![RelationVerb::Partner, RelationVerb::Spouse];
+        let relation_rate = city
+            .citizens
+            .iter()
+            .filter(|c| {
+                c.relations
+                    .iter()
+                    .any(|(v, _id)| partnered_list.contains(v))
+            })
+            .count() as f32
+            / city.citizens.len() as f32;
         output.push_str(&format!("City Name: {}\n", city.name));
         output.push_str(&format!(
-            "Population: {}\nArea Count: {}\nBuilding Count: {}",
+            "Population: {}\n Relationship Ratio: {}\nArea Count: {}\nBuilding Count: {}\n",
             city.citizens.len(),
+            relation_rate,
             city.areas.len(),
             city.buildings.len()
         ));
@@ -288,14 +300,15 @@ pub mod city {
 
     pub fn build(size: usize) -> City {
         let name_dict = gen_name_dict();
-        let citizens = generate_population(&name_dict, size);
         let mut city = City {
             name: locations::gen_location_name(&name_dict, false),
             buildings: Vec::new(),
-            citizens,
+            citizens: Vec::new(),
             areas: Vec::new(),
             institutions: Vec::new(),
         };
+
+        generate_population(&name_dict, size, &mut city);
 
         let public_institutions = generate_public_institutions(&name_dict);
 
@@ -309,7 +322,7 @@ pub mod city {
             add_institution_to_city(&mut city, institution, &name_dict);
             workers = find_workers(&city);
         }
-        city.citizens = link_colleagues(city.citizens);
+        link_colleagues(&mut city);
         let mut apartment_count = count_residential_apartments(&city);
         while (apartment_count as f32) < (city.citizens.len() as f32 * 1.1) {
             city.areas.shuffle(&mut rand::thread_rng());

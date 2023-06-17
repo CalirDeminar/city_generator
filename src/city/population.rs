@@ -1,10 +1,10 @@
 pub mod mind;
 pub mod population {
-    use std::{fs::File, io::Write};
     use crate::city::city::City;
     use crate::city::population::mind::mind::*;
     use crate::city::population::mind::relations::relations::*;
     use crate::names::names::*;
+    use std::{fs::File, io::Write};
 
     pub type Population = Vec<Mind>;
 
@@ -24,13 +24,27 @@ pub mod population {
         return output;
     }
 
-    pub fn generate_population(name_dict: &NameDictionary, size: usize) -> Population {
-        let mut population = generate_base_population(size, &name_dict);
-        population = add_partners_to_population(population, &name_dict);
-        population = add_parents_to_population(population, &name_dict);
-        population = link_friends_within_population(population);
-        return population
+    pub fn generate_population<'a>(
+        name_dict: &NameDictionary,
+        size: usize,
+        c: &'a mut City,
+    ) -> &'a mut City {
+        let mut city = c;
+        city.citizens = generate_base_population(size, &name_dict);
+        city = link_partners(city);
+        city = link_parents(city);
+        city = link_colleagues(city);
+        city = link_friends_within_population(city);
+        return city;
     }
+
+    // pub fn generate_population(name_dict: &NameDictionary, size: usize) -> Population {
+    //     let mut population = generate_base_population(size, &name_dict);
+    //     population = add_partners_to_population(population, &name_dict);
+    //     population = add_parents_to_population(population, &name_dict);
+    //     population = link_friends_within_population(population);
+    //     return population;
+    // }
 
     pub fn output_population(city: &City) {
         let mut file = File::create("./export.txt").unwrap();
