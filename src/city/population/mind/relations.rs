@@ -67,11 +67,10 @@ pub mod relations {
             || mind.relations.iter().any(|(v, _id)| relations.contains(&v));
     }
 
-    fn find_id_for_relation(city: &City, filter: MindSearchFilter) -> Option<Uuid> {
+    fn find_id_for_relation(population: &Population, filter: MindSearchFilter) -> Option<Uuid> {
         let mut rng = rand::thread_rng();
 
-        let mut target_gender_population: Vec<&Mind> = city
-            .citizens
+        let mut target_gender_population: Vec<&Mind> = population
             .iter()
             .filter(|c| {
                 let gender_match = filter.target_gender.eq(&Some(c.gender.clone()));
@@ -100,7 +99,7 @@ pub mod relations {
         };
     }
 
-    fn find_partner_id(mind: &Mind, city: &City, to_ignore: &Uuid) -> Option<Uuid> {
+    fn find_partner_id(mind: &Mind, population: &Population, to_ignore: &Uuid) -> Option<Uuid> {
         let mut rng = rand::thread_rng();
         let target_gender = determine_partner_gender(&mind);
         for i in 0..20 {
@@ -113,7 +112,7 @@ pub mod relations {
                 mind.age - max_age_gap
             };
             let possible_partner = find_id_for_relation(
-                &city,
+                population,
                 MindSearchFilter {
                     target_gender: Some(target_gender.clone()),
                     age_range: min_age..(mind.age + max_age_gap),
@@ -132,7 +131,7 @@ pub mod relations {
 
     fn find_parent_id(mind: &Mind, city: &City) -> Option<Uuid> {
         return find_id_for_relation(
-            &city,
+            &city.citizens,
             MindSearchFilter {
                 target_gender: None,
                 age_range: (mind.age + 18)..(mind.age + 50),
@@ -231,21 +230,32 @@ pub mod relations {
     pub fn link_partners<'a>(city: &'a mut City) -> &'a mut City {
         let mut rng = rand::thread_rng();
         let ids: Vec<Uuid> = city.citizens.iter().map(|c| c.id).collect();
+        let mut relations_to_add: Vec<(Uuid, Uuid)> = Vec::new();
         for mind_id in ids {
             city.citizens.shuffle(&mut rng);
-            let cl = city.clone();
-            let mut citizens = city.citizens.iter_mut();
-            let mind = citizens.find(|c| c.id.eq(&mind_id)).unwrap();
-            let possible_partner_id = find_partner_id(&mind, &cl, &mind.id);
-            let possible_partner = citizens.find(|c| {
-                return possible_partner_id.is_some() && c.id.eq(&possible_partner_id.unwrap());
-            });
-            if possible_partner.is_some() {
+            let mind = city.citizens.iter().find(|c| c.id.eq(&mind_id)).unwrap();
+            let possible_partner_id = find_partner_id(&mind, &city.citizens, &mind.id);
+            if possible_partner_id.is_some() {
+                relations_to_add.push((mind.id.clone(), possible_partner_id.unwrap()));
+            }
+        }
+        for (id_1, id_2) in relations_to_add {
+            let citizens = city.citizens.iter_mut();
+            let mut mind_1: Option<&mut Mind> = None;
+            let mut mind_2: Option<&mut Mind> = None;
+            for mind in citizens {
+                if mind.id.eq(&id_1) {
+                    mind_1 = Some(mind);
+                } else if mind.id.eq(&id_2) {
+                    mind_2 = Some(mind);
+                }
+            }
+            if mind_1.is_some() && mind_2.is_some() {
                 let verb = get_partner_verb();
-                let partner = possible_partner.unwrap();
-                mind.relations.push((verb.clone(), partner.id));
-                partner.relations.push((verb.clone(), mind.id.clone()));
-                // TODO - minds with exes can have other partner relations
+                mind_1.unwrap().relations.push((verb.clone(), id_2.clone()));
+                mind_2.unwrap().relations.push((verb.clone(), id_1.clone()));
+            } else {
+                println!("Mind Lookup Failed");
             }
         }
         return city;

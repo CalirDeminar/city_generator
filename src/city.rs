@@ -51,7 +51,7 @@ pub mod city {
             / city.citizens.len() as f32;
         output.push_str(&format!("City Name: {}\n", city.name));
         output.push_str(&format!(
-            "Population: {}\n Relationship Ratio: {}\nArea Count: {}\nBuilding Count: {}\n",
+            "Population: {}\nRelationship Ratio: {}\nArea Count: {}\nBuilding Count: {}\n",
             city.citizens.len(),
             relation_rate,
             city.areas.len(),
