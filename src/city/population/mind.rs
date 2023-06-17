@@ -116,7 +116,6 @@ pub mod mind {
             .map(|(verb, id)| (verb, get_name_from_id(&id, &city.citizens)))
             .collect();
         output.push_str(&format!("Name: {} {}\n", mind.first_name, mind.last_name));
-        output.push_str(&format!("ID: {:?}\n", mind.id));
         output.push_str(&format!("Gender: {:?}\n", mind.gender));
         output.push_str(&format!("Age: {}\n", mind.age));
         if workplace.is_some() {
@@ -263,8 +262,7 @@ pub mod mind {
         let mut gender = Gender::Ambiguous;
         if roll > 0.6 {
             gender = Gender::Male;
-        }
-        if roll > 0.2 {
+        } else if roll > 0.2 {
             gender = Gender::Female;
         }
         let (first_name, last_name) = random_mind_name(&name_dict, &gender);

@@ -266,7 +266,7 @@ pub mod city {
             if guardian_res.is_some() {
                 new_residences.push((citizen.id.clone(), guardian_res.unwrap().clone().1));
             } else if ward_res.is_some() {
-                new_residences.push((citizen.id.clone(), spouse_res.unwrap().clone().1));
+                new_residences.push((citizen.id.clone(), ward_res.unwrap().clone().1));
             } else if spouse_res.is_some() {
                 new_residences.push((citizen.id.clone(), spouse_res.unwrap().clone().1));
             } else {
