@@ -33,3 +33,6 @@ Springs,LocationMinorFeature
 Station,LocationMinorFeature
 Stone,LocationMinorFeature,Suffixable
 Stream,LocationMinorFeature
+Ditch, LocationMinorFeature, Suffixable
+Church, LocationMinorFeature, Suffixable
+Water, LocationMinorFeature, Suffixable

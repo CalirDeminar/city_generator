@@ -104,7 +104,7 @@ Buzzard, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
 Eagle, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall, CreatureDietCarnivorous
 Emu, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeNormal
 Horned Owl, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall, CreatureDietCarnivorous
-Gray Parrot, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
+Grey Parrot, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
 Guineafowl, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
 Hornbill, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
 Kakapo, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall

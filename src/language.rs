@@ -1,3 +1,4 @@
+pub mod adjectives;
 pub mod nouns;
 pub mod language {
     use strum_macros::{Display, EnumIter};

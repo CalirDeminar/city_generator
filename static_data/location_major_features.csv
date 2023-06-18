@@ -23,3 +23,5 @@ River,LocationMajorFeature
 Straight,LocationMajorFeature
 Valley,LocationMajorFeature
 Wood,LocationMajorFeature,Suffixable
+Ridge, LocationMajorFeature, Suffixable
+Town, LocationMajorFeature, Suffixable

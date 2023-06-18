@@ -51,6 +51,7 @@ pub mod nouns {
         Food,
         GlobalSingular,
         Direction,
+        Title,
     }
 
     pub fn build_noun_tags() -> Vec<String> {
