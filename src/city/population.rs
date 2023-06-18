@@ -40,6 +40,7 @@ pub mod population {
         city = link_colleagues(city);
         city = link_friends_within_population(city);
         city = link_siblings(city);
+        city = link_grandparents(city);
         return city;
     }
 

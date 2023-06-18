@@ -18,6 +18,7 @@ pub mod relations {
         ExSpouse,
         Sibling,
         Grandparent,
+        Grandchild,
         Cousin,
         // business
         Employer,
@@ -155,10 +156,8 @@ pub mod relations {
 
     pub fn link_siblings<'a>(city: &'a mut City) -> &'a mut City {
         let ref_pop = city.citizens.clone();
-        let mut output: Population = Vec::new();
 
         for m in city.citizens.iter_mut() {
-            let mind = m.clone();
             let parents: Vec<&Uuid> = m
                 .relations
                 .iter()
@@ -177,10 +176,45 @@ pub mod relations {
             for sibling in siblings {
                 m.relations.push((RelationVerb::Sibling, sibling));
             }
-
-            output.push(mind);
         }
 
+        return city;
+    }
+
+    pub fn link_grandparents<'a>(city: &'a mut City) -> &'a mut City {
+        let ref_pop = city.citizens.clone();
+        for m in &city.citizens.clone() {
+            let mut citizens = city.citizens.iter_mut();
+            let parents: Vec<&Mind> = m
+                .relations
+                .iter()
+                .filter(|(v, _id)| v.eq(&RelationVerb::Parent))
+                .map(|(_v, id)| ref_pop.iter().find(|c| c.id.eq(id)).unwrap())
+                .collect();
+            let grandparent_ids: Vec<&Uuid> = parents
+                .iter()
+                .map(|c| {
+                    c.relations
+                        .iter()
+                        .filter(|(v, _id)| v.eq(&RelationVerb::Parent))
+                        .map(|(_v, id)| id)
+                })
+                .flatten()
+                .collect();
+            for id in grandparent_ids {
+                let mind_opt = citizens.find(|c| c.id.eq(&&m.id));
+                let grandparent_opt = citizens.find(|c| c.id.eq(&id));
+                if mind_opt.is_some() && grandparent_opt.is_some() {
+                    let mind = mind_opt.unwrap();
+                    let grandparent = grandparent_opt.unwrap();
+                    mind.relations
+                        .push((RelationVerb::Grandparent, grandparent.id.clone()));
+                    grandparent
+                        .relations
+                        .push((RelationVerb::Grandchild, mind.id.clone()));
+                }
+            }
+        }
         return city;
     }
 }
