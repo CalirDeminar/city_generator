@@ -16,6 +16,10 @@ Kobold, Creature, CreatureSentient, CreatureFamilyMammal, CreatureSizeSmall
 Troll, Creature, CreatureSentient, CreatureFamilyMammal, CreatureSizeLarge
 Gnome, Creature, CreatureSentient, CreatureFamilyMammal, CreatureSizeSmall
 Orc, Creature, CreatureSentient, CreatureFamilyMammal, CreatureSizeNormal
+// Fantasy
+Glob, Creature, CreatureBeast, CreatureFamilyOther, CreatureSizeSmall, Era(Fantasy)
+Blob, Creature, CreatureBeast, CreatureFamilyOther, CreatureSizeNormal, Era(Fantasy)
+Golem, Creature, CreatureBeast, CreatureFamilyOther, CreatureSizeNormal, Era(Fantasy)
 // ANIMALS
 //  LAND
 //      mamals
@@ -36,20 +40,20 @@ Rabbit, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
 Sheep, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
 Buffalo, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeLarge
 Yak, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeLarge
-Aardvark, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
+Aardvark, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall, CreatureDietCarnivorous
 Armadillo, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
 Badger, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
 Gibbon, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
 Capybara, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
-Cheetah, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
+Cheetah, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal, CreatureDietCarnivorous
 Chimpanzee, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
 Chinchilla, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
-Coati, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
-Coyote, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
+Coati, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall, CreatureDietCarnivorous
+Coyote, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal, CreatureDietCarnivorous
 Deer, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
 Elephant, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeLarge
 Elk, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
-Fox, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
+Fox, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall, CreatureDietCarnivorous
 Gazelle, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
 Giraffe, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeLarge,
 Gorilla, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
@@ -59,12 +63,12 @@ Hare, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
 Hyena, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
 Ibex, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
 Impala, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
-Jackal, , Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
-Jaguar, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
+Jackal, , Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal, CreatureDietCarnivorous
+Jaguar, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal, CreatureDietCarnivorous
 Koala, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
-Leopard, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
-Lion, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
-Lynx, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
+Leopard, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal, CreatureDietCarnivorous
+Lion, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal, CreatureDietCarnivorous
+Lynx, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal, CreatureDietCarnivorous
 Panda, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
 Giant Panda, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
 Porcupine, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
@@ -76,11 +80,13 @@ Skunk, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
 Sloth, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
 Stoat, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
 Tapir, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
-Tiger, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
+Lynx, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal, CreatureDietCarnivorous
+Tiger, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal, 
 Warthog, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
 Weasel, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
-Wolf, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
-Wolverine, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
+Lynx, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal, CreatureDietCarnivorous
+Wolf, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal, CreatureDietCarnivorous
+Wolverine, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall, CreatureDietCarnivorous
 Wombat, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
 Giant Wombat, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
 Mole, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
@@ -92,107 +98,107 @@ Duck, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
 Goose, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
 Swan, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
 Turkey, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
-Barn Owl, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
+Barn Owl, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall, CreatureDietCarnivorous
 Bluejay, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeTiny
 Buzzard, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
-Eagle, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
+Eagle, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall, CreatureDietCarnivorous
 Emu, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeNormal
-Horned Owl, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
+Horned Owl, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall, CreatureDietCarnivorous
 Gray Parrot, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
 Guineafowl, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
 Hornbill, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
 Kakapo, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
 Kea, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
-Kestrel, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
+Kestrel, Creature, CreatureAnimal, CreatureFamilyBird, , CreatureDietCarnivorous
 Kiwi, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeTiny
 Osprey, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
 Ostrich, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeNormal
-Peregrine Falcon, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
+Peregrine Falcon, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall, CreatureDietCarnivorous
 Raven, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
 Vulture, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
 Stork, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
 //      reptiles
-Adder, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeSmall
-Alligator, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeNormal
-Anaconda, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeNormal
-Black Mamba, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeSmall
-Bushmaster, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeSmall
-Copperhead Snake, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeSmall
+Adder, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeSmall, CreatureDietCarnivorous
+Alligator, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeNormal, CreatureDietCarnivorous
+Anaconda, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeNormal, CreatureDietCarnivorous
+Black Mamba, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeSmall, CreatureDietCarnivorous
+Bushmaster, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeSmall, CreatureDietCarnivorous
+Copperhead Snake, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeSmall, CreatureDietCarnivorous
 Desert Tortoise, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeSmall
 Giant Tortoise, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeSmall
-Gila Monster, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeSmall
-King Cobra, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeSmall
+Gila Monster, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeSmall, CreatureDietCarnivorous
+King Cobra, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeSmall, CreatureDietCarnivorous
 Gecko, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeSmall
-Python, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeSmall
-Rattlesnake, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeSmall
+Python, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeSmall, CreatureDietCarnivorous
+Rattlesnake, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeSmall, CreatureDietCarnivorous
 //      insects
 Bee, Creature, CreatureAnimal, CreatureFamilyInsect, CreatureSizeTiny
 Beetle, Creature, CreatureAnimal, CreatureFamilyInsect, CreatureSizeTiny
 Butterfly, Creature, CreatureAnimal, CreatureFamilyInsect, CreatureSizeTiny
 Dragonfly, Creature, CreatureAnimal, CreatureFamilyInsect, CreatureSizeTiny
-Scorpion, Creature, CreatureAnimal, CreatureFamilyInsect, CreatureSizeTiny
+Scorpion, Creature, CreatureAnimal, CreatureFamilyInsect, CreatureSizeTiny, CreatureDietCarnivorous
 Firefly, Creature, CreatureAnimal, CreatureFamilyInsect, CreatureSizeTiny
 Grasshopper, Creature, CreatureAnimal, CreatureFamilyInsect, CreatureSizeTiny
 Louse, Creature, CreatureAnimal, CreatureFamilyInsect, CreatureSizeTiny
-Mantis, Creature, CreatureAnimal, CreatureFamilyInsect, CreatureSizeTiny
+Mantis, Creature, CreatureAnimal, CreatureFamilyInsect, CreatureSizeTiny, CreatureDietCarnivorous
 Moth, Creature, CreatureAnimal, CreatureFamilyInsect, CreatureSizeTiny
-Spider, Creature, CreatureAnimal, CreatureFamilyInsect, CreatureSizeTiny
+Spider, Creature, CreatureAnimal, CreatureFamilyInsect, CreatureSizeTiny, CreatureDietCarnivorous
 Wasp, Creature, CreatureAnimal, CreatureFamilyInsect, CreatureSizeTiny
 Hornet, Creature, CreatureAnimal, CreatureFamilyInsect, CreatureSizeTiny
 //  SEA
 //      mamals
 Beaver, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
-Elephant Seal, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeLarge
-Harp Seal, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
+Elephant Seal, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeLarge, CreatureDietCarnivorous
+Harp Seal, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall, CreatureDietCarnivorous
 Hippopotamus, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
-Narwhal, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeLarge
-Orca, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeLarge
+Narwhal, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeLarge, CreatureDietCarnivorous
+Orca, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeLarge, CreatureDietCarnivorous
 Platypus, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
-Otter, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
+Otter, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall, CreatureDietCarnivorous
 Sperm Whale, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeLarge
-Walrus, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
+Walrus, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal, CreatureDietCarnivorous
 //      birds
-Albatross, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
-Emperor Penguin, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeNormal
-Little Penguin, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
-Penguin, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
-Puffin, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
+Albatross, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall, CreatureDietCarnivorous
+Emperor Penguin, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeNormal, CreatureDietCarnivorous
+Little Penguin, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall, CreatureDietCarnivorous
+Penguin, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall, CreatureDietCarnivorous
+Puffin, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall, CreatureDietCarnivorous
 //      reptiles
-Snapping Turtle, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeSmall
+Snapping Turtle, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeSmall, CreatureDietCarnivorous
 Pond Turtle, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeSmall
-Saltwater Crocodile, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeNormal
-Sea Serpent, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeGreat, Era(Fantasy)
-Sea Monster, , Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeGreat, Era(Fantasy)
+Saltwater Crocodile, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeNormal, CreatureDietCarnivorous
+Sea Serpent, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeGreat, Era(Fantasy), CreatureDietCarnivorous
+Sea Monster, , Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeGreat, Era(Fantasy), CreatureDietCarnivorous
 //      fish
-Angelshark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall
-Basking Shark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeNormal
-Blacktip Reef Shark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall
-Blue Shark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeNormal
-Bluefin Tuna, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall
+Angelshark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall, CreatureDietCarnivorous
+Basking Shark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeNormal, CreatureDietCarnivorous
+Blacktip Reef Shark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall, CreatureDietCarnivorous
+Blue Shark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeNormal, CreatureDietCarnivorous
+Bluefin Tuna, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall, CreatureDietCarnivorous
 Bluefish, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall
-Bull Shark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeNormal
+Bull Shark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeNormal, CreatureDietCarnivorous
 Carp, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall
 Cod, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall
 Coelacanth, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall
 Common Skate, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeNormal
 Conger Eel, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall
-Frill Shark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall
+Frill Shark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall, CreatureDietCarnivorous
 Great Barracuda, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall
-Great White Shark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeLarge
+Great White Shark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeLarge, CreatureDietCarnivorous
 Halibut, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall
-Hammerhead Shark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeNormal
-Longfin Mako Shark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeNormal
+Hammerhead Shark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeNormal, CreatureDietCarnivorous
+Longfin Mako Shark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeNormal, CreatureDietCarnivorous
 Longnose Gar, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall
 Manta Ray, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeNormal
 Marlin, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeNormal
 Milkfish, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall
-Nurse Shark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeNormal
+Nurse Shark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeNormal, CreatureDietCarnivorous
 Ocean Sunfish, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeLarge
 Pike, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall
 Sea Lampray, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall
-Shortfin Mako Shark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall
+Shortfin Mako Shark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall, CreatureDietCarnivorous
 Spiny Dogfish, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall
 Stingray, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall
 Sturgeon, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall
-Whale Shark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeLarge
-Whitetip Reef Shark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall
+Whale Shark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeLarge, CreatureDietCarnivorous
+Whitetip Reef Shark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall, CreatureDietCarnivorous
