@@ -14,6 +14,7 @@ pub mod parents {
     };
 
     const PARENT_PRESENCE_CHANCE: f32 = 0.3;
+    const MIN_CHILD_BEARING_AGE: u32 = 20;
     const CHILD_LIMIT: usize = 5;
 
     fn find_couples(population: Vec<&Mind>) -> Vec<(&Mind, &Mind)> {
@@ -56,7 +57,7 @@ pub mod parents {
             .collect();
         let mut potential_parents = find_couples(filtered_parents);
         potential_parents.shuffle(&mut rng);
-        let target_age_range = (mind.age + 10)..(u32::MAX);
+        let target_age_range = (mind.age + MIN_CHILD_BEARING_AGE)..(u32::MAX);
         return potential_parents
             .iter()
             .find(|(a, b)| {

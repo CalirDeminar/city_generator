@@ -17,6 +17,8 @@ pub mod relations {
         Spouse,
         ExSpouse,
         Sibling,
+        Grandparent,
+        Cousin,
         // business
         Employer,
         Employee,

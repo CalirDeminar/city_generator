@@ -16,6 +16,7 @@ pub mod partners {
     const PARTNER_CHANCE_GENERAL: f32 = 0.8;
     const PARTNER_MARRIAGE_RATE: f32 = 0.5;
     const PARTNER_SPLIT_RATE: f32 = 0.2;
+    const MAX_RELATION_AGE_DIFF: u32 = 20;
 
     fn flatten_rel_map(input: &Vec<(Uuid, Uuid)>) -> Vec<Uuid> {
         return input
@@ -111,7 +112,7 @@ pub mod partners {
         let mut rng = rand::thread_rng();
         let target_gender = determine_partner_gender(&mind);
         let range_roll = rng.gen::<f32>();
-        for i in 0..20 {
+        for i in 0..MAX_RELATION_AGE_DIFF {
             let age_range = determine_age_range(&mind, (range_roll * i as f32) as u32);
             let possible_partner = search_for_partner(
                 population,
