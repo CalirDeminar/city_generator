@@ -6,6 +6,10 @@ pub mod population {
     use crate::names::names::*;
     use std::{fs::File, io::Write};
 
+    use super::mind::relations::{
+        parents::parents::link_parents, partners::partners::link_partners,
+    };
+
     pub type Population = Vec<Mind>;
 
     pub fn print_population(city: &City) -> String {

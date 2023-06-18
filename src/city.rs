@@ -12,13 +12,9 @@ pub mod city {
     use std::fmt::Write as fmtWrite;
     use uuid::Uuid;
 
-    use super::building::building::{
-        building_area_is_owned, new_building, Building, BuildingFloorArea,
-    };
+    use super::building::building::*;
     use super::population::mind::mind::*;
-    use super::population::mind::relations::relations::{
-        find_relation, find_relation_minor, link_colleagues, RelationVerb, ADULT_AGE_FROM,
-    };
+    use super::population::mind::relations::relations::*;
     use crate::city::institutions::institutions::*;
     use crate::city::locations::{locations, locations::*};
     use crate::city::population::population::*;

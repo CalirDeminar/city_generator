@@ -10,9 +10,7 @@ pub mod mind {
 
     use crate::city::building::building::{Building, BuildingFloorArea};
     use crate::city::city::City;
-    use crate::city::institutions::institutions::{
-        find_institution_address, find_institution_building, Institution,
-    };
+    use crate::city::institutions::institutions::*;
     use crate::city::locations::locations::Location;
     use crate::names::names::*;
 
@@ -178,7 +176,7 @@ pub mod mind {
         writeln!(list_element.p(), "Age: {}", &mind.age).unwrap();
 
         if workplace.is_some() {
-            let (building, _floor, area, location) =
+            let (building, _floor, _area, location) =
                 find_institution_address(&workplace.unwrap(), &city);
             let mut p = list_element.p();
             writeln!(p, "Employer: {} at", workplace.unwrap().name).unwrap();
