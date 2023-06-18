@@ -1,12 +1,23 @@
 pub mod plants {
-    use strum_macros::{Display, EnumIter};
+    use strum::IntoEnumIterator;
+    use strum_macros::{Display, EnumIter}; // 0.17.1
 
     #[derive(PartialEq, Debug, Clone, EnumIter, Display, Copy, Default)]
     pub enum PlantType {
+        Plant,
         #[default]
-        Normal,
-        Tree,
-        Flower,
-        Crop,
+        PlantTypeNormal,
+        PlantTypeTree,
+        PlantTypeFlower,
+        PlantTypeCrop,
+    }
+
+    pub fn plant_tags() -> Vec<String> {
+        let mut output: Vec<String> = Vec::new();
+        for tag in PlantType::iter() {
+            output.push(tag.to_string());
+        }
+
+        return output;
     }
 }

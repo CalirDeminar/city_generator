@@ -1,5 +1,6 @@
 pub mod creatures;
 pub mod emotions;
+pub mod era;
 pub mod geography;
 pub mod materials;
 pub mod plants;
@@ -7,16 +8,16 @@ pub mod nouns {
     use std::fs;
 
     use crate::{language::language::*, parser::parser::parse_file};
+    use regex::Regex;
     use strum::IntoEnumIterator; // 0.17.1
     use strum_macros::{Display, EnumIter};
     use uuid::Uuid;
 
     use super::{
-        creatures::creatures::{CreatureFamily, CreatureSize},
-        emotions::emotions::EmotionGroups,
-        materials::materials::*,
-        plants::plants::PlantType,
-    }; // 0.17.1
+        creatures::creatures::creature_tags, emotions::emotions::emotion_group_tags,
+        era::eras::era_tags, geography::geography::geography_tags,
+        materials::materials::material_tags, plants::plants::plant_tags,
+    };
 
     #[derive(PartialEq, Debug, Clone, EnumIter, Display, Copy)]
     pub enum NounTag {
@@ -28,7 +29,6 @@ pub mod nouns {
         Good,
         Evil,
         Holy,
-        Emotion(EmotionGroups),
         Institution,
         Affliction,
         Symbolic,
@@ -48,21 +48,29 @@ pub mod nouns {
         Weather,
         // World Specific
         BodyPart,
-        Material(MaterialState, SolidMaterialForm),
-        MaterialTag(MaterialTag),
-        Plant(PlantType),
         Food,
-        Creature(CreatureSize, CreatureFamily),
-        Era(Era),
         GlobalSingular,
+        Direction,
+    }
+
+    pub fn build_noun_tags() -> Vec<String> {
+        let mut output: Vec<Vec<String>> = Vec::new();
+
+        output.push(creature_tags());
+        output.push(emotion_group_tags());
+        output.push(era_tags());
+        output.push(geography_tags());
+        output.push(material_tags());
+        output.push(plant_tags());
+        return output.concat();
     }
 
     // -- TODO - Split Noun Groups Into -
     // Material Groups - Solid / Liquid / Gas - Metal, Cloth, Normal, etc
     // Geographical Feature Sizes
 
-    fn string_match_noun_tag(token: &str) -> Option<NounTag> {
-        for tag in NounTag::iter() {
+    fn string_match_noun_tag(token: &str) -> Option<String> {
+        for tag in build_noun_tags() {
             let matcher = format!("{}", tag);
             if matcher.eq(token.trim()) {
                 return Some(tag);
@@ -79,19 +87,39 @@ pub mod nouns {
             let data = parse_file(format!("nouns/{}", filename.to_str().unwrap()));
             for (subject, incoming_tags) in data {
                 let mut tags: Vec<WordTag> = Vec::new();
+                let mut adjective_terms: Vec<String> = Vec::new();
                 for incoming_tag in incoming_tags {
                     let tag = string_match_noun_tag(&incoming_tag);
                     if tag.is_some() {
                         tags.push(WordTag::Noun(tag.unwrap()));
                     }
+                    if incoming_tag.eq("Adjective") {
+                        adjective_terms.push(subject.clone());
+                    }
+                    let adjective_match =
+                        Regex::captures(&Regex::new(r"Adjective\((.*)\)").unwrap(), &incoming_tag);
+                    if adjective_match.is_some() {
+                        adjective_terms.push(String::from(
+                            adjective_match.unwrap().get(1).unwrap().as_str(),
+                        ));
+                    }
                 }
-
+                let adjectives: Vec<Word> = adjective_terms
+                    .iter()
+                    .map(|t| Word {
+                        id: Uuid::new_v4(),
+                        wordType: WordType::Adjective,
+                        text: String::from(t),
+                        tags: tags.clone(),
+                        relatedForms: Vec::new(),
+                    })
+                    .collect();
                 output.push(Word {
                     id: Uuid::new_v4(),
                     wordType: WordType::Noun,
                     text: subject,
                     tags,
-                    relatedForms: Vec::new(),
+                    relatedForms: adjectives,
                 });
             }
         }
@@ -100,15 +128,12 @@ pub mod nouns {
 
     #[test]
     fn test_noun_parser() {
-        println!(
-            "{:#?}",
-            filter_words_by_tag_and(
-                &build_nouns(),
-                vec![WordTag::Noun(NounTag::Material(
-                    MaterialState::Solid,
-                    SolidMaterialForm::Solid
-                ))]
-            )
-        );
+        let nouns = build_nouns();
+        for noun in filter_words_by_tag_or(
+            nouns.iter().collect(),
+            vec![WordTag::Noun(String::from("EmotionGroupFear"))],
+        ) {
+            println!("{:#?}", noun);
+        }
     }
 }

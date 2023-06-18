@@ -1,0 +1,75 @@
+// trees
+Alder, Plant, PlantTypeTree
+Apple, Plant, PlantTypeTree, PlantTypeCrop
+Ash, Plant, PlantTypeTree, Symbolic
+Aspen, Plant, PlantTypeTree
+Beech, Plant, PlantTypeTree
+Birch, Plant, PlantTypeTree, Symbolic
+Blackthorn, Plant, PlantTypeTree
+Buckthorn, Plant, PlantTypeTree
+Cedar, Plant, PlantTypeTree, Symbolic
+Cypress, Plant, PlantTypeTree
+Elder, Plant, PlantTypeTree
+Elm, Plant, PlantTypeTree
+Fir, Plant, PlantTypeTree, Symbolic
+Hawthorn, Plant, PlantTypeTree
+Hazel, Plant, PlantTypeTree
+Hornbeam, Plant, PlantTypeTree
+Maple, Plant, PlantTypeTree, Symbolic
+Oak, Plant, PlantTypeTree, Symbolic
+Pine, Plant, PlantTypeTree, Symbolic
+Rowan, Plant, PlantTypeTree
+Willow, Plant, PlantTypeTree
+Yew, Plant, PlantTypeTree, Symbolic
+Pear, Plant, PlantTypeTree, PlantTypeCrop
+// flowers
+Bell Flower, Plant, PlantTypeFlower
+Carnation, Plant, PlantTypeFlower
+Columbine, Plant, PlantTypeFlower
+Daffodil, Plant, PlantTypeFlower
+Foxglove, Plant, PlantTypeFlower
+Hyacinth, Plant, PlantTypeFlower
+Iris, Plant, PlantTypeFlower
+Larkspur, Plant, PlantTypeFlower
+Lilac, Plant, PlantTypeFlower
+Lilly, Plant, PlantTypeFlower
+Marigold, Plant, PlantTypeFlower
+Mimosa, Plant, PlantTypeFlower
+Primrose, Plant, PlantTypeFlower
+Windflower, Plant, PlantTypeFlower
+// crops
+Strawberry, Plant, Food
+Artichoke, Plant, PlantTypeCrop, Food
+Asparagus, Plant, PlantTypeCrop, Food
+Broad Bean, Plant, PlantTypeCrop, Food
+Beetroot, Plant, PlantTypeCrop, Food
+Cabbage, Plant, PlantTypeCrop, Food
+Caper, Plant, PlantTypeCrop, Food
+Carrot, Plant, PlantTypeCrop, Food
+Celery, Plant, PlantTypeCrop, Food
+Cowpea, Plant, PlantTypeCrop, Food
+Cucumber, Plant, PlantTypeCrop, Food
+Garlic, Plant, PlantTypeCrop, Food
+Leek, Plant, PlantTypeCrop, Food
+Lentil, Plant, PlantTypeCrop, Food
+Lettuce, Plant, PlantTypeCrop, Food
+Onion, Plant, PlantTypeCrop, Food
+Parsnip, Plant, PlantTypeCrop, Food
+Pea, Plant, PlantTypeCrop, Food
+Peanut, Plant, PlantTypeCrop, Food
+Pepper, Plant, PlantTypeCrop, Food
+Potatoe, Plant, PlantTypeCrop, Food
+Radish, Plant, PlantTypeCrop, Food
+Rhubarb, Plant, PlantTypeCrop, Food
+Soybean, Plant, PlantTypeCrop, Food
+Spinach, Plant, PlantTypeCrop, Food
+Squash, Plant, PlantTypeCrop, Food
+Sweet Potatoe, Plant, PlantTypeCrop, Food
+Turnip, Plant, PlantTypeCrop, Food
+Grape, Plant, Food
+Blueberry, Plant, Food
+Blackberry, Plant, Food
+Raspberry, Plant, Food
+Rice, Plant, PlantTypeCrop, Food
+Oat, Plant, PlantTypeCrop, Food
+Corn, Plant, PlantTypeCrop, Food

@@ -1,9 +1,7 @@
 pub mod nouns;
 pub mod language {
-    use uuid::Uuid;
-
-    use super::nouns::nouns::NounTag;
     use strum_macros::{Display, EnumIter};
+    use uuid::Uuid;
 
     #[derive(PartialEq, Debug, Clone, EnumIter, Display, Copy, Default)]
     pub enum Era {
@@ -23,7 +21,7 @@ pub mod language {
 
     #[derive(PartialEq, Debug, Clone)]
     pub enum WordTag {
-        Noun(NounTag),
+        Noun(String),
         Adjective,
         Verb,
     }

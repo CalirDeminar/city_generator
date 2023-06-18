@@ -1,0 +1,198 @@
+// Mythical creatures
+Angel, Creature, CreatureMagical, CreatureFamilyOther, CreatureSizeLarge, Holy, Era(Fantasy)
+Deamon, Creature, CreatureMagical, CreatureFamilyOther, CreatureSizeLarge, Evil, Era(Fantasy)
+Devil, Creature, CreatureMagical, CreatureFamilyOther, CreatureSizeLarge, Evil, Era(Fantasy)
+Dragon, Creature, CreatureBeast, CreatureFamilyReptile, CreatureSizeGreat, Era(Fantasy)
+Hydra, Creature, CreatureBeast, CreatureFamilyReptile, CreatureSizeGreat, Era(Fantasy)
+Roc, Creature, CreatureBeast, CreatureFamilyBird, CreatureSizeGreat, Era(Fantasy)
+Titan, Creature, CreatureBeast, CreatureFamilyMammal, CreatureSizeGreat, Era(Fantasy)
+Collosus, Creature, CreatureBeast, CreatureFamilyMammal, CreatureSizeLarge, Era(Fantasy)
+// Sentient creatures
+Human, Creature, CreatureSentient, CreatureFamilyMammal, CreatureSizeNormal
+Dwarf, Creature, CreatureSentient, CreatureFamilyMammal, CreatureSizeNormal
+Elf, Creature, CreatureSentient, CreatureFamilyMammal, CreatureSizeNormal
+Goblin, Creature, CreatureSentient, CreatureFamilyMammal, CreatureSizeNormal
+Kobold, Creature, CreatureSentient, CreatureFamilyMammal, CreatureSizeSmall
+Troll, Creature, CreatureSentient, CreatureFamilyMammal, CreatureSizeLarge
+Gnome, Creature, CreatureSentient, CreatureFamilyMammal, CreatureSizeSmall
+Orc, Creature, CreatureSentient, CreatureFamilyMammal, CreatureSizeNormal
+// ANIMALS
+//  LAND
+//      mamals
+Bear, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeLarge
+Alpaca, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
+Bat, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
+Cat, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
+Dog, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
+Donkey, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
+Goat, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
+Horse, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeLarge
+Llama, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeLarge
+Mule, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeLarge
+Camel, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeLarge
+Pig, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
+Boar, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
+Rabbit, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
+Sheep, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
+Buffalo, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeLarge
+Yak, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeLarge
+Aardvark, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
+Armadillo, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
+Badger, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
+Gibbon, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
+Capybara, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
+Cheetah, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
+Chimpanzee, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
+Chinchilla, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
+Coati, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
+Coyote, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
+Deer, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
+Elephant, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeLarge
+Elk, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
+Fox, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
+Gazelle, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
+Giraffe, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeLarge,
+Gorilla, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
+Squirrel, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
+Groundhog, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
+Hare, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
+Hyena, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
+Ibex, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
+Impala, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
+Jackal, , Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
+Jaguar, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
+Koala, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
+Leopard, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
+Lion, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
+Lynx, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
+Panda, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
+Giant Panda, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
+Porcupine, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
+Racoon, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
+Red Panda, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
+Reindeer, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
+Rhinoceros, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeLarge
+Skunk, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
+Sloth, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
+Stoat, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
+Tapir, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
+Tiger, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
+Warthog, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
+Weasel, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
+Wolf, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
+Wolverine, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
+Wombat, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
+Giant Wombat, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
+Mole, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
+Rat, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
+//      birds
+Peafowl, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
+Chicken, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
+Duck, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
+Goose, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
+Swan, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
+Turkey, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
+Barn Owl, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
+Bluejay, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeTiny
+Buzzard, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
+Eagle, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
+Emu, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeNormal
+Horned Owl, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
+Gray Parrot, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
+Guineafowl, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
+Hornbill, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
+Kakapo, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
+Kea, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
+Kestrel, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
+Kiwi, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeTiny
+Osprey, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
+Ostrich, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeNormal
+Peregrine Falcon, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
+Raven, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
+Vulture, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
+Stork, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
+//      reptiles
+Adder, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeSmall
+Alligator, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeNormal
+Anaconda, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeNormal
+Black Mamba, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeSmall
+Bushmaster, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeSmall
+Copperhead Snake, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeSmall
+Desert Tortoise, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeSmall
+Giant Tortoise, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeSmall
+Gila Monster, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeSmall
+King Cobra, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeSmall
+Gecko, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeSmall
+Python, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeSmall
+Rattlesnake, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeSmall
+//      insects
+Bee, Creature, CreatureAnimal, CreatureFamilyInsect, CreatureSizeTiny
+Beetle, Creature, CreatureAnimal, CreatureFamilyInsect, CreatureSizeTiny
+Butterfly, Creature, CreatureAnimal, CreatureFamilyInsect, CreatureSizeTiny
+Dragonfly, Creature, CreatureAnimal, CreatureFamilyInsect, CreatureSizeTiny
+Scorpion, Creature, CreatureAnimal, CreatureFamilyInsect, CreatureSizeTiny
+Firefly, Creature, CreatureAnimal, CreatureFamilyInsect, CreatureSizeTiny
+Grasshopper, Creature, CreatureAnimal, CreatureFamilyInsect, CreatureSizeTiny
+Louse, Creature, CreatureAnimal, CreatureFamilyInsect, CreatureSizeTiny
+Mantis, Creature, CreatureAnimal, CreatureFamilyInsect, CreatureSizeTiny
+Moth, Creature, CreatureAnimal, CreatureFamilyInsect, CreatureSizeTiny
+Spider, Creature, CreatureAnimal, CreatureFamilyInsect, CreatureSizeTiny
+Wasp, Creature, CreatureAnimal, CreatureFamilyInsect, CreatureSizeTiny
+Hornet, Creature, CreatureAnimal, CreatureFamilyInsect, CreatureSizeTiny
+//  SEA
+//      mamals
+Beaver, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
+Elephant Seal, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeLarge
+Harp Seal, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
+Hippopotamus, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
+Narwhal, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeLarge
+Orca, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeLarge
+Platypus, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
+Otter, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeSmall
+Sperm Whale, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeLarge
+Walrus, Creature, CreatureAnimal, CreatureFamilyMammal, CreatureSizeNormal
+//      birds
+Albatross, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
+Emperor Penguin, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeNormal
+Little Penguin, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
+Penguin, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
+Puffin, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall
+//      reptiles
+Snapping Turtle, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeSmall
+Pond Turtle, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeSmall
+Saltwater Crocodile, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeNormal
+Sea Serpent, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeGreat, Era(Fantasy)
+Sea Monster, , Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeGreat, Era(Fantasy)
+//      fish
+Angelshark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall
+Basking Shark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeNormal
+Blacktip Reef Shark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall
+Blue Shark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeNormal
+Bluefin Tuna, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall
+Bluefish, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall
+Bull Shark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeNormal
+Carp, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall
+Cod, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall
+Coelacanth, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall
+Common Skate, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeNormal
+Conger Eel, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall
+Frill Shark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall
+Great Barracuda, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall
+Great White Shark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeLarge
+Halibut, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall
+Hammerhead Shark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeNormal
+Longfin Mako Shark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeNormal
+Longnose Gar, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall
+Manta Ray, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeNormal
+Marlin, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeNormal
+Milkfish, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall
+Nurse Shark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeNormal
+Ocean Sunfish, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeLarge
+Pike, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall
+Sea Lampray, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall
+Shortfin Mako Shark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall
+Spiny Dogfish, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall
+Stingray, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall
+Sturgeon, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall
+Whale Shark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeLarge
+Whitetip Reef Shark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall

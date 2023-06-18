@@ -1,0 +1,6 @@
+North, Direction, Adjective, Adjective(Northern)
+East, Direction, Adjective, Adjective(Eastern)
+South, Direction, Adjective, Adjective(Southern)
+West, Direction, Adjective, Adjective(Western)
+Up, Direction, Adjective(Upper), Adjective(High)
+Down, Direction, Adjective(Lower), Adjective(Low)

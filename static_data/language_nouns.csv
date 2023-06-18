@@ -64,34 +64,6 @@ Council, CulturalGroup
 Cult, CulturalGroup
 Dominion, CulturalGroup
 Empire, CulturalGroup
-// emotions
-    Aggrivation, Emotion
-    Amazement, Emotion
-    Anguish, Emotion
-    Anxiety, Emotion
-    Attraction, Emotion
-    Confusion, Emotion
-    Contentment, Emotion
-    Depression, Emotion
-    Disgust, Emotion
-    Dread, Emotion
-    Grief, Emotion
-    Guilt, Emotion
-    Jeaolousy, Emotion
-    Loneliness, Emotion
-    Longing, Emotion
-    Lust, Emotion
-    Panic, Emotion
-    Pride, Emotion
-    Relief, Emotion
-    Satisfaction, Emotion
-    Terror, Emotion
-Anger, Emotion
-Fear, Emotion
-Joy, Emotion
-Love, Emotion
-Sadness, Emotion
-Surprise, Emotion
 // institutions
 Arena, Institution
 Armoury, Institution
@@ -251,37 +223,6 @@ Knee, BodyPart
 Leg, BodyPart
 Neck, BodyPart
 Nose, BodyPart, Symbolic
-// cloth
-Cotton, Plant, Cloth
-Leather, Cloth
-Linen, Cloth
-Silk, Cloth
-Wool, Cloth
-// materials
-Ash, Material, Product, Symbolic
-Chalk, Material
-Charcoal, Material, Product
-Clay, Material
-Coal, Material
-Crystal, Material, Symbolic
-Stone, Material
-Wood, Material
-// metals
-Aluminium, Metal, Material, Product
-Brass, Metal, Material, Product, Symbolic
-Bronze, Metal, Material, Product
-Cobalt, Metal, Material, Product
-Copper, Metal, Material, Product
-Gold, Metal, Material, Product, Symbolic
-Iron, Metal, Material, Product, Symbolic
-Lead, Metal, Material, Product
-Nickel, Metal, Material, Product
-Pewter, Metal, Material, Product
-Platinum, Metal, Material, Product
-Silver, Metal, Material, Product, Symbolic
-Steel, Metal, Material, Product, Symbolic
-Tin, Metal, Material, Product
-Zinc, Metal, Material, Product
 // plants
 Cactus, Plant
 // trees
