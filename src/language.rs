@@ -90,12 +90,14 @@ pub mod language {
         word_type: WordType,
         all_of: &Vec<WordTag>,
         one_of: &Vec<WordTag>,
+        none_of: &Vec<WordTag>,
     ) -> Option<Word> {
         let mut output: Vec<Word> = Vec::new();
         for word in words {
             if word.wordType.eq(&word_type)
                 && (all_of.iter().all(|t| word.tags.contains(&t)) || all_of.len() == 0)
                 && (one_of.iter().any(|t| word.tags.contains(&t)) || one_of.len() == 0)
+                && (!none_of.iter().all(|t| word.tags.contains(&t)) || none_of.len() == 0)
             {
                 output.push(word.clone());
             }

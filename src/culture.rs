@@ -1,7 +1,8 @@
 pub mod culture {
     use crate::language::{
         language::{
-            build_dictionary, random_word_by_tag, random_word_by_tag_and, Word, WordTag, WordType,
+            build_dictionary, random_word_by_tag, random_word_by_tag_and, Era, Word, WordTag,
+            WordType,
         },
         nouns::{
             creatures::creatures::{CreatureCategory, CreatureFamily},
@@ -29,6 +30,7 @@ pub mod culture {
                 WordType::Noun,
                 &vec![WordTag::Noun(String::from("Title"))],
                 &vec![],
+                &vec![],
             )
             .unwrap()
             .text;
@@ -36,6 +38,7 @@ pub mod culture {
                 &dict,
                 WordType::Noun,
                 &vec![WordTag::Noun(String::from("LastName"))],
+                &vec![],
                 &vec![],
             )
             .unwrap()
@@ -65,6 +68,11 @@ pub mod culture {
                     WordType::Noun,
                     &vec![WordTag::Noun(CreatureCategory::CreatureAnimal.to_string())],
                     &animalTypes,
+                    &vec![
+                        WordTag::Noun(CreatureCategory::CreatureMagical.to_string()),
+                        WordTag::Noun(CreatureCategory::CreatureSentient.to_string()),
+                        WordTag::Noun(Era::Fantasy.to_string()),
+                    ],
                 )
                 .unwrap()
                 .text,
@@ -84,6 +92,7 @@ pub mod culture {
                     &dict,
                     WordType::Noun,
                     &vec![WordTag::Noun(PlantType::PlantTypeCrop.to_string())],
+                    &vec![],
                     &vec![],
                 )
                 .unwrap()
