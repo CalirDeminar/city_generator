@@ -1,6 +1,7 @@
 use city::city::{export_city, export_city_html};
 
 pub mod city;
+pub mod culture;
 pub mod data_parser;
 pub mod language;
 pub mod names;

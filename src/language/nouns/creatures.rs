@@ -48,6 +48,9 @@ pub mod creatures {
         for tag in CreatureFamily::iter() {
             output.push(tag.to_string())
         }
+        for tag in CreatureCategory::iter() {
+            output.push(tag.to_string())
+        }
 
         return output;
     }

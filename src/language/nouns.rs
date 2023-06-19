@@ -52,11 +52,21 @@ pub mod nouns {
         GlobalSingular,
         Direction,
         Title,
+        LastName,
+    }
+
+    fn build_generic_tags() -> Vec<String> {
+        let mut output: Vec<String> = Vec::new();
+        for tag in NounTag::iter() {
+            output.push(tag.to_string());
+        }
+        return output;
     }
 
     pub fn build_noun_tags() -> Vec<String> {
         let mut output: Vec<Vec<String>> = Vec::new();
 
+        output.push(build_generic_tags());
         output.push(creature_tags());
         output.push(emotion_group_tags());
         output.push(era_tags());
@@ -132,7 +142,8 @@ pub mod nouns {
         let nouns = build_nouns();
         for noun in filter_words_by_tag_or(
             nouns.iter().collect(),
-            vec![WordTag::Noun(String::from("EmotionGroupFear"))],
+            WordType::Noun,
+            vec![WordTag::Noun(String::from("CreatureAnimal"))],
         ) {
             println!("{:#?}", noun);
         }

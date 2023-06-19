@@ -17,6 +17,8 @@ pub mod adjectives {
         Colour,
         Size,
         Taste,
+        Positive,
+        Negative,
     }
 
     fn string_match_adjective_tag(token: &str) -> Option<String> {
@@ -60,6 +62,7 @@ pub mod adjectives {
         let adjectives = build_adjectives();
         for adjective in filter_words_by_tag_or(
             adjectives.iter().collect(),
+            WordType::Adjective,
             vec![WordTag::Noun(String::from("Colour"))],
         ) {
             println!("{:#?}", adjective);
