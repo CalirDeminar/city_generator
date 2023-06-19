@@ -52,7 +52,11 @@ pub mod nouns {
         GlobalSingular,
         Direction,
         Title,
+        BuildingTitle,
         LastName,
+        GeneralRetailerName,
+        RetailerFood,
+        RetailerSpecialist,
     }
 
     fn build_generic_tags() -> Vec<String> {
@@ -97,12 +101,12 @@ pub mod nouns {
             let filename = path.unwrap().file_name();
             let data = parse_file(format!("nouns/{}", filename.to_str().unwrap()));
             for (subject, incoming_tags) in data {
-                let mut tags: Vec<WordTag> = Vec::new();
+                let mut tags: Vec<String> = Vec::new();
                 let mut adjective_terms: Vec<String> = Vec::new();
                 for incoming_tag in incoming_tags {
                     let tag = string_match_noun_tag(&incoming_tag);
                     if tag.is_some() {
-                        tags.push(WordTag::Noun(tag.unwrap()));
+                        tags.push(tag.unwrap());
                     }
                     if incoming_tag.eq("Adjective") {
                         adjective_terms.push(subject.clone());
@@ -119,18 +123,18 @@ pub mod nouns {
                     .iter()
                     .map(|t| Word {
                         id: Uuid::new_v4(),
-                        wordType: WordType::Adjective,
+                        word_type: WordType::Adjective,
                         text: String::from(t),
                         tags: tags.clone(),
-                        relatedForms: Vec::new(),
+                        related_forms: Vec::new(),
                     })
                     .collect();
                 output.push(Word {
                     id: Uuid::new_v4(),
-                    wordType: WordType::Noun,
+                    word_type: WordType::Noun,
                     text: subject,
                     tags,
-                    relatedForms: adjectives,
+                    related_forms: adjectives,
                 });
             }
         }
@@ -143,7 +147,7 @@ pub mod nouns {
         for noun in filter_words_by_tag_or(
             nouns.iter().collect(),
             WordType::Noun,
-            vec![WordTag::Noun(String::from("CreatureAnimal"))],
+            vec![String::from("Metal")],
         ) {
             println!("{:#?}", noun);
         }

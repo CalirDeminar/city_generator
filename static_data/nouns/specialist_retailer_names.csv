@@ -1,0 +1,46 @@
+Arms,RetailerFood
+Bakery,RetailerFood
+Bar,RetailerFood
+Brasserie,RetailerFood
+Cafe,RetailerFood
+Chippie,RetailerFood
+Coffee,RetailerFood
+Diner,RetailerFood
+Grill,RetailerFood
+Inn,RetailerFood
+Kebab,RetailerFood
+Kebabs,RetailerFood
+Kitchen,RetailerFood
+Pizza,RetailerFood
+Pizzas,RetailerFood
+Sushi,RetailerFood
+Sushi-Bar,RetailerFood
+Tap Room,RetailerFood
+Waffle House,RetailerFood
+Bakers,RetailerSpecialist
+Barbers,RetailerSpecialist
+Beauty,RetailerSpecialist
+Boots,RetailerSpecialist
+Bread,RetailerSpecialist
+Building Supplies,RetailerSpecialist
+Butchers,RetailerSpecialist
+Car Hire,RetailerSpecialist
+Cobblers,RetailerSpecialist
+Computers,RetailerSpecialist
+Electronics Hut,RetailerSpecialist
+Electronics,RetailerSpecialist
+Fitness,RetailerSpecialist
+Florists,RetailerSpecialist
+Guitars,RetailerSpecialist
+Gym,RetailerSpecialist
+Hardware,RetailerSpecialist
+Instruments,RetailerSpecialist
+Meats,RetailerSpecialist
+Medicine,RetailerSpecialist
+Pharmacy,RetailerSpecialist
+Pianos,RetailerSpecialist
+Salon,RetailerSpecialist
+Shoes,RetailerSpecialist
+Tailors,RetailerSpecialist
+Technology,RetailerSpecialist
+Van Hire,RetailerSpecialist

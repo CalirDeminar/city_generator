@@ -1,33 +1,33 @@
 // normal
-Ash, Material(Solid, Powder), Product, Symbolic, Adjective(Ashen)
-Chalk, MaterialStateSolid, SolidMaterialFormSolid, Adjective
-Charcoal, MaterialStateSolid, SolidMaterialFormSolid, Product, Adjective
-Clay, MaterialStateSolid, SolidMaterialFormSolid, Adjective
-Coal, MaterialStateSolid, SolidMaterialFormSolid, Adjective
-Crystal, MaterialStateSolid, SolidMaterialFormSolid, Symbolic, Adjective
-Stone, MaterialStateSolid, SolidMaterialFormSolid, Adjective
-Wood, MaterialStateSolid, SolidMaterialFormSolid, Adjective(Wooden)
-Glass, MaterialStateSolid, SolidMaterialFormSolid, Adjective
+Ash, Material, MaterialStateSolid, MaterialFormPowder, Product, Symbolic, Adjective(Ashen)
+Chalk, Material, MaterialStateSolid, SolidMaterialFormSolid, Adjective
+Charcoal, Material, MaterialStateSolid, SolidMaterialFormSolid, Product, Adjective
+Clay, Material, MaterialStateSolid, SolidMaterialFormSolid, Adjective
+Coal, Material, MaterialStateSolid, SolidMaterialFormSolid, Adjective
+Crystal, Material, MaterialStateSolid, SolidMaterialFormSolid, Symbolic, Adjective
+Stone, Material, MaterialStateSolid, SolidMaterialFormSolid, Adjective
+Wood, Material, MaterialStateSolid, SolidMaterialFormSolid, Adjective(Wooden)
+Glass, Material, MaterialStateSolid, SolidMaterialFormSolid, Adjective
 // metals
-Aluminium, MaterialStateSolid, SolidMaterialFormSolid, MaterialTagMetal, Product, Adjective
-Brass, MaterialStateSolid, SolidMaterialFormSolid, MaterialTagMetal, Product, Symbolic, Adjective
-Bronze, MaterialStateSolid, SolidMaterialFormSolid, SolidMaterialFormPlate, MaterialTagMetal, Product, Adjective
-Cobalt, MaterialStateSolid, SolidMaterialFormSolid, MaterialTagMetal, Product, Adjective
-Copper, MaterialStateSolid, SolidMaterialFormSolid, SolidMaterialFormPlate, MaterialTagMetal, Product, Adjective
-Gold, MaterialStateSolid, SolidMaterialFormSolid, MaterialTagMetal, Product, Symbolic, Adjective(Golden)
-Iron, MaterialStateSolid, SolidMaterialFormSolid, SolidMaterialFormPlate, MaterialTagMetal, Product, Symbolic, Adjective
-Lead, MaterialStateSolid, SolidMaterialFormSolid, MaterialTagMetal, Product, Adjective
-Nickel, MaterialStateSolid, SolidMaterialFormSolid, MaterialTagMetal, Product, Adjective
-Pewter, MaterialStateSolid, SolidMaterialFormSolid, MaterialTagMetal, Product, Adjective
-Platinum, MaterialStateSolid, SolidMaterialFormSolid, MaterialTagMetal, Product, Adjective
-Silver, MaterialStateSolid, SolidMaterialFormSolid, MaterialTagMetal, Product, Symbolic, Adjective
-Steel, MaterialStateSolid, SolidMaterialFormSolid, SolidMaterialFormPlate, MaterialTagMetal, Product, Symbolic, Adjective
-Tin, MaterialStateSolid, SolidMaterialFormSolid, MaterialTagMetal, Product, Adjective
-Zinc, MaterialStateSolid, SolidMaterialFormSolid, SolidMaterialFormPlate, MaterialTagMetal, Product, Adjective
+Aluminium, Material, MaterialStateSolid, SolidMaterialFormSolid, MaterialTagMetal, Product, Adjective
+Brass, Material, MaterialStateSolid, SolidMaterialFormSolid, MaterialTagMetal, Product, Symbolic, Adjective
+Bronze, Material, MaterialStateSolid, SolidMaterialFormSolid, SolidMaterialFormPlate, MaterialTagMetal, Product, Adjective
+Cobalt, Material, MaterialStateSolid, SolidMaterialFormSolid, MaterialTagMetal, Product, Adjective
+Copper, Material, MaterialStateSolid, SolidMaterialFormSolid, SolidMaterialFormPlate, MaterialTagMetal, Product, Adjective
+Gold, Material, MaterialStateSolid, SolidMaterialFormSolid, MaterialTagMetal, Product, Symbolic, Adjective(Golden)
+Iron, Material, MaterialStateSolid, SolidMaterialFormSolid, SolidMaterialFormPlate, MaterialTagMetal, Product, Symbolic, Adjective
+Lead, Material, MaterialStateSolid, SolidMaterialFormSolid, MaterialTagMetal, Product, Adjective
+Nickel, Material, MaterialStateSolid, SolidMaterialFormSolid, MaterialTagMetal, Product, Adjective
+Pewter, Material, MaterialStateSolid, SolidMaterialFormSolid, MaterialTagMetal, Product, Adjective
+Platinum, Material, MaterialStateSolid, SolidMaterialFormSolid, MaterialTagMetal, Product, Adjective
+Silver, Material, MaterialStateSolid, SolidMaterialFormSolid, MaterialTagMetal, Product, Symbolic, Adjective
+Steel, Material, MaterialStateSolid, SolidMaterialFormSolid, SolidMaterialFormPlate, MaterialTagMetal, Product, Symbolic, Adjective
+Tin, Material, MaterialStateSolid, SolidMaterialFormSolid, MaterialTagMetal, Product, Adjective
+Zinc, Material, MaterialStateSolid, SolidMaterialFormSolid, SolidMaterialFormPlate, MaterialTagMetal, Product, Adjective
 // Woods
 // cloths
-Wool, MaterialStateSolid, SolidMaterialFormThread, SolidMaterialFormCloth, Product, Adjective(Woolen), Adjective
-Silk, MaterialStateSolid, SolidMaterialFormThread, SolidMaterialFormCloth, Product, Adjective(Silken), Adjective
-Cotton, MaterialStateSolid, SolidMaterialFormThread, SolidMaterialFormCloth, Product, Adjective
-Leather, MaterialStateSolid, SolidMaterialFormCloth, Product, Adjective
-Linen, MaterialStateSolid, SolidMaterialFormCloth, Product, Adjective
+Wool, Material, MaterialStateSolid, SolidMaterialFormThread, SolidMaterialFormCloth, Product, Adjective(Woolen), Adjective
+Silk, Material, MaterialStateSolid, SolidMaterialFormThread, SolidMaterialFormCloth, Product, Adjective(Silken), Adjective
+Cotton, Material, MaterialStateSolid, SolidMaterialFormThread, SolidMaterialFormCloth, Product, Adjective
+Leather, Material, MaterialStateSolid, SolidMaterialFormCloth, Product, Adjective
+Linen, Material, MaterialStateSolid, SolidMaterialFormCloth, Product, Adjective

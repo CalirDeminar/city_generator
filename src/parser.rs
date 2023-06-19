@@ -75,13 +75,22 @@ pub mod parser {
             .unwrap();
     }
 
+    fn format_folder(path: String) {
+        let paths = fs::read_dir(path).unwrap();
+        for p in paths {
+            let path = p.unwrap();
+            let filename = path.file_name();
+            println!("Metadata {:?}", path.metadata());
+            if path.metadata().unwrap().is_file() {
+                println!("{}", filename.to_str().unwrap());
+                format_file(String::from(filename.to_str().unwrap()));
+            } else {
+            }
+        }
+    }
+
     #[test]
     fn format_data_files() {
-        let paths = fs::read_dir("./static_data").unwrap();
-        for path in paths {
-            let filename = path.unwrap().file_name();
-            println!("{}", filename.to_str().unwrap());
-            format_file(String::from(filename.to_str().unwrap()));
-        }
+        format_folder(String::from("./static_data"))
     }
 }

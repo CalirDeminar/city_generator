@@ -5,10 +5,8 @@ pub mod building {
     use uuid::Uuid;
 
     use crate::{
-        city::{city::City, institutions::institutions::Institution, population::mind::mind::Mind},
-        names::names::{gen_name_dict, NameDictionary},
-        templater::templater::render_template,
-        utils::utils::random_pick,
+        city::city::*, city::population::mind::mind::*, names::names::*,
+        templater::templater::render_template, utils::utils::random_pick,
     };
     #[derive(PartialEq, Debug, Clone)]
     pub enum FloorAreaType {

@@ -1,9 +1,12 @@
 pub mod templater {
-    use crate::names::names::*;
-    use regex::Regex;
+    use crate::{
+        language::language::{
+            build_dictionary, filter_words_by_tag_and, random_word_by_tag, Word, WordType,
+        },
+        names::names::*,
+    };
+    use regex::{Captures, Regex};
     use strum::IntoEnumIterator; // 0.17.1
-
-    
 
     fn string_match_name_tag(token: &str) -> Option<NameTag> {
         for tag in NameTag::iter() {
@@ -19,7 +22,7 @@ pub mod templater {
         let mut output = String::new();
         let word_regex = Regex::new(r"(\{\{[a-zA-Z]*\}\})").unwrap();
         for p in word_regex.find_iter(template) {
-            let part = p.as_str().replace("{","").replace("}", "");
+            let part = p.as_str().replace("{", "").replace("}", "");
             let t = string_match_name_tag(&part);
             if t.is_some() {
                 let tag = t.unwrap();
@@ -37,10 +40,42 @@ pub mod templater {
         return String::from(output.trim());
     }
 
+    // Tags: "{{Nuon(Tag)}}"
+    pub fn render_template_2(template: &str, dictionary: &Vec<Word>) -> String {
+        let mut output = String::new();
+        let word_regex = Regex::new(r"([a-zA-Z0-9 \-\:\']*\{\{[a-zA-Z\(\) \,]*\}\})").unwrap();
+
+        for term in word_regex.find_iter(template) {
+            let split: Vec<&str> = term.as_str().split("{").collect();
+            let prefix = split.first().unwrap();
+            let suffix = split.last().unwrap();
+
+            let part = suffix.replace("{", "").replace("}", "").replace(")", "");
+            let mut p = part.split("(");
+            let type_tag = p.next().unwrap();
+            let word_type = WordType::iter()
+                .find(|t| t.to_string().eq(type_tag))
+                .unwrap();
+            let tags: Vec<String> = p
+                .next()
+                .unwrap()
+                .split(",")
+                .map(|s| String::from(s))
+                .collect();
+            let word = random_word_by_tag(&dictionary, word_type, &vec![], &tags, &vec![]);
+            output.push_str(prefix.clone());
+            if word.is_some() {
+                output.push_str(&word.unwrap().text);
+            }
+        }
+        return output;
+    }
+
     #[test]
     fn test_render_template() {
-        let example_template: &str = "{{LocationDesciptor}}{{LastName}}{{InstitutionFoodServiceSuffix}}";
+        let example_template: &str = "{{Noun(Title)}}'s {{Noun(MaterialTagMetal)}}";
         let name_dict = gen_name_dict();
-        println!("{}", render_template(example_template, &name_dict.total_list));
+        let dict = build_dictionary();
+        println!("{}", render_template_2(example_template, &dict));
     }
 }

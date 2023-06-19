@@ -18,6 +18,7 @@ pub mod city {
     use crate::city::institutions::institutions::*;
     use crate::city::locations::{locations, locations::*};
     use crate::city::population::population::*;
+    use crate::language::language::{build_dictionary, Word};
     use crate::names::names::*;
     // use crate::city::population::mind::relations::relations::*;
 
@@ -296,6 +297,7 @@ pub mod city {
 
     pub fn build(size: usize) -> City {
         let name_dict = gen_name_dict();
+        let language_dict = build_dictionary();
         let mut city = City {
             name: locations::gen_location_name(&name_dict, false),
             buildings: Vec::new(),
@@ -306,7 +308,7 @@ pub mod city {
 
         generate_population(&name_dict, size, &mut city);
 
-        let public_institutions = generate_public_institutions(&name_dict);
+        let public_institutions = generate_public_institutions(&language_dict);
 
         for pub_inst in public_institutions {
             add_public_institution_to_city(&mut city, pub_inst, &name_dict);
@@ -314,7 +316,7 @@ pub mod city {
 
         let mut workers = find_workers(&city);
         while workers.len() > 0 {
-            let institution = generate_population_institution(&name_dict);
+            let institution = generate_population_institution(&language_dict);
             add_institution_to_city(&mut city, institution, &name_dict);
             workers = find_workers(&city);
         }

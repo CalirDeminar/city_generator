@@ -16,7 +16,7 @@ pub mod language {
         Medieval,
     }
 
-    #[derive(PartialEq, Debug, Clone)]
+    #[derive(PartialEq, Debug, Clone, EnumIter, Display)]
     pub enum WordType {
         Noun,
         Adjective,
@@ -24,29 +24,22 @@ pub mod language {
     }
 
     #[derive(PartialEq, Debug, Clone)]
-    pub enum WordTag {
-        Noun(String),
-        Adjective,
-        Verb,
-    }
-
-    #[derive(PartialEq, Debug, Clone)]
     pub struct Word {
         pub id: Uuid,
-        pub wordType: WordType,
-        pub relatedForms: Vec<Word>,
+        pub word_type: WordType,
+        pub related_forms: Vec<Word>,
         pub text: String,
-        pub tags: Vec<WordTag>,
+        pub tags: Vec<String>,
     }
 
     pub fn filter_words_by_tag_and(
         words: &Vec<Word>,
         word_type: WordType,
-        tags: Vec<WordTag>,
+        tags: Vec<String>,
     ) -> Vec<Word> {
         let mut output: Vec<Word> = Vec::new();
         for word in words {
-            if word.wordType.eq(&word_type) && tags.iter().all(|t| word.tags.contains(&t)) {
+            if word.word_type.eq(&word_type) && tags.iter().all(|t| word.tags.contains(&t)) {
                 output.push(word.clone());
             }
         }
@@ -56,11 +49,11 @@ pub mod language {
     pub fn random_word_by_tag_and(
         words: &Vec<Word>,
         word_type: WordType,
-        tags: Vec<WordTag>,
+        tags: Vec<String>,
     ) -> Option<Word> {
         let mut output: Vec<Word> = Vec::new();
         for word in words {
-            if word.wordType.eq(&word_type) && tags.iter().all(|t| word.tags.contains(&t)) {
+            if word.word_type.eq(&word_type) && tags.iter().all(|t| word.tags.contains(&t)) {
                 output.push(word.clone());
             }
         }
@@ -74,11 +67,11 @@ pub mod language {
     pub fn filter_words_by_tag_or(
         words: Vec<&Word>,
         word_type: WordType,
-        tags: Vec<WordTag>,
+        tags: Vec<String>,
     ) -> Vec<Word> {
         let mut output: Vec<Word> = Vec::new();
         for word in words {
-            if word.wordType.eq(&word_type) && tags.iter().any(|t| word.tags.contains(&t)) {
+            if word.word_type.eq(&word_type) && tags.iter().any(|t| word.tags.contains(&t)) {
                 output.push(word.clone());
             }
         }
@@ -88,13 +81,13 @@ pub mod language {
     pub fn random_word_by_tag(
         words: &Vec<Word>,
         word_type: WordType,
-        all_of: &Vec<WordTag>,
-        one_of: &Vec<WordTag>,
-        none_of: &Vec<WordTag>,
+        all_of: &Vec<String>,
+        one_of: &Vec<String>,
+        none_of: &Vec<String>,
     ) -> Option<Word> {
         let mut output: Vec<Word> = Vec::new();
         for word in words {
-            if word.wordType.eq(&word_type)
+            if word.word_type.eq(&word_type)
                 && (all_of.iter().all(|t| word.tags.contains(&t)) || all_of.len() == 0)
                 && (one_of.iter().any(|t| word.tags.contains(&t)) || one_of.len() == 0)
                 && (!none_of.iter().all(|t| word.tags.contains(&t)) || none_of.len() == 0)

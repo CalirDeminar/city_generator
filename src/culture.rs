@@ -1,9 +1,6 @@
 pub mod culture {
     use crate::language::{
-        language::{
-            build_dictionary, random_word_by_tag, random_word_by_tag_and, Era, Word, WordTag,
-            WordType,
-        },
+        language::*,
         nouns::{
             creatures::creatures::{CreatureCategory, CreatureFamily},
             plants::plants::PlantType,
@@ -15,8 +12,8 @@ pub mod culture {
     pub struct CultureConfig {
         historical_figures: Vec<(String, String)>,
         landlocked: bool,
-        stapleMeats: Vec<String>,
-        staplePlants: Vec<String>,
+        staple_meats: Vec<String>,
+        staple_plants: Vec<String>,
     }
 
     fn gen_historical_figures(dict: &Vec<Word>) -> Vec<(String, String)> {
@@ -28,7 +25,7 @@ pub mod culture {
             let title = random_word_by_tag(
                 &dict,
                 WordType::Noun,
-                &vec![WordTag::Noun(String::from("Title"))],
+                &vec![String::from("Title")],
                 &vec![],
                 &vec![],
             )
@@ -37,7 +34,7 @@ pub mod culture {
             let name = random_word_by_tag(
                 &dict,
                 WordType::Noun,
-                &vec![WordTag::Noun(String::from("LastName"))],
+                &vec![String::from("LastName")],
                 &vec![],
                 &vec![],
             )
@@ -53,25 +50,21 @@ pub mod culture {
         let mut rng = rand::thread_rng();
         let len = (rng.gen::<f32>() * 5.0) as usize;
         let mut output: Vec<String> = Vec::new();
-        let mut animalTypes = vec![WordTag::Noun(
-            CreatureFamily::CreatureFamilyMammal.to_string(),
-        )];
+        let mut animal_types = vec![CreatureFamily::CreatureFamilyMammal.to_string()];
         if !landlocked {
-            animalTypes.push(WordTag::Noun(
-                CreatureFamily::CreatureFamilyFish.to_string(),
-            ));
+            animal_types.push(CreatureFamily::CreatureFamilyFish.to_string());
         }
         for _i in 0..len.max(2) {
             output.push(
                 random_word_by_tag(
                     &dict,
                     WordType::Noun,
-                    &vec![WordTag::Noun(CreatureCategory::CreatureAnimal.to_string())],
-                    &animalTypes,
+                    &vec![CreatureCategory::CreatureAnimal.to_string()],
+                    &animal_types,
                     &vec![
-                        WordTag::Noun(CreatureCategory::CreatureMagical.to_string()),
-                        WordTag::Noun(CreatureCategory::CreatureSentient.to_string()),
-                        WordTag::Noun(Era::Fantasy.to_string()),
+                        CreatureCategory::CreatureMagical.to_string(),
+                        CreatureCategory::CreatureSentient.to_string(),
+                        Era::Fantasy.to_string(),
                     ],
                 )
                 .unwrap()
@@ -91,7 +84,7 @@ pub mod culture {
                 random_word_by_tag(
                     &dict,
                     WordType::Noun,
-                    &vec![WordTag::Noun(PlantType::PlantTypeCrop.to_string())],
+                    &vec![PlantType::PlantTypeCrop.to_string()],
                     &vec![],
                     &vec![],
                 )
@@ -108,8 +101,8 @@ pub mod culture {
         return CultureConfig {
             historical_figures: gen_historical_figures(&dict),
             landlocked,
-            stapleMeats: random_animals(&dict, landlocked),
-            staplePlants: random_crops(&dict),
+            staple_meats: random_animals(&dict, landlocked),
+            staple_plants: random_crops(&dict),
         };
     }
 
