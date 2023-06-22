@@ -5,8 +5,12 @@ pub mod building {
     use uuid::Uuid;
 
     use crate::{
-        city::city::*, city::population::mind::mind::*, names::names::*,
-        templater::templater::render_template, utils::utils::random_pick,
+        city::city::*,
+        city::population::mind::mind::*,
+        language::language::{build_dictionary, Word},
+        names::names::*,
+        templater::templater::{render_template, render_template_2},
+        utils::utils::random_pick,
     };
     #[derive(PartialEq, Debug, Clone)]
     pub enum FloorAreaType {
@@ -201,15 +205,15 @@ pub mod building {
         };
     }
 
-    pub fn new_building_no_loc(name_dict: &NameDictionary) -> Building {
-        return new_building(name_dict, None);
+    pub fn new_building_no_loc(dict: &Vec<Word>) -> Building {
+        return new_building(dict, None);
     }
 
-    pub fn new_building(name_dict: &NameDictionary, location_id: Option<Uuid>) -> Building {
+    pub fn new_building(dict: &Vec<Word>, location_id: Option<Uuid>) -> Building {
         let name_templates = vec![
-            "{{LocationDescriptor}}{{LastName}}{{BuildingSuffix}}",
-            "{{LastName}}{{BuildingSuffix}}",
-            "{{LocationDescriptor}}{{BuildingSuffix}}",
+            "{{{{Adjective(Position, Quality, Age, Colour)}} {{Noun(LastName)}} {{Noun(BuildingTitle)}}",
+            "{{Noun(LastName)}} {{Noun(BuildingTitle)}}",
+            "{{{{Adjective(Position, Quality, Age, Colour)}} {{Noun(BuildingTitle)}}",
         ];
         let mut rng = rand::thread_rng();
         let mut floors: Vec<BuildingFloor> = Vec::new();
@@ -228,7 +232,7 @@ pub mod building {
         }
         return Building {
             id: Uuid::new_v4(),
-            name: render_template(random_pick(&name_templates), &name_dict.total_list),
+            name: render_template_2(random_pick(&name_templates), &dict),
             floors,
             location_id,
         };
@@ -236,7 +240,7 @@ pub mod building {
 
     #[test]
     fn test_new_building() {
-        let dict = gen_name_dict();
+        let dict = build_dictionary();
         println!("{:#?}", new_building_no_loc(&dict));
     }
 }

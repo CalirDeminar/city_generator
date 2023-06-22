@@ -151,13 +151,13 @@ pub mod city {
         return building;
     }
 
-    fn add_building_to_city<'a>(city: &'a mut City, name_dict: &NameDictionary) -> &'a mut City {
+    fn add_building_to_city<'a>(city: &'a mut City, dict: &Vec<Word>) -> &'a mut City {
         let mut free_location = find_free_area(city);
         if free_location.is_none() {
-            city.areas.push(gen_location(&name_dict));
+            city.areas.push(gen_location(&dict));
             free_location = find_free_area(city);
         }
-        let new_building = new_building(&name_dict, Some(free_location.unwrap().id.clone()));
+        let new_building = new_building(&dict, Some(free_location.unwrap().id.clone()));
         city.buildings.push(new_building);
         return city;
     }
@@ -165,7 +165,7 @@ pub mod city {
     fn add_institution_to_city<'a>(
         city: &'a mut City,
         institution: Institution,
-        name_dict: &NameDictionary,
+        dict: &Vec<Word>,
     ) -> &'a mut City {
         let mut rng = rand::thread_rng();
         let employee_count = ((rng.gen::<f32>() * 10.0) as i32).max(1);
@@ -174,7 +174,7 @@ pub mod city {
         let mut building_with_space = find_free_building(city);
 
         if building_with_space.is_none() {
-            add_building_to_city(city, &name_dict);
+            add_building_to_city(city, &dict);
             building_with_space = find_free_building(city);
         }
 
@@ -191,14 +191,14 @@ pub mod city {
     fn add_public_institution_to_city<'a>(
         city: &'a mut City,
         institution: Institution,
-        name_dict: &NameDictionary,
+        dict: &Vec<Word>,
     ) -> &'a mut City {
         let mut rng = rand::thread_rng();
         let employee_count = ((rng.gen::<f32>() * 10.0) as i32).max(1);
         let all_workers = find_workers(&city);
         let workers = all_workers.iter().take(employee_count as usize);
 
-        add_building_to_city(city, &name_dict);
+        add_building_to_city(city, &dict);
         add_institution_to_building(city.buildings.last_mut().unwrap(), &institution);
 
         for w in workers {
@@ -299,7 +299,7 @@ pub mod city {
         let name_dict = gen_name_dict();
         let language_dict = build_dictionary();
         let mut city = City {
-            name: locations::gen_location_name(&name_dict, false),
+            name: locations::gen_location_name(&language_dict, false),
             buildings: Vec::new(),
             citizens: Vec::new(),
             areas: Vec::new(),
@@ -311,13 +311,13 @@ pub mod city {
         let public_institutions = generate_public_institutions(&language_dict);
 
         for pub_inst in public_institutions {
-            add_public_institution_to_city(&mut city, pub_inst, &name_dict);
+            add_public_institution_to_city(&mut city, pub_inst, &language_dict);
         }
 
         let mut workers = find_workers(&city);
         while workers.len() > 0 {
             let institution = generate_population_institution(&language_dict);
-            add_institution_to_city(&mut city, institution, &name_dict);
+            add_institution_to_city(&mut city, institution, &language_dict);
             workers = find_workers(&city);
         }
         link_colleagues(&mut city);
@@ -325,7 +325,7 @@ pub mod city {
         while (apartment_count as f32) < (city.citizens.len() as f32 * 1.1) {
             city.areas.shuffle(&mut rand::thread_rng());
             city.buildings.push(new_building(
-                &name_dict,
+                &language_dict,
                 Some(city.areas.first().unwrap().id.clone()),
             ));
             apartment_count = count_residential_apartments(&city);

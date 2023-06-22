@@ -1,10 +1,10 @@
 // pub mod data_parser;
 pub mod names {
-    use std::{fs::File};
-    use std::io::{self, BufRead};
     use regex::Regex;
+    use std::fs::File;
+    use std::io::{self, BufRead};
     use strum::IntoEnumIterator; // 0.17.1
-    use strum_macros::{EnumIter, Display}; // 0.17.1
+    use strum_macros::{Display, EnumIter}; // 0.17.1
 
     use crate::city::population::mind::mind::*;
     use crate::utils::utils::random_pick;
@@ -27,43 +27,30 @@ pub mod names {
         LocationMajorFeature,
         LocationMinorFeature,
         LocationDescriptor,
-        BuildingSuffix
+        BuildingSuffix,
     }
 
     #[derive(PartialEq, Debug, Clone)]
     pub struct NameDefinition {
         pub name: String,
-        pub tags: Vec<NameTag>
+        pub tags: Vec<NameTag>,
     }
 
     #[derive(PartialEq, Debug, Clone)]
     pub struct NameDictionary {
         pub first_names: Vec<NameDefinition>,
         pub last_names: Vec<NameDefinition>,
-        pub location_descriptors: Vec<NameDefinition>,
-        pub institution_suffixes: Vec<NameDefinition>,
-        pub major_features: Vec<NameDefinition>,
-        pub minor_features: Vec<NameDefinition>,
-        pub total_list: Vec<NameDefinition>
+        pub total_list: Vec<NameDefinition>,
     }
 
     pub fn gen_name_dict() -> NameDictionary {
         let first_names = parse_file(String::from("./static_data/english_first_names.csv"));
         let last_names = parse_file(String::from("./static_data/english_last_names.csv"));
-        let institution_suffixes = parse_file(String::from("./static_data/institution_suffixes.csv"));
-        let location_descriptors = parse_file(String::from("./static_data/location_descriptors.csv"));
-        let major_features =  parse_file(String::from("./static_data/location_major_features.csv"));
-        let minor_features = parse_file(String::from("./static_data/location_minor_features.csv"));
-        let building_suffixes = parse_file(String::from("./static_data/building_suffixes.csv"));
         return NameDictionary {
-            total_list: vec![first_names.clone(), last_names.clone(), institution_suffixes.clone(), location_descriptors.clone(), major_features.clone(), minor_features.clone(), building_suffixes].concat(),
+            total_list: vec![first_names.clone(), last_names.clone()].concat(),
             first_names,
             last_names,
-            institution_suffixes,
-            location_descriptors, 
-            major_features, 
-            minor_features,
-        }
+        };
     }
 
     pub fn filter_on_tag(input: &Vec<NameDefinition>, tag: &NameTag) -> Vec<NameDefinition> {
@@ -88,24 +75,37 @@ pub mod names {
 
     fn random_name_for_gender(input: &Vec<NameDefinition>, gender: &Gender) -> String {
         return match gender {
-            &Gender::Male => random_name_definition_exclude_tag(&input, &NameTag::FemaleGender).name,
-            &Gender::Female => random_name_definition_exclude_tag(&input, &NameTag::MaleGender).name,
-            _ => random_pick(&input).name
+            &Gender::Male => {
+                random_name_definition_exclude_tag(&input, &NameTag::FemaleGender).name
+            }
+            &Gender::Female => {
+                random_name_definition_exclude_tag(&input, &NameTag::MaleGender).name
+            }
+            _ => random_pick(&input).name,
         };
     }
 
-    pub fn random_name_definition_filter_tag(list: &Vec<NameDefinition>, tag: &NameTag) -> NameDefinition {
+    pub fn random_name_definition_filter_tag(
+        list: &Vec<NameDefinition>,
+        tag: &NameTag,
+    ) -> NameDefinition {
         let filtered_list = filter_on_tag(&list, &tag);
         return random_pick(&filtered_list);
     }
 
-    pub fn random_name_definition_exclude_tag(list: &Vec<NameDefinition>, tag: &NameTag) -> NameDefinition {
+    pub fn random_name_definition_exclude_tag(
+        list: &Vec<NameDefinition>,
+        tag: &NameTag,
+    ) -> NameDefinition {
         let filtered_list = exclude_on_tag(&list, &tag);
         return random_pick(&filtered_list);
     }
 
     pub fn random_mind_name<'a>(dict: &'a NameDictionary, gender: &Gender) -> (String, String) {
-        return (random_name_for_gender(&dict.first_names, &gender), random_pick(&dict.last_names).name);
+        return (
+            random_name_for_gender(&dict.first_names, &gender),
+            random_pick(&dict.last_names).name,
+        );
     }
 
     fn string_match_name_tag(token: &str) -> Option<NameTag> {
@@ -125,7 +125,8 @@ pub mod names {
         for l in lines {
             if l.is_ok() {
                 let line_value = l.unwrap();
-                let line = Regex::replace_all(&Regex::new(r"\/\/[a-zA-Z ]*$").unwrap(), &line_value, "");
+                let line =
+                    Regex::replace_all(&Regex::new(r"\/\/[a-zA-Z ]*$").unwrap(), &line_value, "");
                 let splits = line.split(",");
 
                 let mut i = 0;
@@ -143,7 +144,10 @@ pub mod names {
                     i += 1;
                 }
                 if name.len() > 0 {
-                    output.push(NameDefinition { name: name.clone(), tags: tags.clone() });
+                    output.push(NameDefinition {
+                        name: name.clone(),
+                        tags: tags.clone(),
+                    });
                 }
             }
         }

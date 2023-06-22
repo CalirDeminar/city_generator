@@ -171,10 +171,10 @@ pub mod institutions {
 
     pub fn generate_specialist_retailer(dict: &Vec<Word>) -> Institution {
         let templates = vec![
-            "{{Adjective(Position, Quality, Age, Colour)}} {{Noun(LastName}} {{Noun(RetailerSpecialist)}}",
-            "{{Adjective(Position, Quality, Age, Colour)}} {{Noun(LastName}}'s {{Noun(RetailerSpecialist)}}",
-            "{{Noun(LastName}} {{Noun(RetailerSpecialist)}}",
-            "{{Noun(LastName}}'s {{Noun(RetailerSpecialist)}}",
+            "{{Adjective(Position, Quality, Age, Colour)}} {{Noun(LastName)}} {{Noun(RetailerSpecialist)}}",
+            "{{Adjective(Position, Quality, Age, Colour)}} {{Noun(LastName)}}'s {{Noun(RetailerSpecialist)}}",
+            "{{Noun(LastName)}} {{Noun(RetailerSpecialist)}}",
+            "{{Noun(LastName)}}'s {{Noun(RetailerSpecialist)}}",
         ];
         let name = render_template_2(random_pick(&templates), &dict);
         return Institution {

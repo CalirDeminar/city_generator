@@ -57,6 +57,7 @@ pub mod nouns {
         GeneralRetailerName,
         RetailerFood,
         RetailerSpecialist,
+        Suffixable,
     }
 
     fn build_generic_tags() -> Vec<String> {

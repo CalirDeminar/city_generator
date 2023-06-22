@@ -1,0 +1,68 @@
+// Biomes
+Forest, GeographyFeatureSizeBiome
+Marsh, GeographyFeatureSizeBiome
+Plains, GeographyFeatureSizeBiome
+Desert, GeographyFeatureSizeBiome
+Fen, GeographyFeatureSizeBiome
+Hills, GeographyFeatureSizeBiome
+// Major Features
+Bay, GeographyFeatureSizeAreaFeature
+Beach, GeographyFeatureSizeAreaFeature
+Bridge, GeographyFeatureSizeAreaFeature, GeographyFeatureSizeLocalFeature, Suffixable
+Falls, GeographyFeatureSizeAreaFeature
+Field, GeographyFeatureSizeAreaFeature, Suffixable
+Fields, GeographyFeatureSizeAreaFeature
+Ford, GeographyFeatureSizeAreaFeature, Suffixable
+Harbour, GeographyFeatureSizeAreaFeature
+Lake, GeographyFeatureSizeAreaFeature
+Loch, GeographyFeatureSizeAreaFeature, Suffixable
+Mountain, GeographyFeatureSizeAreaFeature
+Mouth, GeographyFeatureSizeAreaFeature, Suffixable
+Pool, GeographyFeatureSizeAreaFeature, Suffixable
+Port, GeographyFeatureSizeAreaFeature, GeographyFeatureSizeLocalFeature, Suffixable
+Portage, GeographyFeatureSizeAreaFeature
+River, GeographyFeatureSizeAreaFeature
+Docks, GeographyFeatureSizeAreaFeature
+Straight, GeographyFeatureSizeAreaFeature
+Valley, GeographyFeatureSizeAreaFeature
+Wood, GeographyFeatureSizeAreaFeature, Suffixable
+Woods, GeographyFeatureSizeAreaFeature
+Ridge, GeographyFeatureSizeAreaFeature, Suffixable
+Town, GeographyFeatureSizeAreaFeature, Suffixable
+// Minor Features
+Barn, GeographyFeatureSizeLocalFeature
+Market, GeographyFeatureSizeLocalFeature
+Creek, GeographyFeatureSizeLocalFeature
+Crossing, GeographyFeatureSizeLocalFeature
+Dock, GeographyFeatureSizeLocalFeature
+Dockyard, GeographyFeatureSizeLocalFeature
+Dyke, GeographyFeatureSizeLocalFeature
+End, GeographyFeatureSizeLocalFeature
+Farm, GeographyFeatureSizeLocalFeature
+Fort, GeographyFeatureSizeLocalFeature
+Garden, GeographyFeatureSizeLocalFeature
+Gardens, GeographyFeatureSizeLocalFeature
+Gate, GeographyFeatureSizeLocalFeature, Suffixable
+Green, GeographyFeatureSizeLocalFeature
+Hall, GeographyFeatureSizeLocalFeature
+Heath, GeographyFeatureSizeLocalFeature
+Hill, GeographyFeatureSizeLocalFeature
+Junction, GeographyFeatureSizeLocalFeature
+Keys, GeographyFeatureSizeLocalFeature
+Lock, GeographyFeatureSizeLocalFeature
+Locks, GeographyFeatureSizeLocalFeature
+Mill, GeographyFeatureSizeLocalFeature
+Mills, GeographyFeatureSizeLocalFeature
+Oaks, GeographyFeatureSizeLocalFeature, Suffixable
+Park, GeographyFeatureSizeLocalFeature
+Pier, GeographyFeatureSizeLocalFeature
+Pine, GeographyFeatureSizeLocalFeature, Suffixable
+Point, GeographyFeatureSizeLocalFeature
+Rock, GeographyFeatureSizeLocalFeature
+Row, GeographyFeatureSizeLocalFeature
+Side, GeographyFeatureSizeLocalFeature
+Springs, GeographyFeatureSizeLocalFeature
+Station, GeographyFeatureSizeLocalFeature
+Stone, GeographyFeatureSizeLocalFeature, Suffixable
+Church, GeographyFeatureSizeLocalFeature, Suffixable
+Water, GeographyFeatureSizeLocalFeature, Suffixable

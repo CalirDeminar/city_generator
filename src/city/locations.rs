@@ -11,8 +11,9 @@ pub mod locations {
     use crate::city::building::building::{print_building, print_building_html, Building};
     use crate::city::city::City;
     use crate::city::institutions::institutions::Institution;
+    use crate::language::language::{build_dictionary, Word};
     use crate::names::names::{gen_name_dict, NameDictionary};
-    use crate::templater::templater::render_template;
+    use crate::templater::templater::{render_template, render_template_2};
     use crate::utils::utils::random_pick;
 
     const LOCATION_MEAN_INSTITUTIONS: f32 = 10.0;
@@ -63,29 +64,29 @@ pub mod locations {
         return node;
     }
 
-    pub fn gen_location_name(name_dict: &NameDictionary, long: bool) -> String {
+    pub fn gen_location_name(dict: &Vec<Word>, long: bool) -> String {
         let long_templates = vec![
-            "{{LocationDescriptor}}{{LastName}}{{LocationMajorFeature}}{{LocationMinorFeature}}",
-            "{{LastName}}{{LocationMajorFeature}}{{LocationMinorFeature}}",
-            "{{LocationDescriptor}}{{LastName}}{{LocationMinorFeature}}",
-            "{{LocationDescriptor}}{{LastName}}{{LocationMajorFeature}}",
+            "{{{{Adjective(Position, Quality, Age, Colour)}} {{Noun(LastName)}} {{Noun(GeographyFeatureSizeAreaFeature)}} {{Noun(GeographyFeatureSizeLocalFeature)}}",
+            "{{Noun(LastName)}} {{Noun(GeographyFeatureSizeAreaFeature)}} {{Noun(GeographyFeatureSizeLocalFeature)}}",
+            "{{{{Adjective(Position, Quality, Age, Colour)}} {{Noun(LastName)}} {{Noun(GeographyFeatureSizeLocalFeature)}}",
+            "{{{{Adjective(Position, Quality, Age, Colour)}} {{Noun(LastName)}} {{Noun(GeographyFeatureSizeAreaFeature)}}",
         ];
         let short_templates = vec![
-            "{{LocationDescriptor}}{{LastName}}",
-            "{{LastName}}{{LocationMinorFeature}}",
-            "{{LocationDescriptor}}{{LocationMinorFeature}}",
+            "{{{{Adjective(Position, Quality, Age, Colour)}} {{Noun(LastName)}}",
+            "{{Noun(LastName)}} {{Noun(GeographyFeatureSizeLocalFeature)}}",
+            "{{{{Adjective(Position, Quality, Age, Colour)}} {{Noun(GeographyFeatureSizeLocalFeature)}}",
         ];
         if long {
-            return render_template(random_pick(&long_templates), &name_dict.total_list);
+            return render_template_2(random_pick(&long_templates), &dict);
         }
-        return render_template(random_pick(&short_templates), &name_dict.total_list);
+        return render_template_2(random_pick(&short_templates), &dict);
     }
 
-    pub fn gen_location(name_dict: &NameDictionary) -> Location {
+    pub fn gen_location(dict: &Vec<Word>) -> Location {
         let mut rng = rand::thread_rng();
         return Location {
             id: Uuid::new_v4(),
-            name: gen_location_name(&name_dict, false),
+            name: gen_location_name(&dict, false),
             size: ((rng.gen::<f32>() * 10.0) as i32).max(1) as usize,
         };
     }
@@ -99,7 +100,7 @@ pub mod locations {
 
     #[test]
     fn test_gen_location_name() {
-        let name_dict = gen_name_dict();
+        let name_dict = build_dictionary();
         for _i in 0..10 {
             println!("{}", gen_location_name(&name_dict, true));
         }

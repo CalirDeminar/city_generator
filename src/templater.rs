@@ -53,9 +53,11 @@ pub mod templater {
             let part = suffix.replace("{", "").replace("}", "").replace(")", "");
             let mut p = part.split("(");
             let type_tag = p.next().unwrap();
-            let word_type = WordType::iter()
-                .find(|t| t.to_string().eq(type_tag))
-                .unwrap();
+            let possible_word_type = WordType::iter().find(|t| t.to_string().eq(type_tag));
+            if possible_word_type.is_none() {
+                println!("Could not find tag: {}", type_tag);
+            }
+            let word_type = possible_word_type.unwrap();
             let tags: Vec<String> = p
                 .next()
                 .unwrap()
