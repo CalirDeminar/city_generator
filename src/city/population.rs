@@ -1,9 +1,8 @@
 pub mod mind;
 pub mod population {
-    use crate::city::city::City;
     use crate::city::population::mind::mind::*;
     use crate::city::population::mind::relations::relations::*;
-    use crate::names::names::*;
+    use crate::{city::city::City, language::language::Word};
     use std::{fs::File, io::Write};
 
     use super::mind::relations::{
@@ -20,21 +19,17 @@ pub mod population {
         return output;
     }
 
-    fn generate_base_population<'a>(i: usize, name_dict: &NameDictionary) -> Population {
+    fn generate_base_population<'a>(i: usize, dict: &Vec<Word>) -> Population {
         let mut output: Population = vec![];
         for _i in 0..i {
-            output.push(random_char(&name_dict));
+            output.push(random_char(&dict));
         }
         return output;
     }
 
-    pub fn generate_population<'a>(
-        name_dict: &NameDictionary,
-        size: usize,
-        c: &'a mut City,
-    ) -> &'a mut City {
+    pub fn generate_population<'a>(dict: &Vec<Word>, size: usize, c: &'a mut City) -> &'a mut City {
         let mut city = c;
-        city.citizens = generate_base_population(size, &name_dict);
+        city.citizens = generate_base_population(size, &dict);
         city = link_partners(city);
         city = link_parents(city);
         city = link_colleagues(city);

@@ -12,7 +12,6 @@ pub mod locations {
     use crate::city::city::City;
     use crate::city::institutions::institutions::Institution;
     use crate::language::language::{build_dictionary, Word};
-    use crate::names::names::{gen_name_dict, NameDictionary};
     use crate::templater::templater::{render_template, render_template_2};
     use crate::utils::utils::random_pick;
 

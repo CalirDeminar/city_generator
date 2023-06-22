@@ -12,7 +12,7 @@ pub mod mind {
     use crate::city::city::City;
     use crate::city::institutions::institutions::*;
     use crate::city::locations::locations::Location;
-    use crate::names::names::*;
+    use crate::language::language::{random_word_by_tag_and, Word, WordType};
 
     use crate::city::population::mind::relations::relations::*;
 
@@ -129,7 +129,7 @@ pub mod mind {
             if mind.residence.is_some() {
                 let (building, apartment, residential_location) = find_address(mind, city);
                 output.push_str(&format!(
-                    "Lives at {} {} in {}\n",
+                    "Lives at: {} {} in {}\n",
                     apartment.name, building.name, residential_location.name
                 ));
             }
@@ -254,7 +254,7 @@ pub mod mind {
         }
     }
 
-    pub fn random_char<'a>(name_dict: &NameDictionary) -> Mind {
+    pub fn random_char<'a>(dict: &Vec<Word>) -> Mind {
         let mut rng = rand::thread_rng();
         let roll: f32 = rng.gen();
         let mut gender = Gender::Ambiguous;
@@ -263,7 +263,21 @@ pub mod mind {
         } else if roll > 0.2 {
             gender = Gender::Female;
         }
-        let (first_name, last_name) = random_mind_name(&name_dict, &gender);
+        let first_name_tags = if gender.eq(&Gender::Ambiguous) {
+            vec![String::from("FirstName")]
+        } else {
+            vec![String::from("FirstName"), format!("Gender{}", gender)]
+        };
+        let first_name = random_word_by_tag_and(&dict, WordType::Noun, first_name_tags)
+            .unwrap()
+            .text
+            .clone();
+
+        let last_name =
+            random_word_by_tag_and(&dict, WordType::Noun, vec![String::from("LastName")])
+                .unwrap()
+                .text
+                .clone();
         let distribution = Normal::new(5.0, 10.0).unwrap();
         return Mind {
             id: Uuid::new_v4(),

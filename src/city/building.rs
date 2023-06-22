@@ -8,7 +8,6 @@ pub mod building {
         city::city::*,
         city::population::mind::mind::*,
         language::language::{build_dictionary, Word},
-        names::names::*,
         templater::templater::{render_template, render_template_2},
         utils::utils::random_pick,
     };
