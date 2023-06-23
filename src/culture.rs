@@ -3,10 +3,12 @@ pub mod culture {
         language::*,
         nouns::{
             creatures::creatures::{CreatureCategory, CreatureFamily},
+            nouns::NounTag,
             plants::plants::PlantType,
         },
     };
     use rand::Rng;
+    use uuid::Uuid;
 
     #[derive(PartialEq, Debug, Clone)]
     pub struct CultureConfig {
@@ -104,6 +106,33 @@ pub mod culture {
             staple_meats: random_animals(&dict, landlocked),
             staple_plants: random_crops(&dict),
         };
+    }
+
+    pub fn build_culture_dictionary(dict: &Vec<Word>, culture: &CultureConfig) -> Vec<Word> {
+        let mut output = dict.clone();
+        for (first_name, last_name) in culture.historical_figures.clone() {
+            output.push(Word {
+                id: Uuid::new_v4(),
+                word_type: WordType::Noun,
+                text: first_name.clone(),
+                tags: vec![
+                    NounTag::FirstName.to_string(),
+                    NounTag::HistoricalFigure.to_string(),
+                ],
+                related_forms: vec![],
+            });
+            output.push(Word {
+                id: Uuid::new_v4(),
+                word_type: WordType::Noun,
+                text: last_name.clone(),
+                tags: vec![
+                    NounTag::LastName.to_string(),
+                    NounTag::HistoricalFigure.to_string(),
+                ],
+                related_forms: vec![],
+            });
+        }
+        return output;
     }
 
     #[test]

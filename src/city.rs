@@ -18,6 +18,7 @@ pub mod city {
     use crate::city::institutions::institutions::*;
     use crate::city::locations::{locations, locations::*};
     use crate::city::population::population::*;
+    use crate::culture::culture::{build_culture_dictionary, random_culture};
     use crate::language::language::{build_dictionary, Word};
 
     const MAX_WORKING_AGE: u32 = 60;
@@ -294,7 +295,10 @@ pub mod city {
     }
 
     pub fn build(size: usize) -> City {
-        let language_dict = build_dictionary();
+        let dict = build_dictionary();
+        let culture = random_culture(&dict);
+        println!("{:?}", culture);
+        let language_dict = build_culture_dictionary(&dict, &culture);
         let mut city = City {
             name: locations::gen_location_name(&language_dict, false),
             buildings: Vec::new(),
@@ -303,7 +307,7 @@ pub mod city {
             institutions: Vec::new(),
         };
 
-        generate_population(&language_dict, size, &mut city);
+        generate_population_full_relation(&language_dict, size, &mut city);
 
         let public_institutions = generate_public_institutions(&language_dict);
 

@@ -27,7 +27,11 @@ pub mod population {
         return output;
     }
 
-    pub fn generate_population<'a>(dict: &Vec<Word>, size: usize, c: &'a mut City) -> &'a mut City {
+    pub fn generate_population_full_relation<'a>(
+        dict: &Vec<Word>,
+        size: usize,
+        c: &'a mut City,
+    ) -> &'a mut City {
         let mut city = c;
         city.citizens = generate_base_population(size, &dict);
         city = link_partners(city);
@@ -36,6 +40,18 @@ pub mod population {
         city = link_friends_within_population(city);
         city = link_siblings(city);
         city = link_grandparents(city);
+        return city;
+    }
+
+    pub fn generate_population_baseline<'a>(
+        dict: &Vec<Word>,
+        size: usize,
+        c: &'a mut City,
+    ) -> &'a mut City {
+        let mut city = c;
+        city.citizens = generate_base_population(size, &dict);
+        city = link_colleagues(city);
+        city = link_friends_within_population(city);
         return city;
     }
 

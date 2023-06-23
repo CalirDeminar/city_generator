@@ -43,7 +43,7 @@ pub mod templater {
     // Tags: "{{Nuon(Tag)}}"
     pub fn render_template_2(template: &str, dictionary: &Vec<Word>) -> String {
         let mut output = String::new();
-        let word_regex = Regex::new(r"([a-zA-Z0-9 \-\:\']*\{\{[a-zA-Z\(\) \,]*\}\})").unwrap();
+        let word_regex = Regex::new(r"([a-zA-Z0-9 \-\:\']*\{\{[a-zA-Z\(\) \,\!]*\}\})").unwrap();
 
         for term in word_regex.find_iter(template) {
             let split: Vec<&str> = term.as_str().split("{").collect();
@@ -58,13 +58,23 @@ pub mod templater {
                 println!("Could not find tag: {}", type_tag);
             }
             let word_type = possible_word_type.unwrap();
-            let tags: Vec<String> = p
-                .next()
-                .unwrap()
-                .split(",")
-                .map(|s| String::from(s))
-                .collect();
-            let word = random_word_by_tag(&dictionary, word_type, &vec![], &tags, &vec![]);
+            let (optional, required): (Vec<String>, Vec<String>) =
+                p.next().unwrap().split(",").fold(
+                    (vec![], vec![]),
+                    |(optional_acc, required_acc): (Vec<String>, Vec<String>), s| {
+                        let replaced = s.replace("!", "");
+                        if replaced.len() != s.len() {
+                            println!("Required: {} -> {}", s, replaced);
+                            return (optional_acc, vec![required_acc, vec![replaced]].concat());
+                        } else {
+                            return (
+                                vec![optional_acc, vec![String::from(s)]].concat(),
+                                required_acc,
+                            );
+                        }
+                    },
+                );
+            let word = random_word_by_tag(&dictionary, word_type, &required, &optional, &vec![]);
             output.push_str(prefix.clone());
             if word.is_some() {
                 output.push_str(&word.unwrap().text);

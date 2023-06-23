@@ -53,14 +53,16 @@ pub mod nouns {
         Direction,
         Title,
         BuildingTitle,
-        FirstName,
-        LastName,
-        GenderMale,
-        GenderFemale,
         GeneralRetailerName,
         RetailerFood,
         RetailerSpecialist,
         Suffixable,
+        // Names / People
+        FirstName,
+        LastName,
+        GenderMale,
+        GenderFemale,
+        HistoricalFigure,
     }
 
     fn build_generic_tags() -> Vec<String> {
