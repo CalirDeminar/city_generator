@@ -1,7 +1,11 @@
 pub mod templater {
     use crate::{
-        language::language::{
-            build_dictionary, filter_words_by_tag_and, random_word_by_tag, Word, WordType,
+        culture::culture::{build_culture_dictionary, random_culture},
+        language::{
+            language::{
+                build_dictionary, filter_words_by_tag_and, random_word_by_tag, Word, WordType,
+            },
+            nouns::nouns::NounTag,
         },
         names::names::*,
     };
@@ -62,9 +66,8 @@ pub mod templater {
                 p.next().unwrap().split(",").fold(
                     (vec![], vec![]),
                     |(optional_acc, required_acc): (Vec<String>, Vec<String>), s| {
-                        let replaced = s.replace("!", "");
-                        if replaced.len() != s.len() {
-                            println!("Required: {} -> {}", s, replaced);
+                        let replaced = String::from(s.replace("!", "").trim());
+                        if replaced.len() != s.trim().len() {
                             return (optional_acc, vec![required_acc, vec![replaced]].concat());
                         } else {
                             return (
@@ -74,20 +77,27 @@ pub mod templater {
                         }
                     },
                 );
-            let word = random_word_by_tag(&dictionary, word_type, &required, &optional, &vec![]);
+            let w = random_word_by_tag(&dictionary, word_type, &required, &optional, &vec![]);
             output.push_str(prefix.clone());
-            if word.is_some() {
-                output.push_str(&word.unwrap().text);
+            if w.is_some() {
+                let word = w.unwrap();
+                if word.tags.contains(&NounTag::Suffixable.to_string()) {
+                    output = output.trim_end().to_string();
+                    output.push_str(&word.text.trim().to_lowercase());
+                } else {
+                    output.push_str(&word.text.trim());
+                }
             }
         }
-        return output;
+        return output.trim().to_string();
     }
 
     #[test]
     fn test_render_template() {
-        let example_template: &str = "{{Noun(Title)}}'s {{Noun(MaterialTagMetal)}}";
-        let name_dict = gen_name_dict();
-        let dict = build_dictionary();
+        let example_template: &str =
+            "{{Noun(!LastName, !HistoricalFigure)}} {{Noun(GeographyFeatureSizeLocalFeature)}}";
+        let d = build_dictionary();
+        let dict = build_culture_dictionary(&d, &random_culture(&d));
         println!("{}", render_template_2(example_template, &dict));
     }
 }

@@ -11,6 +11,7 @@ pub mod locations {
     use crate::city::building::building::{print_building, print_building_html, Building};
     use crate::city::city::City;
     use crate::city::institutions::institutions::Institution;
+    use crate::culture::culture::{build_culture_dictionary, random_culture};
     use crate::language::language::{build_dictionary, Word};
     use crate::templater::templater::{render_template, render_template_2};
     use crate::utils::utils::random_pick;
@@ -65,14 +66,14 @@ pub mod locations {
 
     pub fn gen_location_name(dict: &Vec<Word>, long: bool) -> String {
         let long_templates = vec![
-            "{{{{Adjective(Position, Quality, Age, Colour)}} {{Noun(LastName)}} {{Noun(GeographyFeatureSizeAreaFeature)}} {{Noun(GeographyFeatureSizeLocalFeature)}}",
-            "{{Noun(LastName)}} {{Noun(GeographyFeatureSizeAreaFeature)}} {{Noun(GeographyFeatureSizeLocalFeature)}}",
-            "{{{{Adjective(Position, Quality, Age, Colour)}} {{Noun(LastName)}} {{Noun(GeographyFeatureSizeLocalFeature)}}",
-            "{{{{Adjective(Position, Quality, Age, Colour)}} {{Noun(LastName)}} {{Noun(GeographyFeatureSizeAreaFeature)}}",
+            "{{{{Adjective(Position, Quality, Age, Colour)}} {{Noun(!LastName, !HistoricalFigure))}} {{Noun(GeographyFeatureSizeAreaFeature)}} {{Noun(GeographyFeatureSizeLocalFeature)}}",
+            "{{Noun(HistoricalFigure)}} {{Noun(GeographyFeatureSizeAreaFeature)}} {{Noun(GeographyFeatureSizeLocalFeature)}}",
+            "{{{{Adjective(Position, Quality, Age, Colour)}} {{Noun(!LastName, !HistoricalFigure)}} {{Noun(GeographyFeatureSizeLocalFeature)}}",
+            "{{{{Adjective(Position, Quality, Age, Colour)}} {{Noun(!LastName, !HistoricalFigure)}} {{Noun(GeographyFeatureSizeAreaFeature)}}",
         ];
         let short_templates = vec![
-            "{{{{Adjective(Position, Quality, Age, Colour)}} {{Noun(LastName)}}",
-            "{{Noun(LastName)}} {{Noun(GeographyFeatureSizeLocalFeature)}}",
+            "{{{{Adjective(Position, Quality, Age, Colour)}} {{Noun(!LastName, !HistoricalFigure)}}",
+            "{{Noun(HistoricalFigure)}} {{Noun(GeographyFeatureSizeLocalFeature)}}",
             "{{{{Adjective(Position, Quality, Age, Colour)}} {{Noun(GeographyFeatureSizeLocalFeature)}}",
         ];
         if long {
@@ -99,7 +100,8 @@ pub mod locations {
 
     #[test]
     fn test_gen_location_name() {
-        let name_dict = build_dictionary();
+        let dict = build_dictionary();
+        let name_dict = build_culture_dictionary(&dict, &random_culture(&dict));
         for _i in 0..10 {
             println!("{}", gen_location_name(&name_dict, true));
         }

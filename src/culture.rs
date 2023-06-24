@@ -131,6 +131,32 @@ pub mod culture {
                 ],
                 related_forms: vec![],
             });
+            // println!(
+            //     "{:?}",
+            //     Word {
+            //         id: Uuid::new_v4(),
+            //         word_type: WordType::Noun,
+            //         text: first_name.clone(),
+            //         tags: vec![
+            //             NounTag::Title.to_string(),
+            //             NounTag::HistoricalFigure.to_string(),
+            //         ],
+            //         related_forms: vec![],
+            //     }
+            // );
+            // println!(
+            //     "{:?}",
+            //     Word {
+            //         id: Uuid::new_v4(),
+            //         word_type: WordType::Noun,
+            //         text: last_name.clone(),
+            //         tags: vec![
+            //             NounTag::LastName.to_string(),
+            //             NounTag::HistoricalFigure.to_string(),
+            //         ],
+            //         related_forms: vec![],
+            //     }
+            // );
         }
         return output;
     }

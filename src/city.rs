@@ -19,7 +19,9 @@ pub mod city {
     use crate::city::locations::{locations, locations::*};
     use crate::city::population::population::*;
     use crate::culture::culture::{build_culture_dictionary, random_culture};
-    use crate::language::language::{build_dictionary, Word};
+    use crate::language::language::{
+        build_dictionary, random_word_by_tag, random_word_by_tag_and, Word, WordType,
+    };
 
     const MAX_WORKING_AGE: u32 = 60;
 
@@ -297,6 +299,7 @@ pub mod city {
     pub fn build(size: usize) -> City {
         let dict = build_dictionary();
         let culture = random_culture(&dict);
+
         println!("{:?}", culture);
         let language_dict = build_culture_dictionary(&dict, &culture);
         let mut city = City {
@@ -332,7 +335,7 @@ pub mod city {
             apartment_count = count_residential_apartments(&city);
         }
         assign_residences(&mut city);
-
+        println!("{:#?}", city.institutions);
         return city;
     }
 }

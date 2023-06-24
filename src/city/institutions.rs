@@ -156,9 +156,10 @@ pub mod institutions {
     pub fn generate_restaurant(dict: &Vec<Word>) -> Institution {
         let templates = vec![
             "{{Adjective(Position, Quality, Age, Colour)}} {{Noun(LastName)}} {{Noun(RetailerFood)}}",
-             "{{Adjective(Position, Quality, Age, Colour)}} {{Noun(LastName)}}'s {{Noun(RetailerFood)}}",
+             "{{Adjective(Position, Quality, Age, Colour)}} {{Noun(HistoricalFigure)}}'s {{Noun(RetailerFood)}}",
              "{{Noun(LastName)}} {{Noun(RetailerFood)}}",
-             "{{Noun(LastName)}}, {{Noun(RetailerFood)}}"
+             "{{Noun(LastName)}}'s {{Noun(RetailerFood)}}",
+             "{{Noun(HistoricalFigure)}}'s {{Noun(RetailerFood)}}",
         ];
         let name = render_template_2(random_pick(&templates), &dict);
         return Institution {
