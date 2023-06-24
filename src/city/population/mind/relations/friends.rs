@@ -1,7 +1,8 @@
 pub mod friends {
     use crate::city::city::City;
     use crate::city::population::mind::mind::*;
-    use crate::city::population::mind::relations::relations::RelationVerb;
+    use crate::city::population::mind::relations::relations::{RelationVerb, ADULT_AGE_FROM};
+    use crate::city::population::population::Population;
     use rand::seq::SliceRandom;
     use rand::Rng;
     use uuid::Uuid;
@@ -44,13 +45,13 @@ pub mod friends {
         let mut rng = rand::thread_rng();
         let ids: Vec<Uuid> = city
             .citizens
-            .iter()
+            .values()
             .filter(|c| c.alive)
             .map(|c| c.id)
             .collect();
         for mind_id in ids {
-            city.citizens.shuffle(&mut rng);
-            let mut citizens = city.citizens.iter_mut().filter(|c| c.alive);
+            // city.citizens.shuffle(&mut rng);
+            let mut citizens = city.citizens.values_mut().filter(|c| c.alive);
             let mind = citizens.find(|c| c.id.eq(&mind_id)).unwrap();
             let friend_count = (rng.gen::<f32>() * FRIEND_OUTGOING_MAX) as u32;
             for _i in 0..friend_count {
@@ -68,34 +69,60 @@ pub mod friends {
         return city;
     }
 
+    fn get_friend_id<'a>(mind: &Mind, population: &Population) -> Option<Uuid> {
+        let mut rng = rand::thread_rng();
+        let mut minds: Vec<&Mind> = population
+            .values()
+            .filter(|c| c.alive && c.age > (ADULT_AGE_FROM as f32 / 2.0) as u32)
+            .collect();
+        minds.shuffle(&mut rng);
+        let possible_mind = minds.iter().find(|c| match_friend(&mind, c));
+        if possible_mind.is_some() {
+            return Some(possible_mind.unwrap().id);
+        }
+        return None;
+    }
+
     pub fn link_friends_within_population_by_year<'a>(city: &'a mut City) -> &'a mut City {
         let mut rng = rand::thread_rng();
+        let ref_citizens = city.citizens.clone();
         let ids: Vec<Uuid> = city
             .citizens
-            .iter()
+            .values_mut()
             .filter(|c| c.alive)
+            .filter(|c| c.age > (ADULT_AGE_FROM as f32 / 2.0) as u32)
             .map(|c| c.id)
             .collect();
+
+        let mut relations_to_add: Vec<(Uuid, RelationVerb, Uuid)> = Vec::new();
+
         for mind_id in ids {
-            city.citizens.shuffle(&mut rng);
-            let mut citizens = city.citizens.iter_mut().filter(|c| c.alive);
-            let mind = citizens.find(|c| c.id.eq(&mind_id)).unwrap();
+            // city.citizens.shuffle(&mut rng);
+            let mind = city.citizens.get_mut(&mind_id).unwrap();
+
             let friend_count = mind
                 .relations
                 .iter()
                 .filter(|(v, _id)| SOCIAL_RELATIONS.contains(&v))
                 .count();
+
             let acquaintances_to_add_count =
                 (((rng.gen::<f32>() * FRIEND_OUTGOING_MAX) - (friend_count as f32)) as u32).max(0);
+
             for _i in 0..acquaintances_to_add_count {
-                let possible_friend = citizens.find(|c| match_friend(&mind, c));
-                if possible_friend.is_some() {
-                    let friend = possible_friend.unwrap();
-                    mind.relations
-                        .push((RelationVerb::Acquaintance, friend.id.clone()));
-                    friend
-                        .relations
-                        .push((RelationVerb::Acquaintance, mind.id.clone()));
+                let possible_friend_id = get_friend_id(&mind, &ref_citizens);
+                if possible_friend_id.is_some() {
+                    let friend_id = possible_friend_id.unwrap();
+                    relations_to_add.push((
+                        mind.id.clone(),
+                        RelationVerb::Acquaintance,
+                        friend_id.clone(),
+                    ));
+                    relations_to_add.push((
+                        friend_id.clone(),
+                        RelationVerb::Acquaintance,
+                        mind.id.clone(),
+                    ));
                 }
             }
             for (verb, id) in mind.relations.clone() {
@@ -124,6 +151,10 @@ pub mod friends {
                     _ => {}
                 }
             }
+        }
+        for (mind_id, verb, relation_id) in relations_to_add {
+            let mind = city.citizens.get_mut(&mind_id).unwrap();
+            mind.relations.push((verb, relation_id));
         }
         return city;
     }

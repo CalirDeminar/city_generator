@@ -99,7 +99,7 @@ pub mod partners {
     ) -> Option<&'a Mind> {
         let mut rng = rand::thread_rng();
         let mut filtered: Vec<&Mind> = population
-            .iter()
+            .values()
             .filter(|c| is_single(&c))
             .filter(|c| c.gender.eq(&target_gender))
             .filter(|c| age_range.contains(&c.age))
@@ -143,16 +143,20 @@ pub mod partners {
     }
 
     pub fn link_partners<'a>(city: &'a mut City) -> &'a mut City {
-        let mut rng = rand::thread_rng();
-        let citizen_ids: Vec<Uuid> = city.citizens.iter().map(|c| c.id).collect();
+        let citizen_ids: Vec<Uuid> = city
+            .citizens
+            .values()
+            .filter(|c| c.alive)
+            .map(|c| c.id)
+            .collect();
 
         let mut relations_to_add: Vec<(Uuid, Uuid)> = Vec::new();
 
         for mind_id in citizen_ids {
             if !flatten_rel_map(&relations_to_add).contains(&mind_id) {
-                city.citizens.shuffle(&mut rng);
+                // city.citizens.shuffle(&mut rng);
 
-                let mind = city.citizens.iter().find(|c| c.id.eq(&mind_id)).unwrap();
+                let mind = city.citizens.get(&mind_id).unwrap();
 
                 let mut taken_list = flatten_rel_map(&relations_to_add);
                 taken_list.push(mind.id.clone());
@@ -178,7 +182,7 @@ pub mod partners {
         // relations_to_add = relations_to_add.iter().collect();
 
         for (id_1, id_2) in relations_to_add {
-            let citizens = city.citizens.iter_mut();
+            let citizens = city.citizens.values_mut().filter(|c| c.alive);
             let mut mind_1: Option<&mut Mind> = None;
             let mut mind_2: Option<&mut Mind> = None;
             for mind in citizens {
@@ -203,7 +207,7 @@ pub mod partners {
         let mut rng = rand::thread_rng();
         let citizen_ids: Vec<Uuid> = city
             .citizens
-            .iter()
+            .values()
             .filter(|c| c.alive)
             .map(|c| c.id)
             .collect();
@@ -212,9 +216,13 @@ pub mod partners {
 
         for mind_id in citizen_ids {
             if !flatten_rel_map(&relations_to_add).contains(&mind_id) {
-                city.citizens.shuffle(&mut rng);
+                // city.citizens.shuffle(&mut rng);
 
-                let mind = city.citizens.iter().find(|c| c.id.eq(&mind_id)).unwrap();
+                let mind = city
+                    .citizens
+                    .values()
+                    .find(|c| c.alive && c.id.eq(&mind_id))
+                    .unwrap();
 
                 if is_single(mind) {
                     let mut taken_list = flatten_rel_map(&relations_to_add);
@@ -225,13 +233,8 @@ pub mod partners {
                         .filter(|(v, _id)| SOCIAL_RELATIONS.contains(v))
                         .map(|(_v, id)| id)
                         .collect();
-                    let friends: Vec<Mind> = city
-                        .citizens
-                        .clone()
-                        .iter()
-                        .filter(|m| friend_ids.contains(&&m.id))
-                        .map(|m| m.clone())
-                        .collect();
+                    let mut friends = city.citizens.clone();
+                    friends.retain(|_id, m| friend_ids.contains(&&m.id));
 
                     let possible_partner_id = find_partner_id(&mind, &friends, &taken_list);
                     if possible_partner_id.is_some() {
@@ -256,7 +259,7 @@ pub mod partners {
         // relations_to_add = relations_to_add.iter().collect();
 
         for (id_1, id_2) in relations_to_add {
-            let citizens = city.citizens.iter_mut();
+            let citizens = city.citizens.values_mut().filter(|c| c.alive);
             let mut mind_1: Option<&mut Mind> = None;
             let mut mind_2: Option<&mut Mind> = None;
             for mind in citizens {
@@ -281,12 +284,12 @@ pub mod partners {
         let mut rng = rand::thread_rng();
         let citizen_ids: Vec<Uuid> = city
             .citizens
-            .iter()
+            .values()
             .filter(|c| c.alive)
             .map(|c| c.id)
             .collect();
         for id in citizen_ids {
-            let mut citizens = city.citizens.iter_mut().filter(|c| c.alive);
+            let mut citizens = city.citizens.values_mut().filter(|c| c.alive);
             let mind = citizens.find(|c| c.id.eq(&id)).unwrap();
             if !is_single(mind) {
                 let relations_ref = mind.relations.clone();

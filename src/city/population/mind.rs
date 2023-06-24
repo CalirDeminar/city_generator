@@ -12,6 +12,7 @@ pub mod mind {
     use crate::city::city::City;
     use crate::city::institutions::institutions::*;
     use crate::city::locations::locations::Location;
+    use crate::city::population::population::Population;
     use crate::language::language::{random_word_by_tag_and, Word, WordType};
 
     use crate::city::population::mind::relations::relations::*;
@@ -85,8 +86,8 @@ pub mod mind {
         return (building, area, location);
     }
 
-    pub fn get_name_from_id(id: &Uuid, population: &Vec<Mind>) -> String {
-        let result = population.iter().find(|m| m.id.eq(id));
+    pub fn get_name_from_id(id: &Uuid, population: &Population) -> String {
+        let result = population.get(id);
         if result.is_some() {
             return format!(
                 "{} {} {}",

@@ -3,8 +3,10 @@ pub mod institutions;
 pub mod locations;
 pub mod population;
 pub mod city {
+    use std::collections::HashMap;
     use std::fs::File;
     use std::io::Write;
+    use std::time::Instant;
 
     use html_builder::*;
     use rand::seq::SliceRandom;
@@ -17,16 +19,12 @@ pub mod city {
     use super::population::mind::relations::relations::*;
     use crate::city::institutions::institutions::*;
     use crate::city::locations::{locations, locations::*};
-    use crate::city::population::mind::relations::friends::friends::link_friends_within_population_by_year;
-    use crate::city::population::mind::relations::parents::parents::generate_children_per_year;
-    use crate::city::population::mind::relations::partners::partners::{
-        link_partners_by_year, update_partners_by_year,
-    };
+    use crate::city::population::mind::relations::friends::friends::*;
+    use crate::city::population::mind::relations::parents::parents::*;
+    use crate::city::population::mind::relations::partners::partners::*;
     use crate::city::population::population::*;
-    use crate::culture::culture::{build_culture_dictionary, random_culture, CultureConfig};
-    use crate::language::language::{
-        build_dictionary, random_word_by_tag, random_word_by_tag_and, Word, WordType,
-    };
+    use crate::culture::culture::*;
+    use crate::language::language::*;
 
     const MAX_WORKING_AGE: u32 = 60;
 
@@ -43,8 +41,8 @@ pub mod city {
         let mut output: String = String::new();
         output.push_str(&format!("City Name: {}\n", city.name));
         output.push_str(&format!(
-            "Population: {}",
-            city.citizens.iter().filter(|c| c.alive).count()
+            "Population: {}\n",
+            city.citizens.iter().filter(|(id, c)| c.alive).count()
         ));
         for a in &city.areas {
             output.push_str(&print_location(&a, &city));
@@ -78,7 +76,7 @@ pub mod city {
 
         writeln!(body.h2(), "Citizens").unwrap();
         let mut citizen_list = body.ul();
-        for m in &city.citizens {
+        for m in city.citizens.values() {
             print_mind_html(&mut citizen_list.li(), &m, &city);
         }
 
@@ -173,7 +171,7 @@ pub mod city {
         add_institution_to_building(building_with_space.unwrap(), &institution.clone());
 
         for w in workers {
-            let mut worker = city.citizens.iter_mut().find(|m| m.id.eq(&w.id)).unwrap();
+            let mut worker = city.citizens.values_mut().find(|m| m.id.eq(&w.id)).unwrap();
             worker.employer = Some(institution.id.clone());
         }
         city.institutions.push(institution);
@@ -194,7 +192,7 @@ pub mod city {
         add_institution_to_building(city.buildings.last_mut().unwrap(), &institution);
 
         for w in workers {
-            let mut worker = city.citizens.iter_mut().find(|m| m.id.eq(&w.id)).unwrap();
+            let mut worker = city.citizens.values_mut().find(|m| m.id.eq(&w.id)).unwrap();
             worker.employer = Some(institution.id.clone());
         }
 
@@ -203,9 +201,9 @@ pub mod city {
         return city;
     }
 
-    fn find_workers<'a>(city: &'a City) -> Population {
-        let mut output: Population = Vec::new();
-        for mind in &city.citizens {
+    fn find_workers<'a>(city: &'a City) -> Vec<Mind> {
+        let mut output: Vec<Mind> = Vec::new();
+        for mind in city.citizens.values() {
             if mind.age < MAX_WORKING_AGE && mind.employer.is_none() {
                 output.push(mind.clone());
             }
@@ -218,13 +216,14 @@ pub mod city {
         let mut new_residences: Vec<(Uuid, Uuid)> = Vec::new();
         let mut owned_ids: Vec<Uuid> = city
             .citizens
-            .iter()
+            .values()
             .filter(|c| c.residence.is_some())
             .map(|c| c.residence.unwrap().clone())
             .collect();
-        for citizen in city.citizens.iter().filter(|c| c.residence.is_none()) {
+        let ref_pop = city.citizens.clone();
+        for citizen in city.citizens.values_mut().filter(|c| c.residence.is_none()) {
             let guardian = if citizen.age < ADULT_AGE_FROM {
-                find_relation(&citizen, RelationVerb::Parent, &city)
+                find_relation(&citizen, RelationVerb::Parent, &ref_pop)
             } else {
                 None
             };
@@ -235,7 +234,7 @@ pub mod city {
             } else {
                 None
             };
-            let ward = find_relation_minor(&citizen, RelationVerb::Child, &city);
+            let ward = find_relation_minor(&citizen, RelationVerb::Child, &ref_pop);
             let ward_res: Option<&(Uuid, Uuid)> = if ward.is_some() {
                 new_residences
                     .iter()
@@ -243,7 +242,7 @@ pub mod city {
             } else {
                 None
             };
-            let spouse = find_relation(&citizen, RelationVerb::Spouse, &city);
+            let spouse = find_relation(&citizen, RelationVerb::Spouse, &ref_pop);
             let spouse_res: Option<&(Uuid, Uuid)> = if spouse.is_some() {
                 new_residences
                     .iter()
@@ -277,11 +276,7 @@ pub mod city {
             }
         }
         for (citizen_id, residence_id) in new_residences {
-            let citizen = city
-                .citizens
-                .iter_mut()
-                .find(|c| c.id.eq(&citizen_id))
-                .unwrap();
+            let citizen = city.citizens.get_mut(&citizen_id).unwrap();
             citizen.residence = Some(residence_id.clone());
         }
         return city;
@@ -296,7 +291,7 @@ pub mod city {
         let mut city = City {
             name: locations::gen_location_name(&language_dict, false),
             buildings: Vec::new(),
-            citizens: Vec::new(),
+            citizens: HashMap::new(),
             areas: Vec::new(),
             institutions: Vec::new(),
         };
@@ -333,7 +328,7 @@ pub mod city {
     fn count_city_relations_proportions(city: &City, verb: RelationVerb) -> f32 {
         return city
             .citizens
-            .iter()
+            .values()
             .filter(|c| c.relations.iter().any(|(v, _id)| v.eq(&verb)))
             .count() as f32
             / city.citizens.len() as f32;
@@ -343,15 +338,14 @@ pub mod city {
         let mut rng = rand::thread_rng();
         let citizen_ids: Vec<Uuid> = city
             .citizens
-            .iter()
+            .values()
             .filter(|c| c.alive)
             .map(|c| c.id)
             .collect();
         let base_death_chance: f32 = 0.5;
         let mut dead_ids: Vec<Uuid> = vec![];
         for mind_id in citizen_ids {
-            let mut citizens = city.citizens.iter_mut();
-            let mind = citizens.find(|c| c.id.eq(&mind_id)).unwrap();
+            let mind = city.citizens.get_mut(&mind_id).unwrap();
             let death_odds = base_death_chance
                 + (((mind.age as f32 - culture.species_avg_lifespan_variance as f32)
                     - (culture.species_avg_lifespan as f32
@@ -364,7 +358,7 @@ pub mod city {
                 dead_ids.push(mind.id.clone());
             }
         }
-        for mind in city.citizens.iter_mut() {
+        for mind in city.citizens.values_mut() {
             for (verb, id) in mind.relations.clone() {
                 if dead_ids.contains(&id) {
                     match verb {
@@ -396,29 +390,29 @@ pub mod city {
         let mut city = City {
             name: locations::gen_location_name(&dict, false),
             buildings: Vec::new(),
-            citizens: Vec::new(),
+            citizens: HashMap::new(),
             areas: Vec::new(),
             institutions: Vec::new(),
         };
+
+        let public_institutions = generate_public_institutions(&dict);
+
+        for pub_inst in public_institutions {
+            add_public_institution_to_city(&mut city, pub_inst, &dict);
+        }
 
         generate_population_baseline(&dict, size, &mut city);
         for i in 0..age {
             println!("Y{}", i);
             old_age_pass_per_year(&mut city, &culture);
+            // Very Slow
             link_friends_within_population_by_year(&mut city);
+            // Fairly Slow
             link_partners_by_year(&mut city);
             update_partners_by_year(&mut city);
             generate_children_per_year(&mut city, &culture, &dict);
-            // println!(
-            //     "Year: {} - Partners: {} - ExPartners: {} - Spouse: {} - ExSpouse: {}",
-            //     i,
-            //     count_city_relations_proportions(&city, RelationVerb::Partner),
-            //     count_city_relations_proportions(&city, RelationVerb::ExPartner),
-            //     count_city_relations_proportions(&city, RelationVerb::Spouse),
-            //     count_city_relations_proportions(&city, RelationVerb::ExSpouse)
-            // );
 
-            for citizen in city.citizens.iter_mut() {
+            for citizen in city.citizens.values_mut() {
                 citizen.age += 1;
             }
         }

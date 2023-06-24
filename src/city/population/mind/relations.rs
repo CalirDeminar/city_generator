@@ -58,12 +58,12 @@ pub mod relations {
     pub fn find_relation<'a>(
         mind: &Mind,
         relation: RelationVerb,
-        city: &'a City,
+        population: &'a Population,
     ) -> Option<&'a Mind> {
         let match_relation = mind.relations.iter().find(|(r, _id)| r.eq(&relation));
         if match_relation.is_some() {
             let (_verb, id) = match_relation.unwrap();
-            return city.citizens.iter().find(|c| c.id.eq(id));
+            return population.get(id);
         }
         return None;
     }
@@ -71,7 +71,7 @@ pub mod relations {
     pub fn find_relation_minor<'a>(
         mind: &Mind,
         relation: RelationVerb,
-        city: &'a City,
+        population: &'a Population,
     ) -> Option<&'a Mind> {
         let match_relation: Vec<&(RelationVerb, Uuid)> = mind
             .relations
@@ -79,25 +79,27 @@ pub mod relations {
             .filter(|(r, _id)| r.eq(&relation))
             .collect();
         for (_relation, id) in match_relation {
-            let rel = city.citizens.iter().find(|c| c.id.eq(&id)).unwrap();
-            if rel.age < ADULT_AGE_FROM {
-                return Some(rel);
+            let rel = population.get(id);
+            if rel.is_some() {
+                let relation = rel.unwrap();
+                if relation.age < ADULT_AGE_FROM {
+                    return Some(relation);
+                }
             }
         }
         return None;
     }
 
     pub fn link_colleagues<'a>(city: &'a mut City) -> &'a mut City {
-        let ref_pop = city.citizens.clone();
-        let mut output: Population = Vec::new();
-
-        for m in city.citizens.iter_mut() {
-            let mut mind = m.clone();
+        let ref_citizens = city.citizens.clone();
+        let ref_ids = ref_citizens.keys();
+        for m_id in ref_ids {
+            let mut mind = city.citizens.get_mut(m_id).unwrap();
             mind.relations
                 .retain(|(v, _id)| !v.eq(&RelationVerb::Colleague));
             if mind.employer.is_some() {
-                let colleagues: Vec<&Mind> = ref_pop
-                    .iter()
+                let colleagues: Vec<&Mind> = ref_citizens
+                    .values()
                     .filter(|c| {
                         !c.id.eq(&mind.id)
                             && c.employer.is_some()
@@ -108,7 +110,6 @@ pub mod relations {
                     mind.relations.push((RelationVerb::Colleague, c.id.clone()))
                 }
             }
-            output.push(mind);
         }
 
         return city;
@@ -117,7 +118,7 @@ pub mod relations {
     pub fn link_siblings<'a>(city: &'a mut City) -> &'a mut City {
         let ref_pop = city.citizens.clone();
 
-        for m in city.citizens.iter_mut() {
+        for m in city.citizens.values_mut() {
             let parents: Vec<&Uuid> = m
                 .relations
                 .iter()
@@ -125,7 +126,7 @@ pub mod relations {
                 .map(|(_v, id)| id)
                 .collect();
             let siblings: Vec<Uuid> = ref_pop
-                .iter()
+                .values()
                 .filter(|m| {
                     m.relations
                         .iter()
@@ -143,13 +144,16 @@ pub mod relations {
 
     pub fn link_grandparents<'a>(city: &'a mut City) -> &'a mut City {
         let ref_pop = city.citizens.clone();
-        for m in &city.citizens.clone() {
-            let mut citizens = city.citizens.iter_mut();
+        let ref_ids = ref_pop.keys();
+        for id in ref_ids {
+            let mut citizens = city.citizens.values_mut();
+            let m = citizens.find(|c| c.id.eq(id)).unwrap();
+
             let parents: Vec<&Mind> = m
                 .relations
                 .iter()
                 .filter(|(v, _id)| v.eq(&RelationVerb::Parent))
-                .map(|(_v, id)| ref_pop.iter().find(|c| c.id.eq(id)).unwrap())
+                .map(|(_v, id)| ref_pop.get(id).unwrap())
                 .collect();
             let grandparent_ids: Vec<&Uuid> = parents
                 .iter()

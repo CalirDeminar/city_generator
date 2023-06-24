@@ -27,23 +27,22 @@ pub mod parents {
     const SPOUSE_CHILD_CHANCE: f32 = 0.1;
     const PARTNER_CHILD_CHANCE: f32 = 0.05;
 
-    fn find_couples(population: Vec<&Mind>) -> Vec<(&Mind, &Mind)> {
+    fn find_couples(population: &Population) -> Vec<(&Mind, &Mind)> {
         let mut output: Vec<(&Mind, &Mind)> = Vec::new();
-        let ref_pop = population.clone();
-        for mind in population {
+        for mind in population.values().filter(|c| c.alive) {
             let possible_partner_relation = mind
                 .relations
                 .iter()
                 .find(|(v, _id)| TAKEN_VERBS.contains(&v));
             if possible_partner_relation.is_some() {
                 let partner_id = possible_partner_relation.unwrap().1;
-                if ref_pop.iter().find(|c| c.id.eq(&partner_id)).is_none() {
+                if population.get(&partner_id).is_none() {
                     println!(
                         "Missing Partner: ID: {} for {} {}",
                         partner_id, mind.first_name, mind.last_name
                     );
                 }
-                let partner = ref_pop.iter().find(|c| c.id.eq(&partner_id)).unwrap();
+                let partner = population.get(&partner_id).unwrap();
                 let already_contained = output.iter().any(|(a, b)| {
                     let a_matches = a.id.eq(&mind.id) || a.id.eq(&partner_id);
                     let b_matches = b.id.eq(&mind.id) || b.id.eq(&partner_id);
@@ -67,11 +66,13 @@ pub mod parents {
         if rng.gen::<f32>() < PARENT_PRESENCE_CHANCE {
             return None;
         }
-        let filtered_parents: Vec<&Mind> = population
-            .iter()
-            .filter(|c| !lockout_ids.contains(&c.id))
-            .collect();
-        let mut potential_parents = find_couples(filtered_parents);
+        // let filtered_parents: Vec<&Mind> = population
+        //     .values()
+        //     .filter(|c| !lockout_ids.contains(&c.id))
+        //     .collect();
+        let mut filtered_parents = population.clone();
+        filtered_parents.retain(|_id, c| !lockout_ids.contains(&c.id));
+        let mut potential_parents = find_couples(&filtered_parents);
         potential_parents.shuffle(&mut rng);
         let target_age_range = (mind.age + MIN_CHILD_BEARING_AGE)..(u32::MAX);
         return potential_parents
@@ -102,11 +103,20 @@ pub mod parents {
     }
 
     pub fn link_parents<'a>(city: &'a mut City) -> &'a mut City {
-        let citizen_ids: Vec<Uuid> = city.citizens.iter().map(|c| c.id).collect();
+        let citizen_ids: Vec<Uuid> = city
+            .citizens
+            .values()
+            .filter(|c| c.alive)
+            .map(|c| c.id)
+            .collect();
         let mut relations_to_add: Vec<(Uuid, Vec<Uuid>)> = Vec::new();
 
         for mind_id in citizen_ids {
-            let mind = city.citizens.iter().find(|c| c.id.eq(&mind_id)).unwrap();
+            let mind = city
+                .citizens
+                .values()
+                .find(|c| c.alive && c.id.eq(&mind_id))
+                .unwrap();
             let lockout_ids = get_lockout_parents(&relations_to_add);
             // println!("{:#?}", lockout_ids);
             let possible_parents = find_parent_ids(mind, &city.citizens, &lockout_ids);
@@ -121,7 +131,7 @@ pub mod parents {
         }
 
         for (target_id, parent_ids) in relations_to_add {
-            let mut citizens = city.citizens.iter_mut();
+            let mut citizens = city.citizens.values_mut().filter(|c| c.alive);
             let target = citizens.find(|c| c.id.eq(&target_id)).unwrap();
             let parents: Vec<&mut Mind> = citizens.filter(|c| parent_ids.contains(&c.id)).collect();
             for parent in parents {
@@ -171,17 +181,12 @@ pub mod parents {
         culture: &CultureConfig,
         dict: &Vec<Word>,
     ) -> &'a mut City {
-        let citizen_ref: Vec<Mind> = city
-            .citizens
-            .iter()
-            .filter(|c| c.alive)
-            .map(|c| c.clone())
-            .collect();
-        let couples = find_couples(citizen_ref.iter().collect());
+        let citizen_ref = city.citizens.clone();
+        let couples = find_couples(&citizen_ref);
 
         for (m1, m2) in couples {
             if couple_will_bear(m1, m2, &culture) {
-                let mut citizens = city.citizens.iter_mut().filter(|c| c.alive);
+                let mut citizens = city.citizens.values_mut().filter(|c| c.alive);
                 let pm1 = citizens.find(|m| m.id.eq(&m1.id));
                 let pm2 = citizens.find(|m| m.id.eq(&m2.id));
                 if pm1.is_some() && pm2.is_some() {
@@ -201,7 +206,7 @@ pub mod parents {
                     child
                         .relations
                         .push((RelationVerb::Parent, mind_2.id.clone()));
-                    city.citizens.push(child.clone());
+                    city.citizens.insert(child.id.clone(), child.clone());
                 }
             }
         }

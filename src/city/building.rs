@@ -71,7 +71,7 @@ pub mod building {
                 } else {
                     let residents: Vec<&Mind> = city
                         .citizens
-                        .iter()
+                        .values()
                         .filter(|m| m.residence.is_some() && m.residence.unwrap().eq(&area.id))
                         .collect();
                     if residents.len().eq(&0) {
@@ -117,7 +117,7 @@ pub mod building {
                 });
                 let residents: Vec<&Mind> = city
                     .citizens
-                    .iter()
+                    .values()
                     .filter(|m| m.residence.is_some() && m.residence.unwrap().eq(&area.id))
                     .collect();
                 let mut a = f.li().attr(&format!("id='{}'", area.id));
@@ -155,7 +155,7 @@ pub mod building {
     pub fn building_area_is_owned<'a>(area: &'a BuildingFloorArea, city: &'a City) -> bool {
         return city
             .citizens
-            .iter()
+            .values()
             .any(|c| c.residence.is_some() && c.residence.unwrap().eq(&area.id));
     }
 

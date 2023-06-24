@@ -1,8 +1,11 @@
 pub mod mind;
 pub mod population {
+    use uuid::Uuid;
+
     use crate::city::population::mind::mind::*;
     use crate::city::population::mind::relations::relations::*;
     use crate::{city::city::City, language::language::Word};
+    use std::collections::HashMap;
     use std::{fs::File, io::Write};
 
     use super::mind::relations::friends::friends::link_friends_within_population;
@@ -10,20 +13,21 @@ pub mod population {
         parents::parents::link_parents, partners::partners::link_partners,
     };
 
-    pub type Population = Vec<Mind>;
+    pub type Population = HashMap<Uuid, Mind>;
 
     pub fn print_population(city: &City) -> String {
         let mut output = String::from("");
-        for mind in city.citizens.iter().filter(|c| c.alive) {
+        for mind in city.citizens.values().filter(|c| c.alive) {
             output.push_str(&print_mind(&mind, &city));
         }
         return output;
     }
 
     fn generate_base_population<'a>(i: usize, dict: &Vec<Word>) -> Population {
-        let mut output: Population = vec![];
+        let mut output: Population = HashMap::new();
         for _i in 0..i {
-            output.push(random_char(&dict));
+            let char = random_char(&dict);
+            output.insert(char.id.clone(), char);
         }
         return output;
     }
