@@ -1,3 +1,4 @@
+pub mod friends;
 pub mod parents;
 pub mod partners;
 pub mod relations {
@@ -14,8 +15,10 @@ pub mod relations {
         Child,
         Partner,
         ExPartner,
+        LatePartner,
         Spouse,
         ExSpouse,
+        LateSpouse,
         Sibling,
         Grandparent,
         Grandchild,
@@ -35,11 +38,6 @@ pub mod relations {
     }
 
     pub const ADULT_AGE_FROM: u32 = 18;
-
-    const FRIEND_OUTGOING_MAX: f32 = 3.0;
-    const FRIEND_MULTIPLIER_SAME_GENDER: f32 = 0.66;
-    const FRIEND_MULTIPLER_DIFFERENT_GENDER: f32 = 0.33;
-    const FRIEND_RATE: f32 = 0.01;
 
     pub fn invert_gender(gender: &Gender) -> Gender {
         let mut rng = rand::thread_rng();
@@ -89,52 +87,14 @@ pub mod relations {
         return None;
     }
 
-    fn match_friend(mind_1: &Mind, mind_2: &Mind) -> bool {
-        let mut rng = rand::thread_rng();
-        let roll: f32 = rng.gen();
-        let gender_modifier: f32;
-        if mind_1.gender.eq(&mind_2.gender) {
-            gender_modifier = FRIEND_MULTIPLIER_SAME_GENDER;
-        } else {
-            gender_modifier = FRIEND_MULTIPLER_DIFFERENT_GENDER;
-        }
-        let age_gap_modifier = 1.0
-            / ((mind_1.age.abs_diff(mind_2.age) as f32) * 5.0)
-                .min(1.0)
-                .max(0.0);
-        let mind_1_knows_2 = mind_1.relations.iter().any(|(_r, id)| id.eq(&mind_2.id));
-        return !mind_1_knows_2 && roll > (FRIEND_RATE * gender_modifier * age_gap_modifier);
-    }
-
-    pub fn link_friends_within_population<'a>(city: &'a mut City) -> &'a mut City {
-        let mut rng = rand::thread_rng();
-        let ids: Vec<Uuid> = city.citizens.iter().map(|c| c.id).collect();
-        for mind_id in ids {
-            city.citizens.shuffle(&mut rng);
-            let mut citizens = city.citizens.iter_mut();
-            let mind = citizens.find(|c| c.id.eq(&mind_id)).unwrap();
-            let friend_count = (rng.gen::<f32>() * FRIEND_OUTGOING_MAX) as u32;
-            for _i in 0..friend_count {
-                let possible_friend = citizens.find(|c| match_friend(&mind, c));
-                if possible_friend.is_some() {
-                    let friend = possible_friend.unwrap();
-                    mind.relations
-                        .push((RelationVerb::Friend, friend.id.clone()));
-                    friend
-                        .relations
-                        .push((RelationVerb::Friend, mind.id.clone()));
-                }
-            }
-        }
-        return city;
-    }
-
     pub fn link_colleagues<'a>(city: &'a mut City) -> &'a mut City {
         let ref_pop = city.citizens.clone();
         let mut output: Population = Vec::new();
 
         for m in city.citizens.iter_mut() {
             let mut mind = m.clone();
+            mind.relations
+                .retain(|(v, _id)| !v.eq(&RelationVerb::Colleague));
             if mind.employer.is_some() {
                 let colleagues: Vec<&Mind> = ref_pop
                     .iter()

@@ -17,8 +17,13 @@ pub mod city {
     use super::population::mind::relations::relations::*;
     use crate::city::institutions::institutions::*;
     use crate::city::locations::{locations, locations::*};
+    use crate::city::population::mind::relations::friends::friends::link_friends_within_population_by_year;
+    use crate::city::population::mind::relations::parents::parents::generate_children_per_year;
+    use crate::city::population::mind::relations::partners::partners::{
+        link_partners_by_year, update_partners_by_year,
+    };
     use crate::city::population::population::*;
-    use crate::culture::culture::{build_culture_dictionary, random_culture};
+    use crate::culture::culture::{build_culture_dictionary, random_culture, CultureConfig};
     use crate::language::language::{
         build_dictionary, random_word_by_tag, random_word_by_tag_and, Word, WordType,
     };
@@ -36,24 +41,10 @@ pub mod city {
 
     pub fn print_city(city: &City) -> String {
         let mut output: String = String::new();
-        let partnered_list = vec![RelationVerb::Partner, RelationVerb::Spouse];
-        let relation_rate = city
-            .citizens
-            .iter()
-            .filter(|c| {
-                c.relations
-                    .iter()
-                    .any(|(v, _id)| partnered_list.contains(v))
-            })
-            .count() as f32
-            / city.citizens.len() as f32;
         output.push_str(&format!("City Name: {}\n", city.name));
         output.push_str(&format!(
-            "Population: {}\nRelationship Ratio: {}\nArea Count: {}\nBuilding Count: {}\n",
-            city.citizens.len(),
-            relation_rate,
-            city.areas.len(),
-            city.buildings.len()
+            "Population: {}",
+            city.citizens.iter().filter(|c| c.alive).count()
         ));
         for a in &city.areas {
             output.push_str(&print_location(&a, &city));
@@ -337,5 +328,106 @@ pub mod city {
         assign_residences(&mut city);
         println!("{:#?}", city.institutions);
         return city;
+    }
+
+    fn count_city_relations_proportions(city: &City, verb: RelationVerb) -> f32 {
+        return city
+            .citizens
+            .iter()
+            .filter(|c| c.relations.iter().any(|(v, _id)| v.eq(&verb)))
+            .count() as f32
+            / city.citizens.len() as f32;
+    }
+
+    pub fn old_age_pass_per_year<'a>(city: &'a mut City, culture: &CultureConfig) -> &'a mut City {
+        let mut rng = rand::thread_rng();
+        let citizen_ids: Vec<Uuid> = city
+            .citizens
+            .iter()
+            .filter(|c| c.alive)
+            .map(|c| c.id)
+            .collect();
+        let base_death_chance: f32 = 0.5;
+        let mut dead_ids: Vec<Uuid> = vec![];
+        for mind_id in citizen_ids {
+            let mut citizens = city.citizens.iter_mut();
+            let mind = citizens.find(|c| c.id.eq(&mind_id)).unwrap();
+            let death_odds = base_death_chance
+                + (((mind.age as f32 - culture.species_avg_lifespan_variance as f32)
+                    - (culture.species_avg_lifespan as f32
+                        - culture.species_avg_lifespan_variance as f32))
+                    / 10.0);
+            if rng.gen::<f32>() < death_odds {
+                mind.alive = false;
+                mind.employer = None;
+                mind.residence = None;
+                dead_ids.push(mind.id.clone());
+            }
+        }
+        for mind in city.citizens.iter_mut() {
+            for (verb, id) in mind.relations.clone() {
+                if dead_ids.contains(&id) {
+                    match verb {
+                        RelationVerb::Partner => {
+                            mind.relations.retain(|(_v, id)| !id.eq(&id));
+                            mind.relations.push((RelationVerb::LatePartner, id.clone()));
+                        }
+                        RelationVerb::Spouse => {
+                            mind.relations.retain(|(_v, id)| !id.eq(&id));
+                            mind.relations.push((RelationVerb::LateSpouse, id.clone()));
+                        }
+
+                        _ => {
+                            mind.relations.retain(|(_v, id)| !id.eq(&id));
+                        }
+                    }
+                }
+            }
+        }
+        return city;
+    }
+
+    pub fn simulate(size: usize, age: usize) -> City {
+        let dict = build_dictionary();
+        let culture = random_culture(&dict);
+
+        println!("{:?}", culture);
+        let dict = build_culture_dictionary(&dict, &culture);
+        let mut city = City {
+            name: locations::gen_location_name(&dict, false),
+            buildings: Vec::new(),
+            citizens: Vec::new(),
+            areas: Vec::new(),
+            institutions: Vec::new(),
+        };
+
+        generate_population_baseline(&dict, size, &mut city);
+        for i in 0..age {
+            println!("Y{}", i);
+            old_age_pass_per_year(&mut city, &culture);
+            link_friends_within_population_by_year(&mut city);
+            link_partners_by_year(&mut city);
+            update_partners_by_year(&mut city);
+            generate_children_per_year(&mut city, &culture, &dict);
+            // println!(
+            //     "Year: {} - Partners: {} - ExPartners: {} - Spouse: {} - ExSpouse: {}",
+            //     i,
+            //     count_city_relations_proportions(&city, RelationVerb::Partner),
+            //     count_city_relations_proportions(&city, RelationVerb::ExPartner),
+            //     count_city_relations_proportions(&city, RelationVerb::Spouse),
+            //     count_city_relations_proportions(&city, RelationVerb::ExSpouse)
+            // );
+
+            for citizen in city.citizens.iter_mut() {
+                citizen.age += 1;
+            }
+        }
+
+        return city;
+    }
+
+    #[test]
+    fn test_simulation() {
+        simulate(1000, 20);
     }
 }

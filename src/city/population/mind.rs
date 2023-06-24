@@ -52,6 +52,7 @@ pub mod mind {
         pub employer: Option<Uuid>,
         pub residence: Option<Uuid>,
         pub sexuality: Sexuality,
+        pub alive: bool,
     }
 
     pub fn find_address<'a>(
@@ -88,9 +89,14 @@ pub mod mind {
         let result = population.iter().find(|m| m.id.eq(id));
         if result.is_some() {
             return format!(
-                "{} {}",
+                "{} {} {}",
                 String::from(&result.unwrap().first_name),
-                String::from(&result.unwrap().last_name)
+                String::from(&result.unwrap().last_name),
+                if result.unwrap().alive {
+                    ""
+                } else {
+                    "  (Dead)"
+                }
             );
         }
         return format!("Missing ID: {}", id);
@@ -291,6 +297,7 @@ pub mod mind {
             employer: None,
             residence: None,
             sexuality: gen_sexuality(),
+            alive: true,
         };
     }
 }

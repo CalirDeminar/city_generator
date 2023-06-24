@@ -5,6 +5,7 @@ pub mod population {
     use crate::{city::city::City, language::language::Word};
     use std::{fs::File, io::Write};
 
+    use super::mind::relations::friends::friends::link_friends_within_population;
     use super::mind::relations::{
         parents::parents::link_parents, partners::partners::link_partners,
     };
@@ -13,7 +14,7 @@ pub mod population {
 
     pub fn print_population(city: &City) -> String {
         let mut output = String::from("");
-        for mind in &city.citizens {
+        for mind in city.citizens.iter().filter(|c| c.alive) {
             output.push_str(&print_mind(&mind, &city));
         }
         return output;
@@ -50,8 +51,8 @@ pub mod population {
     ) -> &'a mut City {
         let mut city = c;
         city.citizens = generate_base_population(size, &dict);
-        city = link_colleagues(city);
-        city = link_friends_within_population(city);
+        // city = link_colleagues(city);
+        // city = link_friends_within_population(city);
         return city;
     }
 

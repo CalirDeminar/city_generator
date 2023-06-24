@@ -12,10 +12,13 @@ pub mod culture {
 
     #[derive(PartialEq, Debug, Clone)]
     pub struct CultureConfig {
-        historical_figures: Vec<(String, String)>,
-        landlocked: bool,
-        staple_meats: Vec<String>,
-        staple_plants: Vec<String>,
+        pub historical_figures: Vec<(String, String)>,
+        pub landlocked: bool,
+        pub staple_meats: Vec<String>,
+        pub staple_plants: Vec<String>,
+        pub adult_age: u32,
+        pub species_avg_lifespan: u32,
+        pub species_avg_lifespan_variance: u32,
     }
 
     fn gen_historical_figures(dict: &Vec<Word>) -> Vec<(String, String)> {
@@ -105,6 +108,9 @@ pub mod culture {
             landlocked,
             staple_meats: random_animals(&dict, landlocked),
             staple_plants: random_crops(&dict),
+            adult_age: 18,
+            species_avg_lifespan: 70,
+            species_avg_lifespan_variance: 5,
         };
     }
 

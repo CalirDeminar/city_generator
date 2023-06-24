@@ -11,7 +11,7 @@ pub mod utils;
 
 fn main() {
     std::env::set_var("RUST_BACKTRACE", "1");
-    let city = city::city::build(500);
+    let city = city::city::simulate(500, 20);
     export_city(&city);
     export_city_html(&city);
 }

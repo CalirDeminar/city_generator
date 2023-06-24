@@ -8,15 +8,22 @@ pub mod partners {
     use crate::city::{
         city::City,
         population::{
-            mind::{mind::*, relations::relations::*},
+            mind::{
+                mind::*,
+                relations::{friends::friends::SOCIAL_RELATIONS, relations::*},
+            },
             population::Population,
         },
     };
 
-    const PARTNER_CHANCE_GENERAL: f32 = 0.8;
-    const PARTNER_MARRIAGE_RATE: f32 = 0.5;
-    const PARTNER_SPLIT_RATE: f32 = 0.2;
+    const PARTNER_CHANCE_GENERAL: f32 = 0.3; // multiple annual chances
+    const PARTNER_MARRIAGE_RATE: f32 = 0.075; // single anunal chance
+    const PARTNER_SPLIT_RATE: f32 = 0.1; // single annual chance
+    const MARRIAGE_SPLIT_RATE: f32 = 0.04; // single annual chance
+
     const MAX_RELATION_AGE_DIFF: u32 = 20;
+    pub const TAKEN_VERBS: [RelationVerb; 2] = [RelationVerb::Partner, RelationVerb::Spouse];
+    const EX_VERBS: [RelationVerb; 2] = [RelationVerb::ExPartner, RelationVerb::ExSpouse];
 
     fn flatten_rel_map(input: &Vec<(Uuid, Uuid)>) -> Vec<Uuid> {
         return input
@@ -46,6 +53,12 @@ pub mod partners {
             }
         }
         return verb;
+    }
+
+    fn is_single(mind: &Mind) -> bool {
+        return TAKEN_VERBS
+            .iter()
+            .all(|v| !mind.relations.iter().any(|(mv, _id)| mv.eq(&v)));
     }
 
     fn compatible_sexuality(input: &Sexuality) -> Vec<Sexuality> {
@@ -87,6 +100,7 @@ pub mod partners {
         let mut rng = rand::thread_rng();
         let mut filtered: Vec<&Mind> = population
             .iter()
+            .filter(|c| is_single(&c))
             .filter(|c| c.gender.eq(&target_gender))
             .filter(|c| age_range.contains(&c.age))
             .filter(|c| {
@@ -180,6 +194,155 @@ pub mod partners {
                 mind_2.unwrap().relations.push((verb.clone(), id_1.clone()));
             } else {
                 println!("Mind Lookup Failed");
+            }
+        }
+        return city;
+    }
+
+    pub fn link_partners_by_year<'a>(city: &'a mut City) -> &'a mut City {
+        let mut rng = rand::thread_rng();
+        let citizen_ids: Vec<Uuid> = city
+            .citizens
+            .iter()
+            .filter(|c| c.alive)
+            .map(|c| c.id)
+            .collect();
+
+        let mut relations_to_add: Vec<(Uuid, Uuid)> = Vec::new();
+
+        for mind_id in citizen_ids {
+            if !flatten_rel_map(&relations_to_add).contains(&mind_id) {
+                city.citizens.shuffle(&mut rng);
+
+                let mind = city.citizens.iter().find(|c| c.id.eq(&mind_id)).unwrap();
+
+                if is_single(mind) {
+                    let mut taken_list = flatten_rel_map(&relations_to_add);
+                    taken_list.push(mind.id.clone());
+                    let friend_ids: Vec<&Uuid> = mind
+                        .relations
+                        .iter()
+                        .filter(|(v, _id)| SOCIAL_RELATIONS.contains(v))
+                        .map(|(_v, id)| id)
+                        .collect();
+                    let friends: Vec<Mind> = city
+                        .citizens
+                        .clone()
+                        .iter()
+                        .filter(|m| friend_ids.contains(&&m.id))
+                        .map(|m| m.clone())
+                        .collect();
+
+                    let possible_partner_id = find_partner_id(&mind, &friends, &taken_list);
+                    if possible_partner_id.is_some() {
+                        let root_repeating = flatten_rel_map(&relations_to_add)
+                            .iter()
+                            .any(|c| c.eq(&mind.id));
+                        let parnet_repeating = flatten_rel_map(&relations_to_add)
+                            .iter()
+                            .any(|c| c.eq(&possible_partner_id.unwrap()));
+                        if !root_repeating && !parnet_repeating {
+                            relations_to_add
+                                .push((mind.id.clone(), possible_partner_id.unwrap().clone()));
+                        } else {
+                            println!("Repeating Partner");
+                        }
+                    }
+                }
+            }
+        }
+
+        // let used_ids: Vec<Uuid> = Vec::new();
+        // relations_to_add = relations_to_add.iter().collect();
+
+        for (id_1, id_2) in relations_to_add {
+            let citizens = city.citizens.iter_mut();
+            let mut mind_1: Option<&mut Mind> = None;
+            let mut mind_2: Option<&mut Mind> = None;
+            for mind in citizens {
+                if mind.id.eq(&id_1) {
+                    mind_1 = Some(mind);
+                } else if mind.id.eq(&id_2) {
+                    mind_2 = Some(mind);
+                }
+            }
+            if mind_1.is_some() && mind_2.is_some() {
+                let verb = RelationVerb::Partner;
+                mind_1.unwrap().relations.push((verb.clone(), id_2.clone()));
+                mind_2.unwrap().relations.push((verb.clone(), id_1.clone()));
+            } else {
+                println!("Mind Lookup Failed");
+            }
+        }
+        return city;
+    }
+
+    pub fn update_partners_by_year<'a>(city: &'a mut City) -> &'a mut City {
+        let mut rng = rand::thread_rng();
+        let citizen_ids: Vec<Uuid> = city
+            .citizens
+            .iter()
+            .filter(|c| c.alive)
+            .map(|c| c.id)
+            .collect();
+        for id in citizen_ids {
+            let mut citizens = city.citizens.iter_mut().filter(|c| c.alive);
+            let mind = citizens.find(|c| c.id.eq(&id)).unwrap();
+            if !is_single(mind) {
+                let relations_ref = mind.relations.clone();
+                let (verb, partner_id) = relations_ref
+                    .iter()
+                    .find(|(v, _rid)| TAKEN_VERBS.contains(&v))
+                    .unwrap();
+                let p = citizens.find(|m| m.id.eq(&partner_id));
+                if p.is_some() {
+                    let partner = p.unwrap();
+                    match verb {
+                        RelationVerb::Partner => {
+                            if rng.gen::<f32>() < PARTNER_SPLIT_RATE {
+                                mind.relations
+                                    .retain(|(v, id)| !(v.eq(&verb) && id.eq(&partner_id)));
+                                mind.relations
+                                    .push((RelationVerb::ExPartner, partner_id.clone()));
+
+                                partner
+                                    .relations
+                                    .retain(|(v, id)| !(v.eq(&verb) && id.eq(&mind.id)));
+                                partner
+                                    .relations
+                                    .push((RelationVerb::ExPartner, mind.id.clone()));
+                            } else if rng.gen::<f32>() < PARTNER_MARRIAGE_RATE {
+                                mind.relations
+                                    .retain(|(v, id)| !(v.eq(&verb) && id.eq(&partner_id)));
+                                mind.relations
+                                    .push((RelationVerb::Spouse, partner_id.clone()));
+
+                                partner
+                                    .relations
+                                    .retain(|(v, id)| !(v.eq(&verb) && id.eq(&mind.id)));
+                                partner
+                                    .relations
+                                    .push((RelationVerb::Spouse, mind.id.clone()));
+                            }
+                        }
+                        RelationVerb::Spouse => {
+                            if rng.gen::<f32>() < MARRIAGE_SPLIT_RATE {
+                                mind.relations
+                                    .retain(|(v, id)| !(v.eq(&verb) && id.eq(&partner_id)));
+                                mind.relations
+                                    .push((RelationVerb::ExSpouse, partner_id.clone()));
+
+                                partner
+                                    .relations
+                                    .retain(|(v, id)| !(v.eq(&verb) && id.eq(&mind.id)));
+                                partner
+                                    .relations
+                                    .push((RelationVerb::ExSpouse, mind.id.clone()));
+                            }
+                        }
+                        _ => {}
+                    }
+                }
             }
         }
         return city;
