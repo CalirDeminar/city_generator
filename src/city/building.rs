@@ -6,7 +6,10 @@ pub mod building {
 
     use crate::{
         city::city::*,
-        city::population::mind::mind::*,
+        city::{
+            locations::locations::{gen_location, Location},
+            population::mind::mind::*,
+        },
         language::language::{build_dictionary, Word},
         templater::templater::{render_template, render_template_2},
         utils::utils::random_pick,
@@ -235,6 +238,51 @@ pub mod building {
             floors,
             location_id,
         };
+    }
+
+    fn find_free_area<'a>(city: &'a mut City) -> Option<&'a mut Location> {
+        return city.areas.iter_mut().find(|a| {
+            city.buildings
+                .iter_mut()
+                .filter(|b| b.location_id.is_some() && b.location_id.unwrap().eq(&a.id))
+                .count()
+                < a.size
+        });
+    }
+
+    pub fn add_building_to_city<'a>(city: &'a mut City, dict: &Vec<Word>) -> &'a mut City {
+        let mut free_location = find_free_area(city);
+        if free_location.is_none() {
+            city.areas.push(gen_location(&dict));
+            free_location = find_free_area(city);
+        }
+        let new_building = new_building(&dict, Some(free_location.unwrap().id.clone()));
+        city.buildings.push(new_building);
+        return city;
+    }
+
+    fn count_available_apartments(city: &City) -> usize {
+        return city
+            .buildings
+            .iter()
+            .flat_map(|b| {
+                b.floors
+                    .iter()
+                    .filter(|f| f.floor_type.eq(&FloorType::Residential))
+                    .flat_map(|f| f.areas.clone())
+            })
+            .count();
+    }
+
+    pub fn add_buildings_per_year<'a>(city: &'a mut City, dict: &Vec<Word>) -> &'a mut City {
+        let living_citizen_count = city.citizens.values().filter(|c| c.alive).count();
+        let acceptable_homeless_count = living_citizen_count / 100;
+        let mut free_apartment_count = count_available_apartments(&city);
+        while free_apartment_count < (living_citizen_count - acceptable_homeless_count) {
+            add_building_to_city(city, &dict);
+            free_apartment_count = count_available_apartments(&city);
+        }
+        return city;
     }
 
     #[test]

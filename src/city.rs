@@ -114,15 +114,6 @@ pub mod city {
         });
     }
 
-    fn find_free_area<'a>(city: &'a mut City) -> Option<&'a mut Location> {
-        return city.areas.iter_mut().find(|a| {
-            city.buildings
-                .iter_mut()
-                .filter(|b| b.location_id.is_some() && b.location_id.unwrap().eq(&a.id))
-                .count()
-                < a.size
-        });
-    }
 
     fn add_institution_to_building<'a>(
         building: &'a mut Building,
@@ -141,16 +132,6 @@ pub mod city {
         return building;
     }
 
-    fn add_building_to_city<'a>(city: &'a mut City, dict: &Vec<Word>) -> &'a mut City {
-        let mut free_location = find_free_area(city);
-        if free_location.is_none() {
-            city.areas.push(gen_location(&dict));
-            free_location = find_free_area(city);
-        }
-        let new_building = new_building(&dict, Some(free_location.unwrap().id.clone()));
-        city.buildings.push(new_building);
-        return city;
-    }
 
     fn add_institution_to_city<'a>(
         city: &'a mut City,
@@ -212,7 +193,7 @@ pub mod city {
         return output;
     }
 
-    fn assign_residences<'a>(city: &'a mut City) -> &'a mut City {
+    pub fn assign_residences<'a>(city: &'a mut City) -> &'a mut City {
         let mut new_residences: Vec<(Uuid, Uuid)> = Vec::new();
         let mut owned_ids: Vec<Uuid> = city
             .citizens
@@ -279,49 +260,6 @@ pub mod city {
             let citizen = city.citizens.get_mut(&citizen_id).unwrap();
             citizen.residence = Some(residence_id.clone());
         }
-        return city;
-    }
-
-    pub fn build(size: usize) -> City {
-        let dict = build_dictionary();
-        let culture = random_culture(&dict);
-
-        println!("{:?}", culture);
-        let language_dict = build_culture_dictionary(&dict, &culture);
-        let mut city = City {
-            name: locations::gen_location_name(&language_dict, false),
-            buildings: Vec::new(),
-            citizens: HashMap::new(),
-            areas: Vec::new(),
-            institutions: Vec::new(),
-        };
-
-        generate_population_full_relation(&language_dict, size, &mut city);
-
-        let public_institutions = generate_public_institutions(&language_dict);
-
-        for pub_inst in public_institutions {
-            add_public_institution_to_city(&mut city, pub_inst, &language_dict);
-        }
-
-        let mut workers = find_workers(&city);
-        while workers.len() > 0 {
-            let institution = generate_population_institution(&language_dict);
-            add_institution_to_city(&mut city, institution, &language_dict);
-            workers = find_workers(&city);
-        }
-        link_colleagues(&mut city);
-        let mut apartment_count = count_residential_apartments(&city);
-        while (apartment_count as f32) < (city.citizens.len() as f32 * 1.1) {
-            city.areas.shuffle(&mut rand::thread_rng());
-            city.buildings.push(new_building(
-                &language_dict,
-                Some(city.areas.first().unwrap().id.clone()),
-            ));
-            apartment_count = count_residential_apartments(&city);
-        }
-        assign_residences(&mut city);
-        println!("{:#?}", city.institutions);
         return city;
     }
 
@@ -432,16 +370,32 @@ pub mod city {
                 - partner_update_time
                 - generate_children_time;
             // link_grandparents(&mut city);
+            add_buildings_per_year(&mut city, &dict);
+            let add_buildings_time = Instant::now().duration_since(start)
+                - old_age_time
+                - friend_link_time
+                - partner_update_time
+                - generate_children_time - sibling_link_time;
             assign_residences(&mut city);
+            let residence_assign_time = Instant::now().duration_since(start)
+                - old_age_time
+                - friend_link_time
+                - partner_update_time
+                - generate_children_time 
+                - add_buildings_time 
+                - sibling_link_time;
             // TODO - build new buildings
             // TODO - create new institutions - allow institutions to come and go
-            println!("Exec Time - Old Age: {} - Friend Link: {} - Partner Link: {} - Partner Update: {} - Generate Children: {} - Sibling Link: {}",
+            println!("Exec Time - Old Age: {} - Friend Link: {} - Partner Link: {} - Partner Update: {} - Generate Children: {} - Sibling Link: {} - Add Buildlings: {} - Residence Assignment: {}",
                 old_age_time.as_millis(), 
                 friend_link_time.as_millis(), 
                 partner_link_time.as_millis(), 
                 partner_update_time.as_millis(), 
                 generate_children_time.as_millis(), 
-                sibling_link_time.as_millis());
+                sibling_link_time.as_millis(), 
+                add_buildings_time.as_millis(),
+                residence_assign_time.as_millis()
+            );
             for citizen in city.citizens.values_mut() {
                 citizen.age += 1;
             }
