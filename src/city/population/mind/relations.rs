@@ -60,10 +60,16 @@ pub mod relations {
         relation: RelationVerb,
         population: &'a Population,
     ) -> Option<&'a Mind> {
-        let match_relation = mind.relations.iter().find(|(r, _id)| r.eq(&relation));
-        if match_relation.is_some() {
-            let (_verb, id) = match_relation.unwrap();
-            return population.get(id);
+        let match_relations: Vec<&(RelationVerb, Uuid)> = mind
+            .relations
+            .iter()
+            .filter(|(r, _id)| r.eq(&relation))
+            .collect();
+        for (_verb, id) in match_relations {
+            let relation = population.get(id);
+            if relation.is_some() && relation.unwrap().alive {
+                return relation;
+            }
         }
         return None;
     }
@@ -73,18 +79,18 @@ pub mod relations {
         relation: RelationVerb,
         population: &'a Population,
     ) -> Option<&'a Mind> {
-        let match_relation: Vec<&(RelationVerb, Uuid)> = mind
+        let match_relations: Vec<&(RelationVerb, Uuid)> = mind
             .relations
             .iter()
             .filter(|(r, _id)| r.eq(&relation))
             .collect();
-        for (_relation, id) in match_relation {
-            let rel = population.get(id);
-            if rel.is_some() {
-                let relation = rel.unwrap();
-                if relation.age < ADULT_AGE_FROM {
-                    return Some(relation);
-                }
+        for (_verb, id) in match_relations {
+            let relation = population.get(id);
+            if relation.is_some()
+                && relation.unwrap().alive
+                && relation.unwrap().age < ADULT_AGE_FROM
+            {
+                return relation;
             }
         }
         return None;

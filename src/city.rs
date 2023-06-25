@@ -221,7 +221,7 @@ pub mod city {
             .map(|c| c.residence.unwrap().clone())
             .collect();
         let ref_pop = city.citizens.clone();
-        for citizen in city.citizens.values_mut().filter(|c| c.residence.is_none()) {
+        for citizen in city.citizens.values_mut().filter(|c| c.alive && c.residence.is_none()) {
             let guardian = if citizen.age < ADULT_AGE_FROM {
                 find_relation(&citizen, RelationVerb::Parent, &ref_pop)
             } else {
