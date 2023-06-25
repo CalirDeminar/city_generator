@@ -42,7 +42,11 @@ pub mod city {
         output.push_str(&format!("City Name: {}\n", city.name));
         output.push_str(&format!(
             "Population: {}\n",
-            city.citizens.iter().filter(|(id, c)| c.alive).count()
+            city.citizens.iter().filter(|(_id, c)| c.alive).count()
+        ));
+        output.push_str(&format!(
+            "Dead: {}\n",
+            city.citizens.iter().filter(|(id, c)| !c.alive).count()
         ));
         for a in &city.areas {
             output.push_str(&print_location(&a, &city));
@@ -58,6 +62,8 @@ pub mod city {
     }
 
     pub fn export_city_html(city: &City) {
+        let living = city.citizens.values().filter(|c| c.alive);
+        let dead = city.citizens.values().filter(|c| !c.alive);
         let mut document = Buffer::new();
         document.doctype();
         let mut html = document.html().attr("lang='en'");
@@ -65,7 +71,8 @@ pub mod city {
         html.link().attr("rel='stylesheet' href='./style.css'");
         let mut body = html.body();
         writeln!(body.h1(), "{}", city.name).unwrap();
-        writeln!(body.p(), "Population: {}", city.citizens.len()).unwrap();
+        writeln!(body.p(), "Population: {}", living.clone().count()).unwrap();
+        writeln!(body.p(), "Population: {}", dead.clone().count()).unwrap();
         writeln!(body.p(), "Area Count: {}", city.areas.len()).unwrap();
         writeln!(body.p(), "Building Count: {}", city.buildings.len()).unwrap();
         writeln!(body.h2(), "Locations:").unwrap();
@@ -76,7 +83,7 @@ pub mod city {
 
         writeln!(body.h2(), "Citizens").unwrap();
         let mut citizen_list = body.ul();
-        for m in city.citizens.values().filter(|c| c.alive) {
+        for m in living {
             print_mind_html(&mut citizen_list.li(), &m, &city);
         }
 
