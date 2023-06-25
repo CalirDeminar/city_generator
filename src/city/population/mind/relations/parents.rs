@@ -186,26 +186,27 @@ pub mod parents {
 
         for (m1, m2) in couples {
             if couple_will_bear(m1, m2, &culture) {
-                let mut citizens = city.citizens.values_mut().filter(|c| c.alive);
-                let pm1 = citizens.find(|m| m.id.eq(&m1.id));
-                let pm2 = citizens.find(|m| m.id.eq(&m2.id));
+                // let mut citizens = city.citizens.values_mut().filter(|c| c.alive);
+                let pm1 = citizen_ref.get(&m1.id);
+                let pm2 = citizen_ref.get(&m2.id);
                 if pm1.is_some() && pm2.is_some() {
                     let mut child = random_char(&dict);
                     child.age = 1;
-                    let mind_1 = pm1.unwrap();
-                    let mind_2 = pm2.unwrap();
+
+                    let mind_1 = city.citizens.get_mut(&m1.id).unwrap();
                     mind_1
                         .relations
                         .push((RelationVerb::Child, child.id.clone()));
+                    drop(mind_1);
+
+                    let mind_2 = city.citizens.get_mut(&m2.id).unwrap();
                     mind_2
                         .relations
                         .push((RelationVerb::Child, child.id.clone()));
-                    child
-                        .relations
-                        .push((RelationVerb::Parent, mind_1.id.clone()));
-                    child
-                        .relations
-                        .push((RelationVerb::Parent, mind_2.id.clone()));
+                    drop(mind_2);
+
+                    child.relations.push((RelationVerb::Parent, m1.id.clone()));
+                    child.relations.push((RelationVerb::Parent, m2.id.clone()));
                     city.citizens.insert(child.id.clone(), child.clone());
                 }
             }

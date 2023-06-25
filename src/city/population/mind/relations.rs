@@ -118,24 +118,29 @@ pub mod relations {
     pub fn link_siblings<'a>(city: &'a mut City) -> &'a mut City {
         let ref_pop = city.citizens.clone();
 
-        for m in city.citizens.values_mut() {
-            let parents: Vec<&Uuid> = m
+        for m in ref_pop.values() {
+            let parents: Vec<Mind> = m
                 .relations
                 .iter()
                 .filter(|(v, _id)| v.eq(&RelationVerb::Parent))
+                .map(|(_v, id)| ref_pop.get(id).unwrap().clone())
+                .collect();
+            let siblings: Vec<Uuid> = parents
+                .iter()
+                .flat_map(|m| m.relations.clone())
+                .filter(|(verb, _id)| verb.eq(&RelationVerb::Child))
                 .map(|(_v, id)| id)
                 .collect();
-            let siblings: Vec<Uuid> = ref_pop
-                .values()
-                .filter(|m| {
-                    m.relations
-                        .iter()
-                        .any(|(v, id)| v.eq(&RelationVerb::Parent) && parents.contains(&id))
-                })
-                .map(|m| m.id)
-                .collect();
             for sibling in siblings {
-                m.relations.push((RelationVerb::Sibling, sibling));
+                let m = city.citizens.get_mut(&m.id).unwrap();
+                if !m
+                    .relations
+                    .iter()
+                    .any(|(v, rel)| v.eq(&RelationVerb::Sibling) && rel.eq(&sibling))
+                {
+                    m.relations.push((RelationVerb::Sibling, sibling));
+                }
+                drop(m);
             }
         }
 

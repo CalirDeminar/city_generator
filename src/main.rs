@@ -9,9 +9,11 @@ pub mod parser;
 pub mod templater;
 pub mod utils;
 
+pub const MULTI_THREADING_FACTOR: usize = 5;
+
 fn main() {
     std::env::set_var("RUST_BACKTRACE", "1");
-    let city = city::city::simulate(500, 20);
+    let city = city::city::simulate(60, 100);
     export_city(&city);
     export_city_html(&city);
 }

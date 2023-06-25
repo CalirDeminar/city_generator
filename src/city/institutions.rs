@@ -143,7 +143,7 @@ pub mod institutions {
                 id: Uuid::new_v4(),
                 name: format!(
                     "{} {}",
-                    render_template_2("{{Noun(LastName)}}", &dict),
+                    render_template_2("{{Noun(HistoricalFigure)}}", &dict),
                     label_insitute_type(&i)
                 ),
                 public: true,

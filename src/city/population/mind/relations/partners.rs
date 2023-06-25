@@ -1,6 +1,6 @@
 pub mod partners {
     use rand::seq::SliceRandom;
-    use std::ops::Range;
+    use std::{collections::HashMap, ops::Range};
 
     use rand::Rng;
     use uuid::Uuid;
@@ -204,52 +204,52 @@ pub mod partners {
     }
 
     pub fn link_partners_by_year<'a>(city: &'a mut City) -> &'a mut City {
-        let mut rng = rand::thread_rng();
         let citizen_ids: Vec<Uuid> = city
             .citizens
             .values()
-            .filter(|c| c.alive)
+            .filter(|c| c.alive && is_single(c))
             .map(|c| c.id)
             .collect();
 
         let mut relations_to_add: Vec<(Uuid, Uuid)> = Vec::new();
+        let mut taken_list = Vec::new();
 
         for mind_id in citizen_ids {
             if !flatten_rel_map(&relations_to_add).contains(&mind_id) {
                 // city.citizens.shuffle(&mut rng);
 
-                let mind = city
-                    .citizens
-                    .values()
-                    .find(|c| c.alive && c.id.eq(&mind_id))
-                    .unwrap();
+                let mind = city.citizens.get(&mind_id).unwrap();
 
-                if is_single(mind) {
-                    let mut taken_list = flatten_rel_map(&relations_to_add);
-                    taken_list.push(mind.id.clone());
-                    let friend_ids: Vec<&Uuid> = mind
-                        .relations
+                let friend_ids: Vec<&Uuid> = mind
+                    .relations
+                    .iter()
+                    .filter(|(v, _id)| SOCIAL_RELATIONS.contains(v))
+                    .map(|(_v, id)| id)
+                    .collect();
+
+                let mut friends: HashMap<Uuid, Mind> = HashMap::new();
+                for id in friend_ids {
+                    friends.insert(id.clone(), city.citizens.get(&id).unwrap().clone());
+                }
+
+                let possible_partner_id = find_partner_id(
+                    &mind,
+                    &friends,
+                    &vec![taken_list.clone(), vec![mind.id.clone()]].concat(),
+                );
+                if possible_partner_id.is_some() {
+                    let root_repeating = taken_list.iter().any(|c| c.eq(&mind.id));
+                    let parnet_repeating = taken_list
                         .iter()
-                        .filter(|(v, _id)| SOCIAL_RELATIONS.contains(v))
-                        .map(|(_v, id)| id)
-                        .collect();
-                    let mut friends = city.citizens.clone();
-                    friends.retain(|_id, m| friend_ids.contains(&&m.id));
+                        .any(|c| c.eq(&possible_partner_id.unwrap()));
+                    if !root_repeating && !parnet_repeating {
+                        relations_to_add
+                            .push((mind.id.clone(), possible_partner_id.unwrap().clone()));
 
-                    let possible_partner_id = find_partner_id(&mind, &friends, &taken_list);
-                    if possible_partner_id.is_some() {
-                        let root_repeating = flatten_rel_map(&relations_to_add)
-                            .iter()
-                            .any(|c| c.eq(&mind.id));
-                        let parnet_repeating = flatten_rel_map(&relations_to_add)
-                            .iter()
-                            .any(|c| c.eq(&possible_partner_id.unwrap()));
-                        if !root_repeating && !parnet_repeating {
-                            relations_to_add
-                                .push((mind.id.clone(), possible_partner_id.unwrap().clone()));
-                        } else {
-                            println!("Repeating Partner");
-                        }
+                        taken_list.push(mind.id.clone());
+                        taken_list.push(possible_partner_id.unwrap().clone());
+                    } else {
+                        println!("Repeating Partner");
                     }
                 }
             }
@@ -259,23 +259,29 @@ pub mod partners {
         // relations_to_add = relations_to_add.iter().collect();
 
         for (id_1, id_2) in relations_to_add {
-            let citizens = city.citizens.values_mut().filter(|c| c.alive);
-            let mut mind_1: Option<&mut Mind> = None;
-            let mut mind_2: Option<&mut Mind> = None;
-            for mind in citizens {
-                if mind.id.eq(&id_1) {
-                    mind_1 = Some(mind);
-                } else if mind.id.eq(&id_2) {
-                    mind_2 = Some(mind);
-                }
-            }
-            if mind_1.is_some() && mind_2.is_some() {
-                let verb = RelationVerb::Partner;
-                mind_1.unwrap().relations.push((verb.clone(), id_2.clone()));
-                mind_2.unwrap().relations.push((verb.clone(), id_1.clone()));
-            } else {
-                println!("Mind Lookup Failed");
-            }
+            // let citizens = city.citizens.values_mut().filter(|c| c.alive);
+            // let mut mind_1: Option<&mut Mind> = None;
+            // let mut mind_2: Option<&mut Mind> = None;
+            // for mind in citizens {
+            //     if mind.id.eq(&id_1) {
+            //         mind_1 = Some(mind);
+            //     } else if mind.id.eq(&id_2) {
+            //         mind_2 = Some(mind);
+            //     }
+            // }
+            // if mind_1.is_some() && mind_2.is_some() {
+            //     let verb = RelationVerb::Partner;
+            //     mind_1.unwrap().relations.push((verb.clone(), id_2.clone()));
+            //     mind_2.unwrap().relations.push((verb.clone(), id_1.clone()));
+            // } else {
+            //     println!("Mind Lookup Failed");
+            // }
+            let mind_1 = city.citizens.get_mut(&id_1).unwrap();
+            mind_1.relations.push((RelationVerb::Partner, id_2.clone()));
+            drop(mind_1);
+            let mind_2 = city.citizens.get_mut(&id_2).unwrap();
+            mind_2.relations.push((RelationVerb::Partner, id_1.clone()));
+            drop(mind_2);
         }
         return city;
     }

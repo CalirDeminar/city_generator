@@ -13,7 +13,7 @@ pub mod friends {
         RelationVerb::CloseFriend,
     ];
 
-    const ACQUAINTANCE_DECAY_CHANCE: f32 = 0.5;
+    const ACQUAINTANCE_DECAY_CHANCE: f32 = 0.6;
     const ACQUAINTANCE_UPGRADE_CHANCE: f32 = 0.25;
     const FRIEND_DECAY_CHANCE: f32 = 0.25;
     const FRIEND_UPGRADE_CHANCE: f32 = 0.125;
@@ -98,7 +98,7 @@ pub mod friends {
 
         for mind_id in ids {
             // city.citizens.shuffle(&mut rng);
-            let mind = city.citizens.get_mut(&mind_id).unwrap();
+            let mind = city.citizens.get(&mind_id).unwrap();
 
             let friend_count = mind
                 .relations
@@ -126,26 +126,63 @@ pub mod friends {
                 }
             }
             for (verb, id) in mind.relations.clone() {
+                let mind = city.citizens.get_mut(&mind_id).unwrap();
                 match verb {
                     RelationVerb::Acquaintance => {
                         if rng.gen::<f32>() < ACQUAINTANCE_DECAY_CHANCE {
                             mind.relations.retain(|(v, i)| !(v.eq(&verb) && i.eq(&id)));
+
+                            drop(mind);
+                            let relation = city.citizens.get_mut(&id).unwrap();
+                            relation
+                                .relations
+                                .retain(|(v, i)| !(v.eq(&verb) && i.eq(&mind_id)));
                         } else if rng.gen::<f32>() < ACQUAINTANCE_UPGRADE_CHANCE {
                             mind.relations.retain(|(v, i)| !(v.eq(&verb) && i.eq(&id)));
                             mind.relations.push((RelationVerb::Friend, id.clone()));
+
+                            drop(mind);
+                            let relation = city.citizens.get_mut(&id).unwrap();
+                            relation
+                                .relations
+                                .retain(|(v, i)| !(v.eq(&verb) && i.eq(&mind_id)));
+                            relation
+                                .relations
+                                .push((RelationVerb::Friend, mind_id.clone()));
                         }
                     }
                     RelationVerb::Friend => {
                         if rng.gen::<f32>() < FRIEND_DECAY_CHANCE {
                             mind.relations.retain(|(v, i)| !(v.eq(&verb) && i.eq(&id)));
+
+                            drop(mind);
+                            let relation = city.citizens.get_mut(&id).unwrap();
+                            relation
+                                .relations
+                                .retain(|(v, i)| !(v.eq(&verb) && i.eq(&mind_id)));
                         } else if rng.gen::<f32>() < FRIEND_UPGRADE_CHANCE {
                             mind.relations.retain(|(v, i)| !(v.eq(&verb) && i.eq(&id)));
                             mind.relations.push((RelationVerb::CloseFriend, id.clone()));
+
+                            drop(mind);
+                            let relation = city.citizens.get_mut(&id).unwrap();
+                            relation
+                                .relations
+                                .retain(|(v, i)| !(v.eq(&verb) && i.eq(&mind_id)));
+                            relation
+                                .relations
+                                .push((RelationVerb::CloseFriend, mind_id.clone()));
                         }
                     }
                     RelationVerb::CloseFriend => {
                         if rng.gen::<f32>() < CLOSE_FRIEND_DECAY_CHANCE {
                             mind.relations.retain(|(v, i)| !(v.eq(&verb) && i.eq(&id)));
+
+                            drop(mind);
+                            let relation = city.citizens.get_mut(&id).unwrap();
+                            relation
+                                .relations
+                                .retain(|(v, i)| !(v.eq(&verb) && i.eq(&mind_id)));
                         }
                     }
                     _ => {}

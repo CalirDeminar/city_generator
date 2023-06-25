@@ -370,6 +370,9 @@ pub mod city {
                             mind.relations.retain(|(_v, id)| !id.eq(&id));
                             mind.relations.push((RelationVerb::LateSpouse, id.clone()));
                         }
+                        RelationVerb::Child => {}
+                        RelationVerb::Parent => {}
+                        RelationVerb::Sibling => {}
 
                         _ => {
                             mind.relations.retain(|(_v, id)| !id.eq(&id));
@@ -394,24 +397,51 @@ pub mod city {
             areas: Vec::new(),
             institutions: Vec::new(),
         };
-
+        generate_population_baseline(&dict, size, &mut city);
         let public_institutions = generate_public_institutions(&dict);
 
         for pub_inst in public_institutions {
             add_public_institution_to_city(&mut city, pub_inst, &dict);
         }
 
-        generate_population_baseline(&dict, size, &mut city);
         for i in 0..age {
-            println!("Y{}", i);
+            println!("Y{} - Pop: {}", i, city.citizens.len());
+            let start = Instant::now();
             old_age_pass_per_year(&mut city, &culture);
+            let old_age_time = Instant::now().duration_since(start);
             // Very Slow
             link_friends_within_population_by_year(&mut city);
-            // Fairly Slow
+            let friend_link_time = Instant::now().duration_since(start) - old_age_time;
             link_partners_by_year(&mut city);
+            let partner_link_time =
+                Instant::now().duration_since(start) - old_age_time - friend_link_time;
             update_partners_by_year(&mut city);
+            let partner_update_time = Instant::now().duration_since(start)
+                - old_age_time
+                - friend_link_time
+                - partner_link_time;
             generate_children_per_year(&mut city, &culture, &dict);
-
+            let generate_children_time = Instant::now().duration_since(start)
+                - old_age_time
+                - friend_link_time
+                - partner_update_time;
+            link_siblings(&mut city);
+            let sibling_link_time = Instant::now().duration_since(start)
+                - old_age_time
+                - friend_link_time
+                - partner_update_time
+                - generate_children_time;
+            // link_grandparents(&mut city);
+            assign_residences(&mut city);
+            // TODO - build new buildings
+            // TODO - create new institutions - allow institutions to come and go
+            println!("Exec Time - Old Age: {} - Friend Link: {} - Partner Link: {} - Partner Update: {} - Generate Children: {} - Sibling Link: {}",
+                old_age_time.as_millis(), 
+                friend_link_time.as_millis(), 
+                partner_link_time.as_millis(), 
+                partner_update_time.as_millis(), 
+                generate_children_time.as_millis(), 
+                sibling_link_time.as_millis());
             for citizen in city.citizens.values_mut() {
                 citizen.age += 1;
             }
