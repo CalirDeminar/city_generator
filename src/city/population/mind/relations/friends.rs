@@ -71,10 +71,7 @@ pub mod friends {
 
     fn get_friend_id<'a>(mind: &Mind, population: &Population) -> Option<Uuid> {
         let mut rng = rand::thread_rng();
-        let mut minds: Vec<&Mind> = population
-            .values()
-            .filter(|c| c.alive && c.age > (ADULT_AGE_FROM as f32 / 2.0) as u32)
-            .collect();
+        let mut minds: Vec<&Mind> = population.values().collect();
         minds.shuffle(&mut rng);
         let possible_mind = minds.iter().find(|c| match_friend(&mind, c));
         if possible_mind.is_some() {
@@ -85,14 +82,10 @@ pub mod friends {
 
     pub fn link_friends_within_population_by_year<'a>(city: &'a mut City) -> &'a mut City {
         let mut rng = rand::thread_rng();
-        let ref_citizens = city.citizens.clone();
-        let ids: Vec<Uuid> = city
-            .citizens
-            .values_mut()
-            .filter(|c| c.alive)
-            .filter(|c| c.age > (ADULT_AGE_FROM as f32 / 2.0) as u32)
-            .map(|c| c.id)
-            .collect();
+        let mut friendable_population = city.citizens.clone();
+        friendable_population
+            .retain(|_id, m| m.alive && m.age > (ADULT_AGE_FROM as f32 / 2.0) as u32);
+        let ids = friendable_population.keys();
 
         let mut relations_to_add: Vec<(Uuid, RelationVerb, Uuid)> = Vec::new();
 
@@ -110,7 +103,9 @@ pub mod friends {
                 (((rng.gen::<f32>() * FRIEND_OUTGOING_MAX) - (friend_count as f32)) as u32).max(0);
 
             for _i in 0..acquaintances_to_add_count {
-                let possible_friend_id = get_friend_id(&mind, &ref_citizens);
+                // Extremely slow line
+                let possible_friend_id = get_friend_id(&mind, &friendable_population);
+
                 if possible_friend_id.is_some() {
                     let friend_id = possible_friend_id.unwrap();
                     relations_to_add.push((
@@ -125,6 +120,7 @@ pub mod friends {
                     ));
                 }
             }
+
             for (verb, id) in mind.relations.clone() {
                 let mind = city.citizens.get_mut(&mind_id).unwrap();
                 match verb {
