@@ -23,6 +23,8 @@ pub mod relations {
         Grandparent,
         Grandchild,
         Cousin,
+        Pibling, // Aunt/Uncle
+        Nibling, // Neice/Nephew
         // business
         Employer,
         Employee,
@@ -187,6 +189,120 @@ pub mod relations {
                     grandparent
                         .relations
                         .push((RelationVerb::Grandchild, mind.id.clone()));
+                }
+            }
+        }
+        return city;
+    }
+
+    pub fn invert_relation(verb: &RelationVerb) -> Option<RelationVerb> {
+        return match verb {
+            RelationVerb::Parent => Some(RelationVerb::Child),
+            RelationVerb::Child => Some(RelationVerb::Parent),
+            RelationVerb::Sibling => Some(RelationVerb::Sibling),
+            RelationVerb::Nibling => Some(RelationVerb::Pibling),
+            RelationVerb::Pibling => Some(RelationVerb::Nibling),
+            RelationVerb::Grandparent => Some(RelationVerb::Grandchild),
+            RelationVerb::Grandchild => Some(RelationVerb::Grandparent),
+            _ => None,
+        };
+    }
+
+    pub fn link_family_at_birth<'a>(city: &'a mut City, child: &'a mut Mind) -> &'a mut City {
+        let ref_population = city.citizens.clone();
+        let parents: Vec<&Mind> = ref_population
+            .values()
+            .filter(|c| {
+                c.relations
+                    .iter()
+                    .any(|(verb, id)| verb.eq(&RelationVerb::Child) && id.eq(&child.id))
+            })
+            .collect();
+        for parent in parents {
+            for (verb, id) in parent.relations.iter().filter(|(_v, id)| !id.eq(&child.id)) {
+                match verb {
+                    RelationVerb::Child => {
+                        // Create Siblings
+                        if !child
+                            .relations
+                            .contains(&(RelationVerb::Sibling, id.clone()))
+                        {
+                            let sibling = city.citizens.get_mut(&id).unwrap();
+                            if sibling.alive {
+                                child.relations.push((RelationVerb::Sibling, id.clone()));
+                                sibling
+                                    .relations
+                                    .push((RelationVerb::Sibling, child.id.clone()));
+                            }
+                            drop(sibling);
+                        }
+                    }
+                    RelationVerb::Sibling => {
+                        // Create Pib/Nib-lings
+                        if !child
+                            .relations
+                            .contains(&(RelationVerb::Pibling, id.clone()))
+                        {
+                            // direct
+                            let pibling = city.citizens.get_mut(&id).unwrap();
+                            if pibling.alive {
+                                child.relations.push((RelationVerb::Pibling, id.clone()));
+                                pibling
+                                    .relations
+                                    .push((RelationVerb::Nibling, child.id.clone()));
+                            }
+                            let pibling_relations = pibling.relations.clone();
+                            drop(pibling);
+
+                            // pibling spouse
+                            let pibling_spouse_option = pibling_relations
+                                .iter()
+                                .find(|(v, _id)| v.eq(&RelationVerb::Spouse));
+
+                            if pibling_spouse_option.is_some() {
+                                let pibling_spouse = city
+                                    .citizens
+                                    .get_mut(&pibling_spouse_option.unwrap().1)
+                                    .unwrap();
+                                if pibling_spouse.alive {
+                                    child
+                                        .relations
+                                        .push((RelationVerb::Pibling, pibling_spouse.id.clone()));
+                                    pibling_spouse
+                                        .relations
+                                        .push((RelationVerb::Nibling, child.id.clone()));
+                                }
+                            }
+                        }
+                        // println!("Add Pibling");
+                    }
+                    RelationVerb::Parent => {
+                        // Create Grandparent
+
+                        let grandparent = city.citizens.get_mut(&id).unwrap();
+                        if grandparent.alive {
+                            child
+                                .relations
+                                .push((RelationVerb::Grandparent, id.clone()));
+                            grandparent
+                                .relations
+                                .push((RelationVerb::Grandchild, child.id.clone()));
+                        }
+                        // println!("Add Grandparent");
+                    }
+                    RelationVerb::Nibling => {
+                        // Create Cousin
+
+                        let cousin = city.citizens.get_mut(&id).unwrap();
+                        if cousin.alive {
+                            child.relations.push((RelationVerb::Cousin, id.clone()));
+                            cousin
+                                .relations
+                                .push((RelationVerb::Cousin, child.id.clone()));
+                        }
+                        drop(cousin);
+                    }
+                    _ => {}
                 }
             }
         }

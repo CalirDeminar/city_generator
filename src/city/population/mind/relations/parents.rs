@@ -11,7 +11,10 @@ pub mod parents {
             population::{
                 mind::{
                     mind::{random_char, Mind},
-                    relations::{partners::partners::TAKEN_VERBS, relations::RelationVerb},
+                    relations::{
+                        partners::partners::TAKEN_VERBS,
+                        relations::{link_family_at_birth, RelationVerb},
+                    },
                 },
                 population::Population,
             },
@@ -207,6 +210,7 @@ pub mod parents {
 
                     child.relations.push((RelationVerb::Parent, m1.id.clone()));
                     child.relations.push((RelationVerb::Parent, m2.id.clone()));
+                    link_family_at_birth(city, &mut child);
                     city.citizens.insert(child.id.clone(), child.clone());
                 }
             }

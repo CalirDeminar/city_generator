@@ -76,7 +76,7 @@ pub mod city {
 
         writeln!(body.h2(), "Citizens").unwrap();
         let mut citizen_list = body.ul();
-        for m in city.citizens.values() {
+        for m in city.citizens.values().filter(|c| c.alive) {
             print_mind_html(&mut citizen_list.li(), &m, &city);
         }
 
@@ -308,13 +308,12 @@ pub mod city {
                             mind.relations.retain(|(_v, id)| !id.eq(&id));
                             mind.relations.push((RelationVerb::LateSpouse, id.clone()));
                         }
-                        RelationVerb::Child => {}
-                        RelationVerb::Parent => {}
-                        RelationVerb::Sibling => {}
 
-                        _ => {
+                        RelationVerb::Acquaintance | RelationVerb::Friend | RelationVerb::CloseFriend | RelationVerb::Colleague => {
                             mind.relations.retain(|(_v, id)| !id.eq(&id));
                         }
+
+                        _ => {}
                     }
                 }
             }
@@ -363,40 +362,31 @@ pub mod city {
                 - old_age_time
                 - friend_link_time
                 - partner_update_time;
-            link_siblings(&mut city);
-            let sibling_link_time = Instant::now().duration_since(start)
-                - old_age_time
-                - friend_link_time
-                - partner_update_time
-                - generate_children_time;
-            // link_grandparents(&mut city);
             add_buildings_per_year(&mut city, &dict);
             let add_buildings_time = Instant::now().duration_since(start)
                 - old_age_time
                 - friend_link_time
                 - partner_update_time
-                - generate_children_time - sibling_link_time;
+                - generate_children_time;
             assign_residences(&mut city);
             let residence_assign_time = Instant::now().duration_since(start)
                 - old_age_time
                 - friend_link_time
                 - partner_update_time
                 - generate_children_time 
-                - add_buildings_time 
-                - sibling_link_time;
+                - add_buildings_time ;
             // TODO - build new buildings
             // TODO - create new institutions - allow institutions to come and go
-            println!("Exec Time - Old Age: {} - Friend Link: {} - Partner Link: {} - Partner Update: {} - Generate Children: {} - Sibling Link: {} - Add Buildlings: {} - Residence Assignment: {}",
+            println!("Exec Time - Old Age: {} - Friend Link: {} - Partner Link: {} - Partner Update: {} - Generate Children: {} - Add Buildlings: {} - Residence Assignment: {}",
                 old_age_time.as_millis(), 
                 friend_link_time.as_millis(), 
                 partner_link_time.as_millis(), 
                 partner_update_time.as_millis(), 
                 generate_children_time.as_millis(), 
-                sibling_link_time.as_millis(), 
                 add_buildings_time.as_millis(),
                 residence_assign_time.as_millis()
             );
-            for citizen in city.citizens.values_mut() {
+            for citizen in city.citizens.values_mut().filter(|c| c.alive) {
                 citizen.age += 1;
             }
         }
