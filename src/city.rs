@@ -39,11 +39,23 @@ pub mod city {
 
     pub fn print_city(city: &City) -> String {
         let mut output: String = String::new();
+        let alive_population = city.citizens.values().filter(|c| c.alive).count();
+        let adult_population = city.citizens.values().filter(|c| c.alive && c.age > ADULT_AGE_FROM).count();
         output.push_str(&format!("City Name: {}\n", city.name));
         output.push_str(&format!(
             "Population: {}\n",
-            city.citizens.iter().filter(|(_id, c)| c.alive).count()
+            alive_population
         ));
+        output.push_str(
+    &format!(
+                "Employment Rate: {}\n", 
+                city
+                .citizens
+                .values()
+                .filter(|c|c.alive && c.employer.is_some()).count() as f32
+                / adult_population as f32
+                )
+            );
         output.push_str(&format!(
             "Dead: {}\n",
             city.citizens.iter().filter(|(id, c)| !c.alive).count()
@@ -139,16 +151,15 @@ pub mod city {
         return building;
     }
 
-
-    fn add_institution_to_city<'a>(
+    pub fn add_institution_to_city<'a>(
         city: &'a mut City,
         institution: Institution,
         dict: &Vec<Word>,
     ) -> &'a mut City {
         let mut rng = rand::thread_rng();
         let employee_count = ((rng.gen::<f32>() * 10.0) as i32).max(1);
-        let all_workers = find_workers(&city);
-        let workers = all_workers.iter().take(employee_count as usize);
+        // let all_workers = find_workers(&city);
+        // let workers = all_workers.iter().take(employee_count as usize);
         let mut building_with_space = find_free_building(city);
 
         if building_with_space.is_none() {
@@ -158,13 +169,14 @@ pub mod city {
 
         add_institution_to_building(building_with_space.unwrap(), &institution.clone());
 
-        for w in workers {
-            let mut worker = city.citizens.values_mut().find(|m| m.id.eq(&w.id)).unwrap();
-            worker.employer = Some(institution.id.clone());
-        }
+        // for w in workers {
+        //     let mut worker = city.citizens.values_mut().find(|m| m.id.eq(&w.id)).unwrap();
+        //     worker.employer = Some(institution.id.clone());
+        // }
         city.institutions.push(institution);
         return city;
     }
+    
 
     fn add_public_institution_to_city<'a>(
         city: &'a mut City,
@@ -350,48 +362,56 @@ pub mod city {
 
         for i in 0..age {
             println!("Y{} - Pop: {}", i, city.citizens.len());
-            let start = Instant::now();
+            let old_age_start = Instant::now();
             old_age_pass_per_year(&mut city, &culture);
-            let old_age_time = Instant::now().duration_since(start);
+            let old_age_time = Instant::now().duration_since(old_age_start);
             // Very Slow
+            let link_friends_start = Instant::now();
             link_friends_within_population_by_year(&mut city);
-            let friend_link_time = Instant::now().duration_since(start) - old_age_time;
+            let friend_link_time = Instant::now().duration_since(link_friends_start);
+
+            let link_partners_start = Instant::now();
             link_partners_by_year(&mut city);
             let partner_link_time =
-                Instant::now().duration_since(start) - old_age_time - friend_link_time;
+                Instant::now().duration_since(link_partners_start);
+
+            let update_partners_start = Instant::now();
             update_partners_by_year(&mut city);
-            let partner_update_time = Instant::now().duration_since(start)
-                - old_age_time
-                - friend_link_time
-                - partner_link_time;
+            let partner_update_time = Instant::now().duration_since(update_partners_start);
+
+            let gen_children_start = Instant::now();
             generate_children_per_year(&mut city, &culture, &dict);
-            let generate_children_time = Instant::now().duration_since(start)
-                - old_age_time
-                - friend_link_time
-                - partner_update_time;
+            let generate_children_time = Instant::now().duration_since(gen_children_start);
+
+            let add_buildings_start = Instant::now();
             add_buildings_per_year(&mut city, &dict);
-            let add_buildings_time = Instant::now().duration_since(start)
-                - old_age_time
-                - friend_link_time
-                - partner_update_time
-                - generate_children_time;
+            let add_buildings_time = Instant::now().duration_since(add_buildings_start);
+
+            let assign_residences_start = Instant::now();
             assign_residences(&mut city);
-            let residence_assign_time = Instant::now().duration_since(start)
-                - old_age_time
-                - friend_link_time
-                - partner_update_time
-                - generate_children_time 
-                - add_buildings_time ;
-            // TODO - build new buildings
-            // TODO - create new institutions - allow institutions to come and go
-            println!("Exec Time - Old Age: {} - Friend Link: {} - Partner Link: {} - Partner Update: {} - Generate Children: {} - Add Buildlings: {} - Residence Assignment: {}",
+            let residence_assign_time = Instant::now().duration_since(assign_residences_start);
+
+            let random_sackings_start = Instant::now();
+            random_sackings_per_year(&mut city);
+            let random_sackings_time = Instant::now().duration_since(random_sackings_start);
+
+            let assign_employer_start = Instant::now();
+            assign_employment_per_year(&mut city);
+            let assign_employer_time = Instant::now().duration_since(assign_employer_start);
+            let startups_start = Instant::now();
+            create_startups_per_year(&mut city, &dict);       
+            let startups_time = startups_start.elapsed();  // TODO - create new institutions - allow institutions to come and go
+            println!("Exec Time - Old Age: {} - Friend Link: {} - Partner Link: {} - Partner Update: {} - Generate Children: {} - Add Buildlings: {} - Residence Assignment: {} - Random Sackings: {} - Assign Employer: {} - Create Startups: {}",
                 old_age_time.as_millis(), 
                 friend_link_time.as_millis(), 
                 partner_link_time.as_millis(), 
                 partner_update_time.as_millis(), 
                 generate_children_time.as_millis(), 
                 add_buildings_time.as_millis(),
-                residence_assign_time.as_millis()
+                residence_assign_time.as_millis(),
+                random_sackings_time.as_millis(),
+                assign_employer_time.as_millis(),
+                startups_time.as_millis(),
             );
             for citizen in city.citizens.values_mut().filter(|c| c.alive) {
                 citizen.age += 1;

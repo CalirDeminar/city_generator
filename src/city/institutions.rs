@@ -1,10 +1,13 @@
 pub mod institutions {
+    use rand::seq::SliceRandom;
     use rand::Rng;
     use uuid::Uuid;
 
     use crate::city::building::building::{Building, BuildingFloor, BuildingFloorArea};
-    use crate::city::city::City;
+    use crate::city::city::{add_institution_to_city, City};
     use crate::city::locations::locations::Location;
+    use crate::city::population::mind::mind::Mind;
+    use crate::city::population::mind::relations::relations::ADULT_AGE_FROM;
     use crate::language::language::{build_dictionary, Word};
     use crate::templater::templater::*;
     use crate::utils::utils::random_pick;
@@ -46,6 +49,7 @@ pub mod institutions {
         pub name: String,
         pub public: bool,
         pub institute_type: InstituteType,
+        pub size: usize,
     }
 
     const PUBLIC_INSTITUTES: [InstituteType; 11] = [
@@ -61,6 +65,12 @@ pub mod institutions {
         InstituteType::PoliceStation,
         InstituteType::Hospital,
     ];
+
+    const PUBLIC_INSTITUTE_BASE_SIZE: usize = 20;
+    const PRIVATE_INSTITUTE_BASE_SIZE: usize = 10;
+
+    const RANDOM_SACKING_RATE: f32 = 0.1;
+    const STARTUP_RATE: f32 = 0.01;
 
     fn label_insitute_type(i: &InstituteType) -> String {
         return String::from(match i {
@@ -137,6 +147,7 @@ pub mod institutions {
     }
 
     pub fn generate_public_institutions(dict: &Vec<Word>) -> Vec<Institution> {
+        let mut rng = rand::thread_rng();
         let mut output: Vec<Institution> = Vec::new();
         for i in PUBLIC_INSTITUTES {
             output.push(Institution {
@@ -148,12 +159,14 @@ pub mod institutions {
                 ),
                 public: true,
                 institute_type: i,
+                size: (rng.gen::<f32>() * PUBLIC_INSTITUTE_BASE_SIZE as f32) as usize,
             });
         }
         return output;
     }
 
     pub fn generate_restaurant(dict: &Vec<Word>) -> Institution {
+        let mut rng = rand::thread_rng();
         let templates = vec![
             "{{Adjective(Position, Quality, Age, Colour)}} {{Noun(LastName)}} {{Noun(RetailerFood)}}",
              "{{Adjective(Position, Quality, Age, Colour)}} {{Noun(HistoricalFigure)}}'s {{Noun(RetailerFood)}}",
@@ -167,10 +180,12 @@ pub mod institutions {
             name,
             public: false,
             institute_type: InstituteType::FoodService,
+            size: (rng.gen::<f32>() * PRIVATE_INSTITUTE_BASE_SIZE as f32) as usize,
         };
     }
 
     pub fn generate_specialist_retailer(dict: &Vec<Word>) -> Institution {
+        let mut rng = rand::thread_rng();
         let templates = vec![
             "{{Adjective(Position, Quality, Age, Colour)}} {{Noun(LastName)}} {{Noun(RetailerSpecialist)}}",
             "{{Adjective(Position, Quality, Age, Colour)}} {{Noun(LastName)}}'s {{Noun(RetailerSpecialist)}}",
@@ -183,10 +198,12 @@ pub mod institutions {
             name,
             public: false,
             institute_type: InstituteType::SpecialistRetail,
+            size: (rng.gen::<f32>() * PRIVATE_INSTITUTE_BASE_SIZE as f32) as usize,
         };
     }
 
     pub fn generate_general_retailer(dict: &Vec<Word>) -> Institution {
+        let mut rng = rand::thread_rng();
         let templates = vec![
             "{{Adjective(Position, Quality, Age, Colour)}} {{Noun(LastName}} {{Noun(GeneralRetailerName)}}",
             "{{Adjective(Position, Quality, Age, Colour)}} {{Noun(LastName}}'s {{Noun(GeneralRetailerName)}}",
@@ -199,6 +216,7 @@ pub mod institutions {
             name,
             public: false,
             institute_type: InstituteType::GeneralRetail,
+            size: (rng.gen::<f32>() * PRIVATE_INSTITUTE_BASE_SIZE as f32) as usize,
         };
     }
 
@@ -224,6 +242,86 @@ pub mod institutions {
             output.push(generate_population_institution(&language_dict));
         }
         return output;
+    }
+
+    pub fn random_sackings_per_year<'a>(city: &'a mut City) -> &'a mut City {
+        let mut rng = rand::thread_rng();
+        let employed = city
+            .citizens
+            .values_mut()
+            .filter(|c| c.alive && c.employer.is_some());
+        for mind in employed {
+            if rng.gen::<f32>() < RANDOM_SACKING_RATE {
+                mind.employer = None;
+            }
+        }
+        return city;
+    }
+
+    pub fn assign_employment_per_year<'a>(city: &'a mut City) -> &'a mut City {
+        let isntitutions_ref = city.institutions.clone();
+        let citizens_ref = city.citizens.clone();
+        let (employed, unemployed) = citizens_ref
+            .values()
+            .filter(|c| c.alive && c.age > ADULT_AGE_FROM)
+            .fold(
+                (vec![], vec![]),
+                |(employed, unemployed): (Vec<&Mind>, Vec<&Mind>), c| {
+                    if c.employer.is_some() {
+                        let employed = vec![employed, vec![c]].concat();
+                        return (employed, unemployed);
+                    } else {
+                        let unemployed = vec![unemployed, vec![c]].concat();
+                        return (employed, unemployed);
+                    }
+                },
+            );
+        let mut under_strength_institutions: Vec<(&Institution, usize)> = isntitutions_ref
+            .iter()
+            .map(|i| {
+                let employee_count = employed
+                    .iter()
+                    .filter(|c| c.employer.is_some() && c.employer.unwrap().eq(&i.id))
+                    .count();
+                return (i, employee_count);
+            })
+            .filter(|(i, c)| c < &i.size)
+            .collect();
+        for mind in unemployed {
+            let possible_target = under_strength_institutions.pop();
+            if possible_target.is_some() {
+                let (inst, emp_count) = possible_target.unwrap();
+
+                let mind_mut = city.citizens.get_mut(&mind.id).unwrap();
+                mind_mut.employer = Some(inst.id.clone());
+                drop(mind_mut);
+
+                if emp_count + 1 < inst.size {
+                    under_strength_institutions.push((inst, emp_count + 1));
+                }
+            }
+            under_strength_institutions.shuffle(&mut rand::thread_rng());
+        }
+        return city;
+    }
+
+    pub fn create_startups_per_year<'a>(city: &'a mut City, dict: &Vec<Word>) -> &'a mut City {
+        // let mut city = city;
+        let mut rng = rand::thread_rng();
+        let citizen_ref = city.citizens.clone();
+        let unemployed = citizen_ref
+            .values()
+            .filter(|c| c.alive && c.age > ADULT_AGE_FROM && c.employer.is_none());
+        for m in unemployed {
+            if rng.gen::<f32>() < STARTUP_RATE {
+                let new_inst = generate_population_institution(&dict);
+                let mind = city.citizens.get_mut(&m.id).unwrap();
+                mind.employer = Some(new_inst.id.clone());
+                drop(mind);
+                add_institution_to_city(city, new_inst, &dict);
+            }
+        }
+        return city;
     }
 
     // #[test]
