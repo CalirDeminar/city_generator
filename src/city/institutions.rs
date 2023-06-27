@@ -36,6 +36,15 @@ pub mod institutions {
         Publishers,
     }
 
+    pub enum InstituteEconomyType {
+        LocalProducer,           // Creates products from the area
+        LocalManufacturer,       // Manufactures goods from products
+        LocalService,            // Provides a service to the city consuming minimal resources
+        LocalServiceAndConsumer, // Provides a service to the city consuming resources
+        LocalResller,            // Resells local products from producers and manufacturers
+        ImportReseller,          // Imports products and goods into the city
+    }
+
     pub const LARGE_SCALE_INSTITUTE_TYPES: [InstituteType; 4] = [
         InstituteType::PowerStation,
         InstituteType::WaterTreatmentWorks,
