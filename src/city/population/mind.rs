@@ -115,11 +115,12 @@ pub mod mind {
         output.push_str("====Mind===\n");
         let workplace = find_employer(&mind, &city);
         // let workplace_location = city.areas.iter().find(|a| workplace.is_some() && workplace.unwrap().location_id.eq(&a.id));
-        let relations: Vec<(&RelationVerb, String)> = mind
+        let mut relations: Vec<(&RelationVerb, String)> = mind
             .relations
             .iter()
             .map(|(verb, id)| (verb, get_name_from_id(&id, &city.citizens)))
             .collect();
+        relations.sort_by_key(|a| a.0.to_string());
         output.push_str(&format!("Name: {} {}\n", mind.first_name, mind.last_name));
         output.push_str(&format!("Gender: {:?}\n", mind.gender));
         output.push_str(&format!("Age: {}\n", mind.age));
@@ -165,11 +166,12 @@ pub mod mind {
             .iter()
             .find(|i| mind.employer.is_some() && mind.employer.unwrap().eq(&i.id));
 
-        let relations: Vec<(&RelationVerb, String, Uuid)> = mind
+        let mut relations: Vec<(&RelationVerb, String, Uuid)> = mind
             .relations
             .iter()
             .map(|(verb, id)| (verb, get_name_from_id(&id, &city.citizens), id.clone()))
             .collect();
+        relations.sort_by_key(|a| a.0.to_string());
 
         let mut list_element = node.div().attr(&format!("id='{}'", mind.id));
         writeln!(

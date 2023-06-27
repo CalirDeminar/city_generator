@@ -315,21 +315,22 @@ pub mod city {
                 dead_ids.push(mind.id.clone());
             }
         }
+        let social_verbs = vec![RelationVerb::Acquaintance, RelationVerb::Friend, RelationVerb::CloseFriend, RelationVerb::Colleague];
         for mind in city.citizens.values_mut() {
             for (verb, id) in mind.relations.clone() {
                 if dead_ids.contains(&id) {
                     match verb {
                         RelationVerb::Partner => {
-                            mind.relations.retain(|(_v, id)| !id.eq(&id));
+                            mind.relations.retain(|(v, id)| !(id.eq(&mind.id) && v.eq(&verb)));
                             mind.relations.push((RelationVerb::LatePartner, id.clone()));
                         }
                         RelationVerb::Spouse => {
-                            mind.relations.retain(|(_v, id)| !id.eq(&id));
+                            mind.relations.retain(|(v, id)| !(id.eq(&mind.id) && v.eq(&verb)));
                             mind.relations.push((RelationVerb::LateSpouse, id.clone()));
                         }
 
                         RelationVerb::Acquaintance | RelationVerb::Friend | RelationVerb::CloseFriend | RelationVerb::Colleague => {
-                            mind.relations.retain(|(_v, id)| !id.eq(&id));
+                            mind.relations.retain(|(v, id)| !(id.eq(&mind.id) && social_verbs.contains(&v)));
                         }
 
                         _ => {}
@@ -361,7 +362,7 @@ pub mod city {
         }
 
         for i in 0..age {
-            println!("Y{} - Pop: {}", i, city.citizens.len());
+            println!("Y{} - Pop: {} - Dead: {}", i, city.citizens.values().filter(|c| c.alive).count(), city.citizens.values().filter(|c| !c.alive).count());
             let old_age_start = Instant::now();
             old_age_pass_per_year(&mut city, &culture);
             let old_age_time = Instant::now().duration_since(old_age_start);

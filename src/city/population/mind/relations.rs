@@ -6,9 +6,10 @@ pub mod relations {
     use crate::city::population::{mind::mind::*, population::Population};
     use rand::seq::SliceRandom;
     use rand::Rng;
+    use strum_macros::Display;
     use uuid::Uuid;
 
-    #[derive(PartialEq, Debug, Clone)]
+    #[derive(PartialEq, Debug, Clone, Display)]
     pub enum RelationVerb {
         // family
         Parent,

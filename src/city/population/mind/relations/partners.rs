@@ -18,8 +18,8 @@ pub mod partners {
 
     const PARTNER_CHANCE_GENERAL: f32 = 0.3; // multiple annual chances
     const PARTNER_MARRIAGE_RATE: f32 = 0.075; // single anunal chance
-    const PARTNER_SPLIT_RATE: f32 = 0.1; // single annual chance
-    const MARRIAGE_SPLIT_RATE: f32 = 0.04; // single annual chance
+    const PARTNER_SPLIT_RATE: f32 = 0.06; // single annual chance
+    const MARRIAGE_SPLIT_RATE: f32 = 0.03; // single annual chance
 
     const MAX_RELATION_AGE_DIFF: u32 = 20;
     pub const TAKEN_VERBS: [RelationVerb; 2] = [RelationVerb::Partner, RelationVerb::Spouse];
@@ -255,27 +255,7 @@ pub mod partners {
             }
         }
 
-        // let used_ids: Vec<Uuid> = Vec::new();
-        // relations_to_add = relations_to_add.iter().collect();
-
         for (id_1, id_2) in relations_to_add {
-            // let citizens = city.citizens.values_mut().filter(|c| c.alive);
-            // let mut mind_1: Option<&mut Mind> = None;
-            // let mut mind_2: Option<&mut Mind> = None;
-            // for mind in citizens {
-            //     if mind.id.eq(&id_1) {
-            //         mind_1 = Some(mind);
-            //     } else if mind.id.eq(&id_2) {
-            //         mind_2 = Some(mind);
-            //     }
-            // }
-            // if mind_1.is_some() && mind_2.is_some() {
-            //     let verb = RelationVerb::Partner;
-            //     mind_1.unwrap().relations.push((verb.clone(), id_2.clone()));
-            //     mind_2.unwrap().relations.push((verb.clone(), id_1.clone()));
-            // } else {
-            //     println!("Mind Lookup Failed");
-            // }
             let mind_1 = city.citizens.get_mut(&id_1).unwrap();
             mind_1.relations.push((RelationVerb::Partner, id_2.clone()));
             drop(mind_1);
