@@ -23,7 +23,7 @@ pub mod partners {
 
     const MAX_RELATION_AGE_DIFF: u32 = 20;
     pub const TAKEN_VERBS: [RelationVerb; 2] = [RelationVerb::Partner, RelationVerb::Spouse];
-    const EX_VERBS: [RelationVerb; 2] = [RelationVerb::ExPartner, RelationVerb::ExSpouse];
+    // const EX_VERBS: [RelationVerb; 2] = [RelationVerb::ExPartner, RelationVerb::ExSpouse];
 
     fn flatten_rel_map(input: &Vec<(Uuid, Uuid)>) -> Vec<Uuid> {
         return input

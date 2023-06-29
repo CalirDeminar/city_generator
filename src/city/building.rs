@@ -10,8 +10,8 @@ pub mod building {
             locations::locations::{gen_location, Location},
             population::mind::mind::*,
         },
-        language::language::{build_dictionary, Word},
-        templater::templater::{render_template, render_template_2},
+        language::language::*,
+        templater::templater::*,
         utils::utils::random_pick,
     };
     #[derive(PartialEq, Debug, Clone)]

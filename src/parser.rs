@@ -68,7 +68,7 @@ pub mod parser {
                 output.push_str(&format!("{}\n", i));
             }
         }
-        output.trim();
+
         let mut write_file = File::create(&format!("./static_data/{}", filename)).unwrap();
         write_file
             .write_all(output.into_bytes().as_slice())

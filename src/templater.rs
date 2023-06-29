@@ -1,15 +1,10 @@
 pub mod templater {
     use crate::{
-        culture::culture::{build_culture_dictionary, random_culture},
-        language::{
-            language::{
-                build_dictionary, filter_words_by_tag_and, random_word_by_tag, Word, WordType,
-            },
-            nouns::nouns::NounTag,
-        },
+        culture::culture::*,
+        language::{language::*, nouns::nouns::NounTag},
         names::names::*,
     };
-    use regex::{Captures, Regex};
+    use regex::*;
     use strum::IntoEnumIterator; // 0.17.1
 
     fn string_match_name_tag(token: &str) -> Option<NameTag> {

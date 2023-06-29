@@ -10,10 +10,9 @@ pub mod locations {
 
     use crate::city::building::building::{print_building, print_building_html, Building};
     use crate::city::city::City;
-    use crate::city::institutions::institutions::Institution;
-    use crate::culture::culture::{build_culture_dictionary, random_culture};
-    use crate::language::language::{build_dictionary, Word};
-    use crate::templater::templater::{render_template, render_template_2};
+    use crate::culture::culture::*;
+    use crate::language::language::*;
+    use crate::templater::templater::*;
     use crate::utils::utils::random_pick;
 
     const LOCATION_MEAN_INSTITUTIONS: f32 = 10.0;

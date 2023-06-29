@@ -19,7 +19,7 @@ pub mod parents {
                 population::Population,
             },
         },
-        culture::{self, culture::CultureConfig},
+        culture::culture::CultureConfig,
         language::language::Word,
     };
 

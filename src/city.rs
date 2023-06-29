@@ -58,7 +58,7 @@ pub mod city {
             );
         output.push_str(&format!(
             "Dead: {}\n",
-            city.citizens.iter().filter(|(id, c)| !c.alive).count()
+            city.citizens.iter().filter(|(_id, c)| !c.alive).count()
         ));
         for a in &city.areas {
             output.push_str(&print_location(&a, &city));
@@ -156,10 +156,6 @@ pub mod city {
         institution: Institution,
         dict: &Vec<Word>,
     ) -> &'a mut City {
-        let mut rng = rand::thread_rng();
-        let employee_count = ((rng.gen::<f32>() * 10.0) as i32).max(1);
-        // let all_workers = find_workers(&city);
-        // let workers = all_workers.iter().take(employee_count as usize);
         let mut building_with_space = find_free_building(city);
 
         if building_with_space.is_none() {

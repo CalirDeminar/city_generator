@@ -4,7 +4,7 @@ pub mod partners;
 pub mod relations {
     use crate::city::city::City;
     use crate::city::population::{mind::mind::*, population::Population};
-    use rand::seq::SliceRandom;
+    // use rand::seq::SliceRandom;
     use rand::Rng;
     use strum_macros::Display;
     use uuid::Uuid;
@@ -103,7 +103,7 @@ pub mod relations {
         let ref_citizens = city.citizens.clone();
         let ref_ids = ref_citizens.keys();
         for m_id in ref_ids {
-            let mut mind = city.citizens.get_mut(m_id).unwrap();
+            let mind = city.citizens.get_mut(m_id).unwrap();
             mind.relations
                 .retain(|(v, _id)| !v.eq(&RelationVerb::Colleague));
             if mind.employer.is_some() {
