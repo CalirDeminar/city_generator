@@ -32,18 +32,59 @@ pub mod institutions {
         SpecialistRetail,        // Specialist Retailers, jewelers, tailors, mechanics
         EntertainmentVenue,      // Thearters, cinemas, nightclubs
         IndustrialManufacturers, // Goods manufacturers
-        SpecialistService,       // "Office" businesses
-        Publishers,
+        AdministrationService,
     }
 
-    pub enum InstituteEconomyType {
-        LocalProducer,           // Creates products from the area
-        LocalManufacturer,       // Manufactures goods from products
-        LocalService,            // Provides a service to the city consuming minimal resources
-        LocalServiceAndConsumer, // Provides a service to the city consuming resources
-        LocalResller,            // Resells local products from producers and manufacturers
-        ImportReseller,          // Imports products and goods into the city
+    #[derive(PartialEq, Debug, Clone)]
+    pub enum PublicService {
+        Library,
+        School,
+        University,
+        Court,
+        CityHall,
+        Prison,
+        PoliceStation,
+        Hospital,
     }
+
+    // #[derive(PartialEq, Debug, Clone)]
+    // pub enum RawMaterial {
+    //     Meat(String),
+    //     Crop(String),
+    //     Wood(String),
+    //     Ore(String),
+    //     Stone(String),
+    //     Thread(String),
+    // }
+
+    // #[derive(PartialEq, Debug, Clone)]
+    // pub enum Material {
+    //     Raw(RawMaterial),
+    //     Food(String),
+    //     Drink(String),
+    //     Metal(String),
+    //     Cloth(String),
+    //     Other,
+    // }
+
+    // #[derive(PartialEq, Debug, Clone)]
+    // pub enum ServiceType {
+    //     Food,
+    //     Drink,
+    //     FoodAndDrink,
+    //     Entertainment,
+    //     Administration,
+    // }
+
+    // #[derive(PartialEq, Debug, Clone)]
+    // pub enum InstituteEconomyType {
+    //     LocalProducer,                        // Creates products from the area
+    //     LocalManufacturer,                    // Manufactures goods from products
+    //     LocalService(ServiceType), // Provides a service to the city consuming minimal resources
+    //     LocalServiceAndConsumer(ServiceType), // Provides a service to the city consuming resources
+    //     LocalResller,              // Resells local products from producers and manufacturers
+    //     ImportReseller,            // Imports products and goods into the city
+    // }
 
     pub const LARGE_SCALE_INSTITUTE_TYPES: [InstituteType; 4] = [
         InstituteType::PowerStation,

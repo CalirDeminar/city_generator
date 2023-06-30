@@ -1,12 +1,12 @@
 // Mythical creatures
-Angel, Creature, CreatureMagical, CreatureFamilyOther, CreatureSizeLarge, Holy, Era(Fantasy)
-Deamon, Creature, CreatureMagical, CreatureFamilyOther, CreatureSizeLarge, Evil, Era(Fantasy)
-Devil, Creature, CreatureMagical, CreatureFamilyOther, CreatureSizeLarge, Evil, Era(Fantasy)
-Dragon, Creature, CreatureBeast, CreatureFamilyReptile, CreatureSizeGreat, Era(Fantasy)
-Hydra, Creature, CreatureBeast, CreatureFamilyReptile, CreatureSizeGreat, Era(Fantasy)
-Roc, Creature, CreatureBeast, CreatureFamilyBird, CreatureSizeGreat, Era(Fantasy)
-Titan, Creature, CreatureBeast, CreatureFamilyMammal, CreatureSizeGreat, Era(Fantasy)
-Collosus, Creature, CreatureBeast, CreatureFamilyMammal, CreatureSizeLarge, Era(Fantasy)
+Angel, Creature, CreatureMagical, CreatureFamilyOther, CreatureSizeLarge, Holy, Fantasy
+Deamon, Creature, CreatureMagical, CreatureFamilyOther, CreatureSizeLarge, Evil, Fantasy
+Devil, Creature, CreatureMagical, CreatureFamilyOther, CreatureSizeLarge, Evil, Fantasy
+Dragon, Creature, CreatureBeast, CreatureFamilyReptile, CreatureSizeGreat, Fantasy
+Hydra, Creature, CreatureBeast, CreatureFamilyReptile, CreatureSizeGreat, Fantasy
+Roc, Creature, CreatureBeast, CreatureFamilyBird, CreatureSizeGreat, Fantasy
+Titan, Creature, CreatureBeast, CreatureFamilyMammal, CreatureSizeGreat, Fantasy
+Collosus, Creature, CreatureBeast, CreatureFamilyMammal, CreatureSizeLarge, Fantasy
 // Sentient creatures
 Human, Creature, CreatureSentient, CreatureFamilyMammal, CreatureSizeNormal
 Dwarf, Creature, CreatureSentient, CreatureFamilyMammal, CreatureSizeNormal
@@ -17,9 +17,9 @@ Troll, Creature, CreatureSentient, CreatureFamilyMammal, CreatureSizeLarge
 Gnome, Creature, CreatureSentient, CreatureFamilyMammal, CreatureSizeSmall
 Orc, Creature, CreatureSentient, CreatureFamilyMammal, CreatureSizeNormal
 // Fantasy
-Glob, Creature, CreatureBeast, CreatureFamilyOther, CreatureSizeSmall, Era(Fantasy)
-Blob, Creature, CreatureBeast, CreatureFamilyOther, CreatureSizeNormal, Era(Fantasy)
-Golem, Creature, CreatureBeast, CreatureFamilyOther, CreatureSizeNormal, Era(Fantasy)
+Glob, Creature, CreatureBeast, CreatureFamilyOther, CreatureSizeSmall, Fantasy
+Blob, Creature, CreatureBeast, CreatureFamilyOther, CreatureSizeNormal, Fantasy
+Golem, Creature, CreatureBeast, CreatureFamilyOther, CreatureSizeNormal, Fantasy
 // ANIMALS
 //  LAND
 //      mamals
@@ -167,8 +167,8 @@ Puffin, Creature, CreatureAnimal, CreatureFamilyBird, CreatureSizeSmall, Creatur
 Snapping Turtle, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeSmall, CreatureDietCarnivorous
 Pond Turtle, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeSmall
 Saltwater Crocodile, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeNormal, CreatureDietCarnivorous
-Sea Serpent, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeGreat, Era(Fantasy), CreatureDietCarnivorous
-Sea Monster, , Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeGreat, Era(Fantasy), CreatureDietCarnivorous
+Sea Serpent, Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeGreat, Fantasy, CreatureDietCarnivorous
+Sea Monster, , Creature, CreatureAnimal, CreatureFamilyReptile, CreatureSizeGreat, Fantasy, CreatureDietCarnivorous
 //      fish
 Angelshark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeSmall, CreatureDietCarnivorous
 Basking Shark, Creature, CreatureAnimal, CreatureFamilyFish, CreatureSizeNormal, CreatureDietCarnivorous

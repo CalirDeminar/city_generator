@@ -1,6 +1,6 @@
 // trees
 Alder, Plant, PlantTypeTree
-Apple, Plant, PlantTypeTree, PlantTypeCrop
+Apple, Plant, PlantTypeTree, PlantTypeCrop, Fruit, BrewableCider
 Ash, Plant, PlantTypeTree, Symbolic
 Aspen, Plant, PlantTypeTree
 Beech, Plant, PlantTypeTree
@@ -21,7 +21,7 @@ Pine, Plant, PlantTypeTree, Symbolic
 Rowan, Plant, PlantTypeTree
 Willow, Plant, PlantTypeTree
 Yew, Plant, PlantTypeTree, Symbolic
-Pear, Plant, PlantTypeTree, PlantTypeCrop
+Pear, Plant, PlantTypeTree, PlantTypeCrop, Fruit, BrewableCider
 // flowers
 Bell Flower, Plant, PlantTypeFlower
 Carnation, Plant, PlantTypeFlower
@@ -38,21 +38,21 @@ Mimosa, Plant, PlantTypeFlower
 Primrose, Plant, PlantTypeFlower
 Windflower, Plant, PlantTypeFlower
 // crops
-Strawberry, Plant, Food
+Strawberry, Plant, Food, Fruit, BrewableCider, BrewableWine
 Artichoke, Plant, PlantTypeCrop, Food
 Asparagus, Plant, PlantTypeCrop, Food
 Broad Bean, Plant, PlantTypeCrop, Food
 Beetroot, Plant, PlantTypeCrop, Food
-Cabbage, Plant, PlantTypeCrop, Food
+Cabbage, Plant, PlantTypeCrop, Food, Leaf
 Caper, Plant, PlantTypeCrop, Food
 Carrot, Plant, PlantTypeCrop, Food
-Celery, Plant, PlantTypeCrop, Food
+Celery, Plant, PlantTypeCrop, Food, Leaf
 Cowpea, Plant, PlantTypeCrop, Food
 Cucumber, Plant, PlantTypeCrop, Food
 Garlic, Plant, PlantTypeCrop, Food
 Leek, Plant, PlantTypeCrop, Food
 Lentil, Plant, PlantTypeCrop, Food
-Lettuce, Plant, PlantTypeCrop, Food
+Lettuce, Plant, PlantTypeCrop, Food, Leaf
 Onion, Plant, PlantTypeCrop, Food
 Parsnip, Plant, PlantTypeCrop, Food
 Pea, Plant, PlantTypeCrop, Food
@@ -62,14 +62,15 @@ Potatoe, Plant, PlantTypeCrop, Food
 Radish, Plant, PlantTypeCrop, Food
 Rhubarb, Plant, PlantTypeCrop, Food
 Soybean, Plant, PlantTypeCrop, Food
-Spinach, Plant, PlantTypeCrop, Food
+Spinach, Plant, PlantTypeCrop, Food, Leaf
 Squash, Plant, PlantTypeCrop, Food
-Sweet Potatoe, Plant, PlantTypeCrop, Food
+Sweet Potato, Plant, PlantTypeCrop, Food
 Turnip, Plant, PlantTypeCrop, Food
-Grape, Plant, Food
-Blueberry, Plant, Food
-Blackberry, Plant, Food
-Raspberry, Plant, Food
-Rice, Plant, PlantTypeCrop, Food
-Oat, Plant, PlantTypeCrop, Food
-Corn, Plant, PlantTypeCrop, Food
+Grape, Plant, Food, Fruit, BrewableWine
+Blueberry, Plant, Food, Fruit, BrewableWine, BrewableCider
+Blackberry, Plant, Food, Fruit, BrewableWine, BrewableCider
+Raspberry, Plant, Food, Fruit, BrewableWine, BrewableCider
+Rice, Plant, PlantTypeCrop, Food, Grain, BrewableBeer
+Oat, Plant, PlantTypeCrop, Food, Grain, BrewableBeer
+Corn, Plant, PlantTypeCrop, Grain, BrewableBeer
+Wheat, Plant, PlantTypeCrop, Grain, BrewableBeer

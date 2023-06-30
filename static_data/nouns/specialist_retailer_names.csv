@@ -1,46 +1,53 @@
-Arms,RetailerFood
-Bakery,RetailerFood
-Bar,RetailerFood
-Brasserie,RetailerFood
-Cafe,RetailerFood
-Chippie,RetailerFood
-Coffee,RetailerFood
-Diner,RetailerFood
-Grill,RetailerFood
-Inn,RetailerFood
-Kebab,RetailerFood
-Kebabs,RetailerFood
-Kitchen,RetailerFood
-Pizza,RetailerFood
-Pizzas,RetailerFood
-Sushi,RetailerFood
-Sushi-Bar,RetailerFood
-Tap Room,RetailerFood
-Waffle House,RetailerFood
-Bakers,RetailerSpecialist
-Barbers,RetailerSpecialist
-Beauty,RetailerSpecialist
-Boots,RetailerSpecialist
-Bread,RetailerSpecialist
-Building Supplies,RetailerSpecialist
-Butchers,RetailerSpecialist
-Car Hire,RetailerSpecialist
-Cobblers,RetailerSpecialist
-Computers,RetailerSpecialist
-Electronics Hut,RetailerSpecialist
-Electronics,RetailerSpecialist
-Fitness,RetailerSpecialist
-Florists,RetailerSpecialist
-Guitars,RetailerSpecialist
-Gym,RetailerSpecialist
-Hardware,RetailerSpecialist
-Instruments,RetailerSpecialist
-Meats,RetailerSpecialist
-Medicine,RetailerSpecialist
-Pharmacy,RetailerSpecialist
-Pianos,RetailerSpecialist
-Salon,RetailerSpecialist
-Shoes,RetailerSpecialist
-Tailors,RetailerSpecialist
-Technology,RetailerSpecialist
-Van Hire,RetailerSpecialist
+Arms,RetailerFood, Modern, Medieval, Fantasy
+Bakery,RetailerFood, Modern, Medieval, Fantasy
+Bar,RetailerFood, Modern
+Brasserie,RetailerFood, Modern
+Cafe,RetailerFood, Modern
+Chippie,RetailerFood, Modern
+Coffee,RetailerFood, Modern
+Diner,RetailerFood, Modern
+Grill,RetailerFood, Modern
+Inn,RetailerFood, Modern, Medieval, Fantasy
+Kebab,RetailerFood, Modern
+Kebabs,RetailerFood, Modern
+Kitchen,RetailerFood, Modern, Medieval, Fantasy
+Pizza,RetailerFood, Modern
+Pizzas,RetailerFood, Modern
+Sushi,RetailerFood, Modern
+Sushi-Bar,RetailerFood, Modern
+Tap Room,RetailerFood, Modern, Medieval, Fantasy
+Waffle House,RetailerFood, Modern
+Bakers,RetailerSpecialist, Modern, Medieval, Fantasy
+Barbers,RetailerSpecialist, Modern
+Beauty,RetailerSpecialist, Modern
+Boots,RetailerSpecialist, Modern, Medieval, Fantasy
+Bread,RetailerSpecialist, Modern, Medieval, Fantasy
+Building Supplies,RetailerSpecialist, Modern
+Butchers,RetailerSpecialist, Modern
+Car Hire,RetailerSpecialist, Modern
+Cobblers,RetailerSpecialist, Modern, Medieval, Fantasy
+Computers,RetailerSpecialist, Modern
+Electronics Hut,RetailerSpecialist, Modern
+Electronics,RetailerSpecialist, Modern
+Fitness,RetailerSpecialist, Modern
+Florists,RetailerSpecialist, Modern
+Guitars,RetailerSpecialist, Modern
+Gym,RetailerSpecialist, Modern
+Hardware,RetailerSpecialist, Modern
+Instruments,RetailerSpecialist, Modern, Medieval, Fantasy
+Meats,RetailerSpecialist, Modern
+Medicine,RetailerSpecialist, Modern
+Pharmacy,RetailerSpecialist, Modern
+Pianos,RetailerSpecialist, Modern
+Salon,RetailerSpecialist, Modern
+Shoes,RetailerSpecialist, Modern
+Tailors,RetailerSpecialist, Modern, Medieval, Fantasy
+Technology,RetailerSpecialist, Modern
+Van Hire,RetailerSpecialist, Modern
+Forge, RetailerSpecialist, Modern, Medieval, Fantasy
+Smith, RetailerSpecialist, Fantasy
+Smiths, RetailerSpecialist, Fantasy
+Books, RetailerSpecialist, Modern, Medieval, Fantasy
+Cures, RetailerSpecialist, Medieval, Fantasy
+Potions, RetailerSpecialist, Medieval, Fantasy
+Masons, RetailerSpecialist, Modern, Medieval, Fantasy

@@ -1,6 +1,7 @@
 pub mod creatures;
 pub mod emotions;
 pub mod era;
+pub mod food;
 pub mod geography;
 pub mod materials;
 pub mod plants;
@@ -48,7 +49,6 @@ pub mod nouns {
         Weather,
         // World Specific
         BodyPart,
-        Food,
         GlobalSingular,
         Direction,
         Title,
@@ -56,6 +56,7 @@ pub mod nouns {
         GeneralRetailerName,
         RetailerFood,
         RetailerSpecialist,
+        ServiceAdmin,
         Suffixable,
         // Names / People
         FirstName,

@@ -1,16 +1,15 @@
-24,GeneralRetailerName
-24/7,GeneralRetailerName
-Convienience Store,GeneralRetailerName
-Corner Shop,GeneralRetailerName
-Express,GeneralRetailerName
-Food & Wine,GeneralRetailerName
-Frozens,GeneralRetailerName
-General Store,GeneralRetailerName
-Groceries,GeneralRetailerName
-Grocers,GeneralRetailerName
-Grocery Store,GeneralRetailerName
-Local,GeneralRetailerName
-News-Agent,GeneralRetailerName
-Store,GeneralRetailerName
-Supermarket,GeneralRetailerName
-General Store, GeneralRetailerName
+24,GeneralRetailerName, Modern
+24/7,GeneralRetailerName, Modern
+Convienience Store,GeneralRetailerName, Modern
+Corner Shop,GeneralRetailerName, Modern
+Express,GeneralRetailerName, Modern
+Food & Wine,GeneralRetailerName, Modern
+Frozens,GeneralRetailerName, Modern
+General Store,GeneralRetailerName, Modern, Medieval, Fantasy
+Groceries,GeneralRetailerName, Modern
+Grocers,GeneralRetailerName, Modern, Medieval, Fantasy
+Grocery Store,GeneralRetailerName, Modern
+Local,GeneralRetailerName, Modern
+News-Agent,GeneralRetailerName, Modern
+Store,GeneralRetailerName, Modern, Medieval, Fantasy
+Supermarket,GeneralRetailerName, Modern
