@@ -10,7 +10,11 @@ pub mod partners {
         population::{
             mind::{
                 mind::*,
-                relations::{friends::friends::SOCIAL_RELATIONS, relations::*},
+                relations::{
+                    friends::friends::SOCIAL_RELATIONS,
+                    parental_naming_formats::parental_naming_formats::get_new_couple_last_names,
+                    relations::*,
+                },
             },
             population::Population,
         },
@@ -301,6 +305,10 @@ pub mod partners {
                                     .relations
                                     .push((RelationVerb::ExPartner, mind.id.clone()));
                             } else if rng.gen::<f32>() < PARTNER_MARRIAGE_RATE {
+                                let (mind_last_name, partner_last_name) =
+                                    get_new_couple_last_names(&mind, &partner, &city.culture);
+                                mind.last_name = mind_last_name;
+                                partner.last_name = partner_last_name;
                                 mind.relations
                                     .retain(|(v, id)| !(v.eq(&verb) && id.eq(&partner_id)));
                                 mind.relations

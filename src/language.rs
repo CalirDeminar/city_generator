@@ -1,6 +1,8 @@
 pub mod adjectives;
 pub mod nouns;
 pub mod language {
+    use std::time::Instant;
+
     use rand::seq::SliceRandom;
     use strum::IntoEnumIterator;
     use strum_macros::{Display, EnumIter};
@@ -110,9 +112,16 @@ pub mod language {
     }
 
     pub fn build_dictionary() -> Vec<Word> {
+        let start = Instant::now();
         let mut output: Vec<Vec<Word>> = Vec::new();
         output.push(build_nouns());
         output.push(build_adjectives());
-        return output.concat();
+        let rtn = output.concat();
+        println!(
+            "Dictionary Build in {}ms for {} words",
+            start.elapsed().as_millis(),
+            rtn.len()
+        );
+        return rtn;
     }
 }

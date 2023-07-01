@@ -7,11 +7,12 @@ pub mod culture {
             plants::plants::PlantType,
         },
     };
-    use rand::Rng;
+    use rand::{seq::SliceRandom, Rng};
     use uuid::Uuid;
 
     #[derive(PartialEq, Debug, Clone)]
     pub struct CultureConfig {
+        pub era: Option<Era>,
         pub historical_figures: Vec<(String, String)>,
         pub landlocked: bool,
         pub staple_meats: Vec<String>,
@@ -19,6 +20,49 @@ pub mod culture {
         pub adult_age: u32,
         pub species_avg_lifespan: u32,
         pub species_avg_lifespan_variance: u32,
+        // Format (Man's last name, Woman's last name, Male Child's name, Female Child's name)
+        pub parental_naming_formats: Vec<(String, String, String, String)>,
+    }
+
+    fn paternal_naming_lists() -> Vec<(String, String, String, String)> {
+        return vec![
+            (
+                String::from("{{ML}}"),
+                String::from("{{ML}}"),
+                String::from("{{ML}}"),
+                String::from("{{ML}}"),
+            ),
+            (
+                String::from("{{FL}}"),
+                String::from("{{FL}}"),
+                String::from("{{FL}}"),
+                String::from("{{FL}}"),
+            ),
+            (
+                String::from("{{ML}}"),
+                String::from("{{FL}}"),
+                String::from("{{ML}}"),
+                String::from("{{FL}}"),
+            ),
+            (
+                String::from("{{ML}}-{{FL}}"),
+                String::from("{{ML}}-{{FL}}"),
+                String::from("{{ML}}-{{FL}}"),
+                String::from("{{ML}}-{{FL}}"),
+            ),
+            (
+                String::from("{{ML}}"),
+                String::from("{{FL}}"),
+                String::from("{{MF}}sson"),
+                String::from("{{MF}}dotter"),
+            ),
+            (
+                String::from("{{ML}}"),
+                String::from("{{FL}}"),
+                String::from("{{MF}}sen"),
+                String::from("{{MF}}datter"),
+            ),
+        ];
     }
 
     fn gen_historical_figures(dict: &Vec<Word>, era: &Option<Era>) -> Vec<(String, String)> {
@@ -107,7 +151,11 @@ pub mod culture {
     pub fn random_culture(dict: &Vec<Word>, era: &Option<Era>) -> CultureConfig {
         let mut rng = rand::thread_rng();
         let landlocked = rng.gen::<f32>() > 0.5;
+        let naming_system_count = ((rng.gen::<f32>() * 3.0) as usize).max(1);
+        let mut naming_systems = paternal_naming_lists();
+        naming_systems.shuffle(&mut rng);
         return CultureConfig {
+            era: era.clone(),
             historical_figures: gen_historical_figures(&dict, era),
             landlocked,
             staple_meats: random_animals(&dict, landlocked, era),
@@ -115,6 +163,11 @@ pub mod culture {
             adult_age: 18,
             species_avg_lifespan: 70,
             species_avg_lifespan_variance: 5,
+            parental_naming_formats: naming_systems
+                .iter()
+                .take(naming_system_count)
+                .map(|c| c.clone())
+                .collect(),
         };
     }
 

@@ -91,11 +91,11 @@ pub mod nouns {
     // Material Groups - Solid / Liquid / Gas - Metal, Cloth, Normal, etc
     // Geographical Feature Sizes
 
-    fn string_match_noun_tag(token: &str) -> Option<String> {
-        for tag in build_noun_tags() {
+    fn string_match_noun_tag(token: &str, tags: &Vec<String>) -> Option<String> {
+        for tag in tags {
             let matcher = format!("{}", tag);
             if matcher.eq(token.trim()) {
-                return Some(tag);
+                return Some(String::from(tag));
             }
         }
         return None;
@@ -103,17 +103,18 @@ pub mod nouns {
 
     pub fn build_nouns() -> Vec<Word> {
         let mut output: Vec<Word> = Vec::new();
+        let noun_tags = build_noun_tags();
         let paths = fs::read_dir("./static_data/nouns").unwrap();
         for path in paths {
             let filename = path.unwrap().file_name();
             let data = parse_file(format!("nouns/{}", filename.to_str().unwrap()));
             for (subject, incoming_tags) in data {
-                let mut tags: Vec<String> = Vec::new();
+                let mut subject_tags: Vec<String> = Vec::new();
                 let mut adjective_terms: Vec<String> = Vec::new();
                 for incoming_tag in incoming_tags {
-                    let tag = string_match_noun_tag(&incoming_tag);
+                    let tag = string_match_noun_tag(&incoming_tag, &noun_tags);
                     if tag.is_some() {
-                        tags.push(tag.unwrap());
+                        subject_tags.push(tag.unwrap());
                     }
                     if incoming_tag.eq("Adjective") {
                         adjective_terms.push(subject.clone());
@@ -132,7 +133,7 @@ pub mod nouns {
                         id: Uuid::new_v4(),
                         word_type: WordType::Adjective,
                         text: String::from(t),
-                        tags: tags.clone(),
+                        tags: subject_tags.clone(),
                         related_forms: Vec::new(),
                     })
                     .collect();
@@ -140,7 +141,7 @@ pub mod nouns {
                     id: Uuid::new_v4(),
                     word_type: WordType::Noun,
                     text: subject,
-                    tags,
+                    tags: subject_tags,
                     related_forms: adjectives,
                 });
             }

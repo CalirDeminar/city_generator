@@ -35,7 +35,7 @@ pub mod city {
         pub institutions: Vec<Institution>,
         pub areas: Vec<Location>,
         pub buildings: Vec<Building>,
-        pub era: Option<Era>
+        pub culture: CultureConfig
     }
 
     pub fn print_city(city: &City) -> String {
@@ -342,7 +342,7 @@ pub mod city {
         let dict = build_dictionary();
         let culture = random_culture(&dict, &era);
 
-        println!("{:?}", culture);
+        println!("{:#?}", culture);
         let dict = build_culture_dictionary(&dict, &culture);
         let mut city = City {
             name: locations::gen_location_name(&dict, false, &era),
@@ -350,7 +350,7 @@ pub mod city {
             citizens: HashMap::new(),
             areas: Vec::new(),
             institutions: Vec::new(),
-            era
+            culture: culture.clone()
         };
         generate_population_baseline(&dict, size, &mut city);
         let public_institutions = generate_public_institutions(&dict, &era);

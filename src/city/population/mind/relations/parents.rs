@@ -12,6 +12,7 @@ pub mod parents {
                 mind::{
                     mind::{random_char, Mind},
                     relations::{
+                        parental_naming_formats::parental_naming_formats::get_child_last_name,
                         partners::partners::TAKEN_VERBS,
                         relations::{link_family_at_birth, RelationVerb},
                     },
@@ -195,6 +196,7 @@ pub mod parents {
                 if pm1.is_some() && pm2.is_some() {
                     let mut child = random_char(&dict);
                     child.age = 1;
+                    child.last_name = get_child_last_name(&child.gender, m1, m2, &city.culture);
 
                     let mind_1 = city.citizens.get_mut(&m1.id).unwrap();
                     mind_1

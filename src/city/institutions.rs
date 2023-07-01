@@ -364,7 +364,7 @@ pub mod institutions {
             .filter(|c| c.alive && c.age > ADULT_AGE_FROM && c.employer.is_none());
         for m in unemployed {
             if rng.gen::<f32>() < STARTUP_RATE {
-                let new_inst = generate_population_institution(&dict, &city.era);
+                let new_inst = generate_population_institution(&dict, &city.culture.era);
                 let mind = city.citizens.get_mut(&m.id).unwrap();
                 mind.employer = Some(new_inst.id.clone());
                 drop(mind);

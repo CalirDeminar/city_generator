@@ -257,10 +257,14 @@ pub mod building {
     pub fn add_building_to_city<'a>(city: &'a mut City, dict: &Vec<Word>) -> &'a mut City {
         let mut free_location = find_free_area(city);
         if free_location.is_none() {
-            city.areas.push(gen_location(&dict, &city.era));
+            city.areas.push(gen_location(&dict, &city.culture.era));
             free_location = find_free_area(city);
         }
-        let new_building = new_building(&dict, Some(free_location.unwrap().id.clone()), &city.era);
+        let new_building = new_building(
+            &dict,
+            Some(free_location.unwrap().id.clone()),
+            &city.culture.era,
+        );
         city.buildings.push(new_building);
         return city;
     }

@@ -1,4 +1,5 @@
 pub mod friends;
+pub mod parental_naming_formats;
 pub mod parents;
 pub mod partners;
 pub mod relations {
@@ -296,10 +297,14 @@ pub mod relations {
 
                         let cousin = city.citizens.get_mut(&id).unwrap();
                         if cousin.alive {
-                            child.relations.push((RelationVerb::Cousin, id.clone()));
-                            cousin
-                                .relations
-                                .push((RelationVerb::Cousin, child.id.clone()));
+                            if !child.relations.contains(&(RelationVerb::Cousin, *id)) {
+                                child.relations.push((RelationVerb::Cousin, id.clone()));
+                            }
+                            if !cousin.relations.contains(&(RelationVerb::Cousin, child.id)) {
+                                cousin
+                                    .relations
+                                    .push((RelationVerb::Cousin, child.id.clone()));
+                            }
                         }
                         drop(cousin);
                     }
