@@ -40,7 +40,7 @@ pub mod templater {
     }
 
     // Tags: "{{Nuon(Tag)}}"
-    pub fn render_template_2(template: &str, dictionary: &Vec<Word>) -> String {
+    pub fn render_template_2(template: &str, dictionary: &Vec<Word>, era: &Option<Era>) -> String {
         let mut output = String::new();
         let word_regex = Regex::new(r"([a-zA-Z0-9 \-\:\']*\{\{[a-zA-Z\(\) \,\!]*\}\})").unwrap();
 
@@ -72,7 +72,7 @@ pub mod templater {
                         }
                     },
                 );
-            let w = random_word_by_tag(&dictionary, word_type, &required, &optional, &vec![]);
+            let w = random_word_by_tag(&dictionary, word_type, &required, &optional, &vec![], &era);
             output.push_str(prefix.clone());
             if w.is_some() {
                 let word = w.unwrap();
@@ -92,7 +92,7 @@ pub mod templater {
         let example_template: &str =
             "{{Noun(!LastName, !HistoricalFigure)}} {{Noun(GeographyFeatureSizeLocalFeature)}}";
         let d = build_dictionary();
-        let dict = build_culture_dictionary(&d, &random_culture(&d));
-        println!("{}", render_template_2(example_template, &dict));
+        let dict = build_culture_dictionary(&d, &random_culture(&d, &None));
+        println!("{}", render_template_2(example_template, &dict, &None));
     }
 }

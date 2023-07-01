@@ -35,6 +35,7 @@ pub mod city {
         pub institutions: Vec<Institution>,
         pub areas: Vec<Location>,
         pub buildings: Vec<Building>,
+        pub era: Option<Era>
     }
 
     pub fn print_city(city: &City) -> String {
@@ -337,21 +338,22 @@ pub mod city {
         return city;
     }
 
-    pub fn simulate(size: usize, age: usize) -> City {
+    pub fn simulate(size: usize, age: usize, era: Option<Era>) -> City {
         let dict = build_dictionary();
-        let culture = random_culture(&dict);
+        let culture = random_culture(&dict, &era);
 
         println!("{:?}", culture);
         let dict = build_culture_dictionary(&dict, &culture);
         let mut city = City {
-            name: locations::gen_location_name(&dict, false),
+            name: locations::gen_location_name(&dict, false, &era),
             buildings: Vec::new(),
             citizens: HashMap::new(),
             areas: Vec::new(),
             institutions: Vec::new(),
+            era
         };
         generate_population_baseline(&dict, size, &mut city);
-        let public_institutions = generate_public_institutions(&dict);
+        let public_institutions = generate_public_institutions(&dict, &era);
 
         for pub_inst in public_institutions {
             add_public_institution_to_city(&mut city, pub_inst, &dict);
@@ -420,6 +422,6 @@ pub mod city {
 
     #[test]
     fn test_simulation() {
-        simulate(1000, 20);
+        simulate(1000, 20, None);
     }
 }

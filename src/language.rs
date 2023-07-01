@@ -2,6 +2,7 @@ pub mod adjectives;
 pub mod nouns;
 pub mod language {
     use rand::seq::SliceRandom;
+    use strum::IntoEnumIterator;
     use strum_macros::{Display, EnumIter};
     use uuid::Uuid;
 
@@ -84,13 +85,19 @@ pub mod language {
         all_of: &Vec<String>,
         one_of: &Vec<String>,
         none_of: &Vec<String>,
+        era: &Option<Era>,
     ) -> Option<Word> {
         let mut output: Vec<Word> = Vec::new();
+        let possible_eras: Vec<String> = Era::iter().map(|e| e.to_string()).collect();
         for word in words {
             if word.word_type.eq(&word_type)
                 && (all_of.iter().all(|t| word.tags.contains(&t)) || all_of.len() == 0)
                 && (one_of.iter().any(|t| word.tags.contains(&t)) || one_of.len() == 0)
                 && (!none_of.iter().all(|t| word.tags.contains(&t)) || none_of.len() == 0)
+                && (era.is_none() // match if we haven't selected an era
+                    || word.tags.contains(&era.unwrap().to_string()) // match if the word has this era tag
+                    || possible_eras.iter().all(|e| !word.tags.contains(e)))
+            // match if this word has no era tag of any sirt
             {
                 output.push(word.clone());
             }

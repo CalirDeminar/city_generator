@@ -8,7 +8,7 @@ pub mod institutions {
     use crate::city::locations::locations::Location;
     use crate::city::population::mind::mind::Mind;
     use crate::city::population::mind::relations::relations::ADULT_AGE_FROM;
-    use crate::language::language::{build_dictionary, Word};
+    use crate::language::language::{build_dictionary, Era, Word};
     use crate::templater::templater::*;
     use crate::utils::utils::random_pick;
 
@@ -196,7 +196,7 @@ pub mod institutions {
         return (building, floor, area, location);
     }
 
-    pub fn generate_public_institutions(dict: &Vec<Word>) -> Vec<Institution> {
+    pub fn generate_public_institutions(dict: &Vec<Word>, era: &Option<Era>) -> Vec<Institution> {
         let mut rng = rand::thread_rng();
         let mut output: Vec<Institution> = Vec::new();
         for i in PUBLIC_INSTITUTES {
@@ -204,7 +204,7 @@ pub mod institutions {
                 id: Uuid::new_v4(),
                 name: format!(
                     "{} {}",
-                    render_template_2("{{Noun(HistoricalFigure)}}", &dict),
+                    render_template_2("{{Noun(HistoricalFigure)}}", &dict, era),
                     label_insitute_type(&i)
                 ),
                 public: true,
@@ -215,7 +215,7 @@ pub mod institutions {
         return output;
     }
 
-    pub fn generate_restaurant(dict: &Vec<Word>) -> Institution {
+    pub fn generate_restaurant(dict: &Vec<Word>, era: &Option<Era>) -> Institution {
         let mut rng = rand::thread_rng();
         let templates = vec![
             "{{Adjective(Position, Quality, Age, Colour)}} {{Noun(LastName)}} {{Noun(RetailerFood)}}",
@@ -224,7 +224,7 @@ pub mod institutions {
              "{{Noun(LastName)}}'s {{Noun(RetailerFood)}}",
              "{{Noun(HistoricalFigure)}}'s {{Noun(RetailerFood)}}",
         ];
-        let name = render_template_2(random_pick(&templates), &dict);
+        let name = render_template_2(random_pick(&templates), &dict, era);
         return Institution {
             id: Uuid::new_v4(),
             name,
@@ -234,7 +234,7 @@ pub mod institutions {
         };
     }
 
-    pub fn generate_specialist_retailer(dict: &Vec<Word>) -> Institution {
+    pub fn generate_specialist_retailer(dict: &Vec<Word>, era: &Option<Era>) -> Institution {
         let mut rng = rand::thread_rng();
         let templates = vec![
             "{{Adjective(Position, Quality, Age, Colour)}} {{Noun(LastName)}} {{Noun(RetailerSpecialist)}}",
@@ -242,7 +242,7 @@ pub mod institutions {
             "{{Noun(LastName)}} {{Noun(RetailerSpecialist)}}",
             "{{Noun(LastName)}}'s {{Noun(RetailerSpecialist)}}",
         ];
-        let name = render_template_2(random_pick(&templates), &dict);
+        let name = render_template_2(random_pick(&templates), &dict, era);
         return Institution {
             id: Uuid::new_v4(),
             name,
@@ -252,7 +252,7 @@ pub mod institutions {
         };
     }
 
-    pub fn generate_general_retailer(dict: &Vec<Word>) -> Institution {
+    pub fn generate_general_retailer(dict: &Vec<Word>, era: &Option<Era>) -> Institution {
         let mut rng = rand::thread_rng();
         let templates = vec![
             "{{Adjective(Position, Quality, Age, Colour)}} {{Noun(LastName}} {{Noun(GeneralRetailerName)}}",
@@ -260,7 +260,7 @@ pub mod institutions {
             "{{Noun(LastName}} {{Noun(GeneralRetailerName)}}",
             "{{Noun(LastName}}'s {{Noun(GeneralRetailerName)}}",
         ];
-        let name = render_template_2(random_pick(&templates), &dict);
+        let name = render_template_2(random_pick(&templates), &dict, era);
         return Institution {
             id: Uuid::new_v4(),
             name,
@@ -270,26 +270,26 @@ pub mod institutions {
         };
     }
 
-    pub fn generate_population_institution(dict: &Vec<Word>) -> Institution {
+    pub fn generate_population_institution(dict: &Vec<Word>, era: &Option<Era>) -> Institution {
         let mut rng = rand::thread_rng();
         let roll: f32 = rng.gen();
         if roll > 0.4 {
-            return generate_restaurant(&dict);
+            return generate_restaurant(&dict, era);
         } else if roll > 0.2 {
-            return generate_specialist_retailer(&dict);
+            return generate_specialist_retailer(&dict, era);
         } else {
-            return generate_general_retailer(&dict);
+            return generate_general_retailer(&dict, era);
         }
     }
 
-    pub fn generate_population_institutions(size: usize) -> Vec<Institution> {
+    pub fn generate_population_institutions(size: usize, era: &Option<Era>) -> Vec<Institution> {
         let language_dict = build_dictionary();
         let mut output: Vec<Institution> = Vec::new();
-        for i in generate_public_institutions(&language_dict) {
+        for i in generate_public_institutions(&language_dict, era) {
             output.push(i);
         }
         for _i in 0..((size as i32 - output.len() as i32).max(1)) {
-            output.push(generate_population_institution(&language_dict));
+            output.push(generate_population_institution(&language_dict, era));
         }
         return output;
     }
@@ -364,7 +364,7 @@ pub mod institutions {
             .filter(|c| c.alive && c.age > ADULT_AGE_FROM && c.employer.is_none());
         for m in unemployed {
             if rng.gen::<f32>() < STARTUP_RATE {
-                let new_inst = generate_population_institution(&dict);
+                let new_inst = generate_population_institution(&dict, &city.era);
                 let mind = city.citizens.get_mut(&m.id).unwrap();
                 mind.employer = Some(new_inst.id.clone());
                 drop(mind);
@@ -382,6 +382,6 @@ pub mod institutions {
 
     #[test]
     fn gen_institutions_test() {
-        println!("{:#?}", generate_population_institutions(20));
+        println!("{:#?}", generate_population_institutions(20, &None));
     }
 }

@@ -21,7 +21,7 @@ pub mod culture {
         pub species_avg_lifespan_variance: u32,
     }
 
-    fn gen_historical_figures(dict: &Vec<Word>) -> Vec<(String, String)> {
+    fn gen_historical_figures(dict: &Vec<Word>, era: &Option<Era>) -> Vec<(String, String)> {
         let mut rng = rand::thread_rng();
         let figure_count = (rng.gen::<f32>() * 8.0) as usize;
 
@@ -33,6 +33,7 @@ pub mod culture {
                 &vec![String::from("Title")],
                 &vec![],
                 &vec![],
+                era,
             )
             .unwrap()
             .text;
@@ -42,6 +43,7 @@ pub mod culture {
                 &vec![String::from("LastName")],
                 &vec![],
                 &vec![],
+                era,
             )
             .unwrap()
             .text;
@@ -51,7 +53,7 @@ pub mod culture {
         return output;
     }
 
-    fn random_animals(dict: &Vec<Word>, landlocked: bool) -> Vec<String> {
+    fn random_animals(dict: &Vec<Word>, landlocked: bool, era: &Option<Era>) -> Vec<String> {
         let mut rng = rand::thread_rng();
         let len = (rng.gen::<f32>() * 5.0) as usize;
         let mut output: Vec<String> = Vec::new();
@@ -71,6 +73,7 @@ pub mod culture {
                         CreatureCategory::CreatureSentient.to_string(),
                         Era::Fantasy.to_string(),
                     ],
+                    era,
                 )
                 .unwrap()
                 .text,
@@ -80,7 +83,7 @@ pub mod culture {
         return output;
     }
 
-    fn random_crops(dict: &Vec<Word>) -> Vec<String> {
+    fn random_crops(dict: &Vec<Word>, era: &Option<Era>) -> Vec<String> {
         let mut rng = rand::thread_rng();
         let len = (rng.gen::<f32>() * 7.0) as usize;
         let mut output: Vec<String> = Vec::new();
@@ -92,6 +95,7 @@ pub mod culture {
                     &vec![PlantType::PlantTypeCrop.to_string()],
                     &vec![],
                     &vec![],
+                    era,
                 )
                 .unwrap()
                 .text,
@@ -100,14 +104,14 @@ pub mod culture {
         return output;
     }
 
-    pub fn random_culture(dict: &Vec<Word>) -> CultureConfig {
+    pub fn random_culture(dict: &Vec<Word>, era: &Option<Era>) -> CultureConfig {
         let mut rng = rand::thread_rng();
         let landlocked = rng.gen::<f32>() > 0.5;
         return CultureConfig {
-            historical_figures: gen_historical_figures(&dict),
+            historical_figures: gen_historical_figures(&dict, era),
             landlocked,
-            staple_meats: random_animals(&dict, landlocked),
-            staple_plants: random_crops(&dict),
+            staple_meats: random_animals(&dict, landlocked, era),
+            staple_plants: random_crops(&dict, era),
             adult_age: 18,
             species_avg_lifespan: 70,
             species_avg_lifespan_variance: 5,
@@ -170,6 +174,6 @@ pub mod culture {
     #[test]
     fn test_random_culture() {
         let dict = build_dictionary();
-        println!("{:#?}", random_culture(&dict));
+        println!("{:#?}", random_culture(&dict, &None));
     }
 }

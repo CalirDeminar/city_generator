@@ -63,7 +63,7 @@ pub mod locations {
         return node;
     }
 
-    pub fn gen_location_name(dict: &Vec<Word>, long: bool) -> String {
+    pub fn gen_location_name(dict: &Vec<Word>, long: bool, era: &Option<Era>) -> String {
         let long_templates = vec![
             "{{{{Adjective(Position, Quality, Age, Colour)}} {{Noun(!LastName, !HistoricalFigure))}} {{Noun(GeographyFeatureSizeAreaFeature)}} {{Noun(GeographyFeatureSizeLocalFeature)}}",
             "{{Noun(HistoricalFigure)}} {{Noun(GeographyFeatureSizeAreaFeature)}} {{Noun(GeographyFeatureSizeLocalFeature)}}",
@@ -76,16 +76,16 @@ pub mod locations {
             "{{{{Adjective(Position, Quality, Age, Colour)}} {{Noun(GeographyFeatureSizeLocalFeature)}}",
         ];
         if long {
-            return render_template_2(random_pick(&long_templates), &dict);
+            return render_template_2(random_pick(&long_templates), &dict, era);
         }
-        return render_template_2(random_pick(&short_templates), &dict);
+        return render_template_2(random_pick(&short_templates), &dict, era);
     }
 
-    pub fn gen_location(dict: &Vec<Word>) -> Location {
+    pub fn gen_location(dict: &Vec<Word>, era: &Option<Era>) -> Location {
         let mut rng = rand::thread_rng();
         return Location {
             id: Uuid::new_v4(),
-            name: gen_location_name(&dict, false),
+            name: gen_location_name(&dict, false, era),
             size: ((rng.gen::<f32>() * 10.0) as i32).max(1) as usize,
         };
     }
@@ -100,9 +100,9 @@ pub mod locations {
     #[test]
     fn test_gen_location_name() {
         let dict = build_dictionary();
-        let name_dict = build_culture_dictionary(&dict, &random_culture(&dict));
+        let name_dict = build_culture_dictionary(&dict, &random_culture(&dict, &None));
         for _i in 0..10 {
-            println!("{}", gen_location_name(&name_dict, true));
+            println!("{}", gen_location_name(&name_dict, true, &None));
         }
     }
 

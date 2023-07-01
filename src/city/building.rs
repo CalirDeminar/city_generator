@@ -207,11 +207,15 @@ pub mod building {
         };
     }
 
-    pub fn new_building_no_loc(dict: &Vec<Word>) -> Building {
-        return new_building(dict, None);
+    pub fn new_building_no_loc(dict: &Vec<Word>, era: &Option<Era>) -> Building {
+        return new_building(dict, None, era);
     }
 
-    pub fn new_building(dict: &Vec<Word>, location_id: Option<Uuid>) -> Building {
+    pub fn new_building(
+        dict: &Vec<Word>,
+        location_id: Option<Uuid>,
+        era: &Option<Era>,
+    ) -> Building {
         let name_templates = vec![
             "{{{{Adjective(Position, Quality, Age, Colour)}} {{Noun(LastName)}} {{Noun(BuildingTitle)}}",
             "{{Noun(LastName)}} {{Noun(BuildingTitle)}}",
@@ -234,7 +238,7 @@ pub mod building {
         }
         return Building {
             id: Uuid::new_v4(),
-            name: render_template_2(random_pick(&name_templates), &dict),
+            name: render_template_2(random_pick(&name_templates), &dict, era),
             floors,
             location_id,
         };
@@ -253,10 +257,10 @@ pub mod building {
     pub fn add_building_to_city<'a>(city: &'a mut City, dict: &Vec<Word>) -> &'a mut City {
         let mut free_location = find_free_area(city);
         if free_location.is_none() {
-            city.areas.push(gen_location(&dict));
+            city.areas.push(gen_location(&dict, &city.era));
             free_location = find_free_area(city);
         }
-        let new_building = new_building(&dict, Some(free_location.unwrap().id.clone()));
+        let new_building = new_building(&dict, Some(free_location.unwrap().id.clone()), &city.era);
         city.buildings.push(new_building);
         return city;
     }
@@ -288,6 +292,6 @@ pub mod building {
     #[test]
     fn test_new_building() {
         let dict = build_dictionary();
-        println!("{:#?}", new_building_no_loc(&dict));
+        println!("{:#?}", new_building_no_loc(&dict, &None));
     }
 }
