@@ -194,7 +194,7 @@ pub mod parents {
                 let pm1 = citizen_ref.get(&m1.id);
                 let pm2 = citizen_ref.get(&m2.id);
                 if pm1.is_some() && pm2.is_some() {
-                    let mut child = random_char(&dict);
+                    let mut child = random_char(&dict, false);
                     child.age = 1;
                     child.last_name = get_child_last_name(&child.gender, m1, m2, &city.culture);
 

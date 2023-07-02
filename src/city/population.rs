@@ -26,7 +26,7 @@ pub mod population {
     fn generate_base_population<'a>(i: usize, dict: &Vec<Word>) -> Population {
         let mut output: Population = HashMap::new();
         for _i in 0..i {
-            let char = random_char(&dict);
+            let char = random_char(&dict, true);
             output.insert(char.id.clone(), char);
         }
         return output;

@@ -264,7 +264,7 @@ pub mod mind {
         }
     }
 
-    pub fn random_char<'a>(dict: &Vec<Word>) -> Mind {
+    pub fn random_char<'a>(dict: &Vec<Word>, gen_last_name: bool) -> Mind {
         let mut rng = rand::thread_rng();
         let roll: f32 = rng.gen();
         let mut gender = Gender::Ambiguous;
@@ -283,11 +283,14 @@ pub mod mind {
             .text
             .clone();
 
-        let last_name =
+        let last_name = if gen_last_name {
             random_word_by_tag_and(&dict, WordType::Noun, vec![String::from("LastName")])
                 .unwrap()
                 .text
-                .clone();
+                .clone()
+        } else {
+            String::new()
+        };
         let distribution = Normal::new(5.0, 10.0).unwrap();
         return Mind {
             id: Uuid::new_v4(),
