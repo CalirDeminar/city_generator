@@ -211,14 +211,11 @@ pub mod relations {
     }
 
     pub fn link_family_at_birth<'a>(city: &'a mut City, child: &'a mut Mind) -> &'a mut City {
-        let ref_population = city.citizens.clone();
-        let parents: Vec<&Mind> = ref_population
-            .values()
-            .filter(|c| {
-                c.relations
-                    .iter()
-                    .any(|(verb, id)| verb.eq(&RelationVerb::Child) && id.eq(&child.id))
-            })
+        let parents: Vec<Mind> = child
+            .relations
+            .iter()
+            .filter(|(v, _id)| v.eq(&RelationVerb::Parent))
+            .map(|(_v, id)| city.citizens.get(&id).unwrap().clone())
             .collect();
         for parent in parents {
             for (verb, id) in parent.relations.iter().filter(|(_v, id)| !id.eq(&child.id)) {
