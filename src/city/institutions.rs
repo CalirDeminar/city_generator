@@ -302,7 +302,17 @@ pub mod institutions {
             .filter(|c| c.alive && c.employer.is_some());
         for mind in employed {
             if rng.gen::<f32>() < RANDOM_SACKING_RATE {
+                let employer = city
+                    .institutions
+                    .iter()
+                    .find(|i| i.id.eq(&mind.employer.unwrap()));
                 mind.employer = None;
+
+                mind.activity_log.push(format!(
+                    "Left company: {} in year {}",
+                    employer.unwrap().name,
+                    city.year
+                ));
             }
         }
         return city;
@@ -344,6 +354,10 @@ pub mod institutions {
 
                 let mind_mut = city.citizens.get_mut(&mind.id).unwrap();
                 mind_mut.employer = Some(inst.id.clone());
+                mind_mut.activity_log.push(format!(
+                    "Started work at: {} in year {}",
+                    inst.name, city.year
+                ));
                 drop(mind_mut);
 
                 if emp_count + 1 < inst.size {
@@ -367,6 +381,8 @@ pub mod institutions {
                 let new_inst = generate_population_institution(&dict, &city.culture.era);
                 let mind = city.citizens.get_mut(&m.id).unwrap();
                 mind.employer = Some(new_inst.id.clone());
+                mind.activity_log
+                    .push(format!("Created the company: {}", new_inst.name));
                 drop(mind);
                 add_institution_to_city(city, new_inst, &dict);
             }

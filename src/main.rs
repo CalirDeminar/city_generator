@@ -1,4 +1,4 @@
-use city::city::{export_city, export_city_html};
+use city::city::{export_city, export_city_html, export_city_stories};
 use language::language::Era;
 
 pub mod city;
@@ -17,4 +17,5 @@ fn main() {
     let city = city::city::simulate(200, 200, Some(Era::Fantasy));
     export_city(&city);
     export_city_html(&city);
+    export_city_stories(&city);
 }

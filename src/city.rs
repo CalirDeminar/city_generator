@@ -27,6 +27,7 @@ pub mod city {
     use crate::language::language::*;
 
     const MAX_WORKING_AGE: u32 = 60;
+    const EVICITON_RATE: f32 = 0.05;
 
     #[derive(PartialEq, Debug, Clone)]
     pub struct City {
@@ -35,7 +36,8 @@ pub mod city {
         pub institutions: Vec<Institution>,
         pub areas: Vec<Location>,
         pub buildings: Vec<Building>,
-        pub culture: CultureConfig
+        pub culture: CultureConfig,
+        pub year: usize
     }
 
     pub fn print_city(city: &City) -> String {
@@ -71,6 +73,18 @@ pub mod city {
     pub fn export_city(city: &City) {
         let mut file = File::create("./export.txt").unwrap();
         let output = print_city(&city);
+        file.write_all(output.into_bytes().as_slice()).unwrap();
+    }
+
+    pub fn export_city_stories(city: &City) {
+        let mut file = File::create("./stories_export.txt").unwrap();
+        let mut output = String::new();
+        for citizen in city.citizens.values() {
+            output.push_str(&format!("==== {} {} - {} ====\n", citizen.first_name, citizen.last_name, citizen.gender.to_string()));
+            for line in citizen.activity_log.iter() {
+                output.push_str(&format!("  {}\n", line));
+            }
+        }
         file.write_all(output.into_bytes().as_slice()).unwrap();
     }
 
@@ -210,6 +224,19 @@ pub mod city {
     }
 
     pub fn assign_residences<'a>(city: &'a mut City) -> &'a mut City {
+        let mut rng = rand::thread_rng();
+        let ref_pop = city.citizens.clone();
+        let random_eviction_apartments: Vec<Uuid> = city.buildings.iter().flat_map(|b| b.floors.iter().flat_map(|f| f.areas.iter().map(|a| a.id.clone()))).filter(|_a| rng.gen::<f32>() < EVICITON_RATE).collect();
+        for id in random_eviction_apartments {
+            for m in ref_pop.values().clone() {
+                if m.residence.is_some() && m.residence.unwrap().eq(&id) {
+                    let m_mut = city.citizens.get_mut(&m.id).unwrap();
+                    m_mut.residence = None;
+
+                    drop(m_mut);
+                }
+            }
+        }
         let mut new_residences: Vec<(Uuid, Uuid)> = Vec::new();
         let mut owned_ids: Vec<Uuid> = city
             .citizens
@@ -217,7 +244,9 @@ pub mod city {
             .filter(|c| c.residence.is_some())
             .map(|c| c.residence.unwrap().clone())
             .collect();
-        let ref_pop = city.citizens.clone();
+       
+
+        
         for citizen in city.citizens.values_mut().filter(|c| c.alive && c.residence.is_none()) {
             let guardian = if citizen.age < ADULT_AGE_FROM {
                 find_relation(&citizen, RelationVerb::Parent, &ref_pop)
@@ -255,26 +284,26 @@ pub mod city {
             } else if spouse_res.is_some() {
                 new_residences.push((citizen.id.clone(), spouse_res.unwrap().clone().1));
             } else {
-                let mut all_areas: Vec<&BuildingFloorArea> = city
+                let mut all_areas: Vec<(&BuildingFloorArea, String, Uuid)> = city
                     .buildings
                     .iter()
-                    .flat_map(|b| b.floors.iter().flat_map(|f| f.areas.iter()))
+                    .flat_map(|b| b.floors.iter().flat_map(|f| f.areas.iter().map(|a| ( a, b.name.clone(), b.location_id.unwrap().clone()))))
                     .collect();
 
                 all_areas.shuffle(&mut rand::thread_rng());
 
                 let apartment = all_areas
                     .iter()
-                    .find(|a| a.owning_institution.is_none() && !owned_ids.contains(&a.id));
+                    .find(|a| a.0.owning_institution.is_none() && !owned_ids.contains(&a.0.id));
                 if apartment.is_some() {
-                    owned_ids.push(apartment.unwrap().id);
-                    new_residences.push((citizen.id.clone(), apartment.unwrap().id.clone()));
+                    let a = apartment.unwrap();
+                    owned_ids.push(a.0.id);
+                    new_residences.push((citizen.id.clone(), a.0.id.clone()));
+                    citizen.residence = Some(a.0.id.clone());
+                    let location = city.areas.iter().find(|ar| a.2.eq(&ar.id));
+                    citizen.activity_log.push(format!("Moved in to {} {} in year {}", a.0.name, a.1, location.unwrap().name));
                 }
             }
-        }
-        for (citizen_id, residence_id) in new_residences {
-            let citizen = city.citizens.get_mut(&citizen_id).unwrap();
-            citizen.residence = Some(residence_id.clone());
         }
         return city;
     }
@@ -306,6 +335,7 @@ pub mod city {
                         - culture.species_avg_lifespan_variance as f32))
                     / 10.0);
             if rng.gen::<f32>() < death_odds {
+                mind.activity_log.push(format!("Died in year {} age {}", city.year, mind.age));
                 mind.alive = false;
                 mind.employer = None;
                 mind.residence = None;
@@ -350,7 +380,8 @@ pub mod city {
             citizens: HashMap::new(),
             areas: Vec::new(),
             institutions: Vec::new(),
-            culture: culture.clone()
+            culture: culture.clone(),
+            year: 0
         };
         generate_population_baseline(&dict, size, &mut city);
         let public_institutions = generate_public_institutions(&dict, &era);
@@ -415,6 +446,7 @@ pub mod city {
             for citizen in city.citizens.values_mut().filter(|c| c.alive) {
                 citizen.age += 1;
             }
+            city.year += 1;
         }
 
         return city;

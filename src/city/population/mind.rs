@@ -54,6 +54,7 @@ pub mod mind {
         pub residence: Option<Uuid>,
         pub sexuality: Sexuality,
         pub alive: bool,
+        pub activity_log: Vec<String>,
     }
 
     pub fn find_address<'a>(
@@ -301,6 +302,7 @@ pub mod mind {
             residence: None,
             sexuality: gen_sexuality(),
             alive: true,
+            activity_log: Vec::new(),
         };
     }
 }

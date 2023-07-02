@@ -202,16 +202,34 @@ pub mod parents {
                     mind_1
                         .relations
                         .push((RelationVerb::Child, child.id.clone()));
+                    mind_1.activity_log.push(format!(
+                        "Gained {} {} as a Child in year {}",
+                        child.first_name, child.last_name, city.year
+                    ));
                     drop(mind_1);
 
                     let mind_2 = city.citizens.get_mut(&m2.id).unwrap();
                     mind_2
                         .relations
                         .push((RelationVerb::Child, child.id.clone()));
+                    mind_2.activity_log.push(format!(
+                        "Gained {} {} as a Child in year {}",
+                        child.first_name, child.last_name, city.year
+                    ));
                     drop(mind_2);
 
                     child.relations.push((RelationVerb::Parent, m1.id.clone()));
                     child.relations.push((RelationVerb::Parent, m2.id.clone()));
+                    child.activity_log.push(format!(
+                        "Born as {} {} to {} {} and {} {} in year {}",
+                        child.first_name,
+                        child.last_name,
+                        pm1.unwrap().first_name,
+                        pm1.unwrap().last_name,
+                        pm2.unwrap().first_name,
+                        pm2.unwrap().last_name,
+                        city.year
+                    ));
                     link_family_at_birth(city, &mut child);
                     city.citizens.insert(child.id.clone(), child.clone());
                 }
