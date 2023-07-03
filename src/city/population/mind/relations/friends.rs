@@ -41,37 +41,12 @@ pub mod friends {
         return !mind_1_knows_2 && roll > (FRIEND_RATE * gender_modifier * age_gap_modifier);
     }
 
-    pub fn link_friends_within_population<'a>(city: &'a mut City) -> &'a mut City {
-        let mut rng = rand::thread_rng();
-        let ids: Vec<Uuid> = city
-            .citizens
-            .values()
-            .filter(|c| c.alive)
-            .map(|c| c.id)
-            .collect();
-        for mind_id in ids {
-            // city.citizens.shuffle(&mut rng);
-            let mut citizens = city.citizens.values_mut().filter(|c| c.alive);
-            let mind = citizens.find(|c| c.id.eq(&mind_id)).unwrap();
-            let friend_count = (rng.gen::<f32>() * FRIEND_OUTGOING_MAX) as u32;
-            for _i in 0..friend_count {
-                let possible_friend = citizens.find(|c| match_friend(&mind, c));
-                if possible_friend.is_some() {
-                    let friend = possible_friend.unwrap();
-                    mind.relations
-                        .push((RelationVerb::Friend, friend.id.clone()));
-                    friend
-                        .relations
-                        .push((RelationVerb::Friend, mind.id.clone()));
-                }
-            }
-        }
-        return city;
-    }
-
     fn get_friend_id<'a>(mind: &Mind, population: &Population) -> Option<Uuid> {
         let mut rng = rand::thread_rng();
-        let mut minds: Vec<&Mind> = population.values().collect();
+        let mut minds: Vec<&Mind> = population
+            .values()
+            .filter(|m| m.age.abs_diff(mind.age) < 20)
+            .collect();
         minds.shuffle(&mut rng);
         let possible_mind = minds.iter().find(|c| match_friend(&mind, c));
         if possible_mind.is_some() {
@@ -120,7 +95,7 @@ pub mod friends {
                     ));
                 }
             }
-
+            // TO DO - Split out to own function
             for (verb, id) in mind.relations.clone() {
                 let mind = city.citizens.get_mut(&mind_id).unwrap();
                 match verb {

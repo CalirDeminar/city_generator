@@ -8,7 +8,6 @@ pub mod population {
     use std::collections::HashMap;
     use std::{fs::File, io::Write};
 
-    use super::mind::relations::friends::friends::link_friends_within_population;
     use super::mind::relations::{
         parents::parents::link_parents, partners::partners::link_partners,
     };
@@ -32,22 +31,6 @@ pub mod population {
         return output;
     }
 
-    pub fn generate_population_full_relation<'a>(
-        dict: &Vec<Word>,
-        size: usize,
-        c: &'a mut City,
-    ) -> &'a mut City {
-        let mut city = c;
-        city.citizens = generate_base_population(size, &dict);
-        city = link_partners(city);
-        city = link_parents(city);
-        city = link_colleagues(city);
-        city = link_friends_within_population(city);
-        city = link_siblings(city);
-        city = link_grandparents(city);
-        return city;
-    }
-
     pub fn generate_population_baseline<'a>(
         dict: &Vec<Word>,
         size: usize,
@@ -55,18 +38,8 @@ pub mod population {
     ) -> &'a mut City {
         let mut city = c;
         city.citizens = generate_base_population(size, &dict);
-        // city = link_colleagues(city);
-        // city = link_friends_within_population(city);
         return city;
     }
-
-    // pub fn generate_population(name_dict: &NameDictionary, size: usize) -> Population {
-    //     let mut population = generate_base_population(size, &name_dict);
-    //     population = add_partners_to_population(population, &name_dict);
-    //     population = add_parents_to_population(population, &name_dict);
-    //     population = link_friends_within_population(population);
-    //     return population;
-    // }
 
     pub fn output_population(city: &City) {
         let mut file = File::create("./export.txt").unwrap();
