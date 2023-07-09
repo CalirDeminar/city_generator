@@ -117,11 +117,11 @@ pub mod residences {
                 let mind = city.citizens.get_mut(&citizen.id).unwrap();
                 mind.residence = Some(area.id.clone());
                 mind.activity_log.push(format!(
-                    "Moved in {} to {} {} in year {}",
-                    city.year,
+                    "Moved into {} {} in {} in year {}",
                     area.name,
                     building_name,
-                    location.unwrap().name
+                    location.unwrap().name,
+                    city.year,
                 ));
                 drop(mind);
             }

@@ -334,7 +334,10 @@ pub mod partners {
                                     "Broke up with Partner {} {} in year {}",
                                     mind.first_name, mind.last_name, city.year
                                 ));
-                            } else if rng.gen::<f32>() < PARTNER_MARRIAGE_RATE {
+                            } else if mind.age > ADULT_AGE_FROM
+                                && partner.age > ADULT_AGE_FROM
+                                && rng.gen::<f32>() < PARTNER_MARRIAGE_RATE
+                            {
                                 let (mind_last_name, partner_last_name) =
                                     get_new_couple_last_names(&mind, &partner, &city.culture);
                                 mind.last_name = mind_last_name;
