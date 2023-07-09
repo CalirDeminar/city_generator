@@ -22,6 +22,8 @@ pub mod culture {
         pub species_avg_lifespan_variance: u32,
         // Format (Man's last name, Woman's last name, Male Child's name, Female Child's name)
         pub parental_naming_formats: Vec<(String, String, String, String)>,
+        pub avg_building_footprint: i32,
+        pub avg_building_floors: i32,
     }
 
     fn paternal_naming_lists() -> Vec<(String, String, String, String)> {
@@ -154,6 +156,16 @@ pub mod culture {
         let naming_system_count = ((rng.gen::<f32>() * 3.0) as usize).max(1);
         let mut naming_systems = paternal_naming_lists();
         naming_systems.shuffle(&mut rng);
+        let avg_building_footprint = match era {
+            Some(Era::Future) => 36,
+            Some(Era::Fantasy) | Some(Era::Medieval) => 6,
+            _ => 12,
+        };
+        let avg_building_floors = match era {
+            Some(Era::Future) => 15,
+            Some(Era::Fantasy) | Some(Era::Medieval) => 2,
+            _ => 6,
+        };
         return CultureConfig {
             era: era.clone(),
             historical_figures: gen_historical_figures(&dict, era),
@@ -168,6 +180,8 @@ pub mod culture {
                 .take(naming_system_count)
                 .map(|c| c.clone())
                 .collect(),
+            avg_building_footprint,
+            avg_building_floors,
         };
     }
 

@@ -175,7 +175,7 @@ pub mod city {
         let mut building_with_space = find_free_building(city);
 
         if building_with_space.is_none() {
-            add_building_to_city(city, &dict);
+            add_building_to_city(city, &dict, false);
             building_with_space = find_free_building(city);
         }
 
@@ -200,7 +200,7 @@ pub mod city {
         let all_workers = find_workers(&city);
         let workers = all_workers.iter().take(employee_count as usize);
 
-        add_building_to_city(city, &dict);
+        add_building_to_city(city, &dict, false);
         add_institution_to_building(city.buildings.last_mut().unwrap(), &institution);
 
         for w in workers {

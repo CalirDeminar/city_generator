@@ -117,7 +117,8 @@ pub mod residences {
                 let mind = city.citizens.get_mut(&citizen.id).unwrap();
                 mind.residence = Some(area.id.clone());
                 mind.activity_log.push(format!(
-                    "Moved in to {} {} in year {}",
+                    "Moved in {} to {} {} in year {}",
+                    city.year,
                     area.name,
                     building_name,
                     location.unwrap().name
@@ -125,21 +126,6 @@ pub mod residences {
                 drop(mind);
             }
         }
-        // for (citizen_id, apartment_id) in new_residences {
-        //     let citizen = city.citizens.get_mut(&citizen_id).unwrap();
-        //     citizen.residence = Some(apartment_id.clone());
-        //     let apartment = all_areas
-        //         .iter()
-        //         .find(|a| a.0.owning_institution.is_none() && !owned_ids.contains(&a.0.id))
-        //         .unwrap();
-        //     let location = city.areas.iter().find(|ar| apartment.2.eq(&ar.id));
-        //     citizen.activity_log.push(format!(
-        //         "Moved in to {} {} in year {}",
-        //         apartment.0.name,
-        //         apartment.1,
-        //         location.unwrap().name
-        //     ));
-        // }
         return city;
     }
 }

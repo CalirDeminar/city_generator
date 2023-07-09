@@ -1,6 +1,6 @@
 Arms,RetailerFood, Modern, Medieval, Fantasy
 Bakery,RetailerFood, Modern, Medieval, Fantasy
-Bar,RetailerFood, Modern
+Bar,RetailerFood, Modern, Medieval, Fantasy
 Brasserie,RetailerFood, Modern
 Cafe,RetailerFood, Modern
 Chippie,RetailerFood, Modern
@@ -18,7 +18,6 @@ Sushi-Bar,RetailerFood, Modern
 Tap Room,RetailerFood, Modern, Medieval, Fantasy
 Waffle House,RetailerFood, Modern
 Bakers,RetailerSpecialist, Modern, Medieval, Fantasy
-Barbers,RetailerSpecialist, Modern
 Beauty,RetailerSpecialist, Modern
 Boots,RetailerSpecialist, Modern, Medieval, Fantasy
 Bread,RetailerSpecialist, Modern, Medieval, Fantasy
@@ -31,7 +30,9 @@ Electronics Hut,RetailerSpecialist, Modern
 Electronics,RetailerSpecialist, Modern
 Fitness,RetailerSpecialist, Modern
 Florists,RetailerSpecialist, Modern
+Herbalists,RetailerSpecialist, Medieval, Fantasy
 Guitars,RetailerSpecialist, Modern
+Luthiers, RetailerSpecialist, Medieval, Fantasy
 Gym,RetailerSpecialist, Modern
 Hardware,RetailerSpecialist, Modern
 Instruments,RetailerSpecialist, Modern, Medieval, Fantasy
@@ -42,19 +43,29 @@ Pianos,RetailerSpecialist, Modern
 Salon,RetailerSpecialist, Modern
 Shoes,RetailerSpecialist, Modern
 Tailors,RetailerSpecialist, Modern, Medieval, Fantasy
+Leatherworks, RetailerSpecialist, Modern, Medieval, Fantasy
+Dressmakers,RetailerSpecialist,Modern,Medieval,Fantasy
 Technology,RetailerSpecialist, Modern
 Van Hire,RetailerSpecialist, Modern
 Forge, RetailerSpecialist, Modern, Medieval, Fantasy
 Smith, RetailerSpecialist, Fantasy
 Smiths, RetailerSpecialist, Fantasy
 Books, RetailerSpecialist, Modern, Medieval, Fantasy
+Tomes, RetailerSpecialist, Medieval, Fantasy
+Tonics, RetailerSpecialist, Medieval, Fantasy
+Alchemists, ReatilerSpecialist, Medieval, Fantasy
 Bookmakers, RetailerSpecialist, Modern, Medieval, Fantasy
 Cures, RetailerSpecialist, Medieval, Fantasy
 Potions, RetailerSpecialist, Medieval, Fantasy
 Masons, RetailerSpecialist, Modern, Medieval, Fantasy
 Swords, RetailerSpecialist, Medieval, Fantasy
-Arms and Armour, RetailerSpecialist, Medieval, Fantasy
+Arms, RetailerSpecialist, Medieval, Fantasy
 Armour, RetailerSpecialist, Medieval, Fantasy
 Chemists, RetailerSpecialist, Modern, Medieval, Fantasy
 Ironworks, RetailerSpecialist, Modern, Medieval, Fantasy
 Fishmongers, RetailerSpecialist, Modern, Medieval, Fantasy
+Spells, RetailerSpecialist, Fantasy
+Magics, RetailerSpecialist, Fantasy
+Millinery, RetailerSpecialist, Modern, Medieval, Fantasy
+Mill, RetailerSpecialist, Modern, Medieval, Fantasy
+Mills, RetailerSpecialist, Modern, Medieval, Fantasy

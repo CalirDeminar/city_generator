@@ -10,6 +10,7 @@ pub mod building {
             locations::locations::{gen_location, Location},
             population::mind::mind::*,
         },
+        culture::culture::{random_culture, CultureConfig},
         language::language::*,
         templater::templater::*,
         utils::utils::random_pick,
@@ -162,10 +163,11 @@ pub mod building {
             .any(|c| c.residence.is_some() && c.residence.unwrap().eq(&area.id));
     }
 
-    fn new_floor(level: i32, floor_type: FloorType) -> BuildingFloor {
+    fn new_floor(level: i32, floor_type: FloorType, culture: &CultureConfig) -> BuildingFloor {
         let mut rng = rand::thread_rng();
         let mut areas: Vec<BuildingFloorArea> = Vec::new();
-        let area_count = 5 + (rng.gen::<f32>() * 5.0) as i32;
+        let footprint = culture.avg_building_footprint / 2;
+        let area_count = footprint + (rng.gen::<f32>() * footprint as f32) as i32;
         for i in 0..=area_count {
             if level == 0 && i == 0 {
                 areas.push(BuildingFloorArea {
@@ -207,14 +209,19 @@ pub mod building {
         };
     }
 
-    pub fn new_building_no_loc(dict: &Vec<Word>, era: &Option<Era>) -> Building {
-        return new_building(dict, None, era);
+    pub fn new_building_no_loc(
+        dict: &Vec<Word>,
+        culture: &CultureConfig,
+        residential: bool,
+    ) -> Building {
+        return new_building(dict, None, culture, residential);
     }
 
     pub fn new_building(
         dict: &Vec<Word>,
         location_id: Option<Uuid>,
-        era: &Option<Era>,
+        culture: &CultureConfig,
+        residential: bool,
     ) -> Building {
         let name_templates = vec![
             "{{{{Adjective(Position, Quality, Age, Colour)}} {{Noun(LastName)}} {{Noun(BuildingTitle)}}",
@@ -223,10 +230,15 @@ pub mod building {
         ];
         let mut rng = rand::thread_rng();
         let mut floors: Vec<BuildingFloor> = Vec::new();
-        let floor_count = ((rng.gen::<f32>() * 12.0) as i32).max(2);
-        let commercial_floor_count = ((floor_count as f32 / 2.0) * (rng.gen::<f32>()))
-            .floor()
-            .max(1.0) as i32;
+        let floor_count =
+            ((rng.gen::<f32>() * ((culture.avg_building_floors * 2) + 1) as f32) as i32).max(2);
+        let commercial_floor_count = if residential {
+            0
+        } else {
+            ((floor_count as f32 / 2.0) * (rng.gen::<f32>()))
+                .floor()
+                .max(1.0) as i32
+        };
         let has_basement = rng.gen::<f32>() > 0.5;
         for i in (if has_basement { -1 } else { 0 })..=floor_count {
             let floor_type = if (i) < commercial_floor_count && i >= 0 {
@@ -234,11 +246,11 @@ pub mod building {
             } else {
                 FloorType::Residential
             };
-            floors.push(new_floor(i, floor_type));
+            floors.push(new_floor(i, floor_type, culture));
         }
         return Building {
             id: Uuid::new_v4(),
-            name: render_template_2(random_pick(&name_templates), &dict, era),
+            name: render_template_2(random_pick(&name_templates), &dict, &culture.era),
             floors,
             location_id,
         };
@@ -254,7 +266,11 @@ pub mod building {
         });
     }
 
-    pub fn add_building_to_city<'a>(city: &'a mut City, dict: &Vec<Word>) -> &'a mut City {
+    pub fn add_building_to_city<'a>(
+        city: &'a mut City,
+        dict: &Vec<Word>,
+        residential: bool,
+    ) -> &'a mut City {
         let mut free_location = find_free_area(city);
         if free_location.is_none() {
             city.areas.push(gen_location(&dict, &city.culture.era));
@@ -263,7 +279,8 @@ pub mod building {
         let new_building = new_building(
             &dict,
             Some(free_location.unwrap().id.clone()),
-            &city.culture.era,
+            &city.culture,
+            residential,
         );
         city.buildings.push(new_building);
         return city;
@@ -287,7 +304,7 @@ pub mod building {
         let acceptable_homeless_count = living_citizen_count / 100;
         let mut free_apartment_count = count_available_apartments(&city);
         while free_apartment_count < (living_citizen_count - acceptable_homeless_count) {
-            add_building_to_city(city, &dict);
+            add_building_to_city(city, &dict, true);
             free_apartment_count = count_available_apartments(&city);
         }
         return city;
@@ -296,6 +313,9 @@ pub mod building {
     #[test]
     fn test_new_building() {
         let dict = build_dictionary();
-        println!("{:#?}", new_building_no_loc(&dict, &None));
+        println!(
+            "{:#?}",
+            new_building_no_loc(&dict, &random_culture(&dict, &None), false)
+        );
     }
 }

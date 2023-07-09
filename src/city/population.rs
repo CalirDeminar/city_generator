@@ -4,6 +4,7 @@ pub mod population {
 
     use crate::city::population::mind::mind::*;
     use crate::city::population::mind::relations::relations::*;
+    use crate::language::language::Era;
     use crate::{city::city::City, language::language::Word};
     use std::collections::HashMap;
     use std::{fs::File, io::Write};
@@ -22,10 +23,10 @@ pub mod population {
         return output;
     }
 
-    fn generate_base_population<'a>(i: usize, dict: &Vec<Word>) -> Population {
+    fn generate_base_population<'a>(i: usize, dict: &Vec<Word>, era: &Option<Era>) -> Population {
         let mut output: Population = HashMap::new();
         for _i in 0..i {
-            let char = random_char(&dict, true);
+            let char = random_char(&dict, era, true);
             output.insert(char.id.clone(), char);
         }
         return output;
@@ -37,7 +38,7 @@ pub mod population {
         c: &'a mut City,
     ) -> &'a mut City {
         let mut city = c;
-        city.citizens = generate_base_population(size, &dict);
+        city.citizens = generate_base_population(size, &dict, &city.culture.era);
         return city;
     }
 

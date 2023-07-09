@@ -13,7 +13,7 @@ pub mod mind {
     use crate::city::institutions::institutions::*;
     use crate::city::locations::locations::Location;
     use crate::city::population::population::Population;
-    use crate::language::language::{random_word_by_tag_and, Word, WordType};
+    use crate::language::language::{random_word_by_tag_and, Era, Word, WordType};
 
     use crate::city::population::mind::relations::relations::*;
 
@@ -264,7 +264,7 @@ pub mod mind {
         }
     }
 
-    pub fn random_char<'a>(dict: &Vec<Word>, gen_last_name: bool) -> Mind {
+    pub fn random_char<'a>(dict: &Vec<Word>, era: &Option<Era>, gen_last_name: bool) -> Mind {
         let mut rng = rand::thread_rng();
         let roll: f32 = rng.gen();
         let mut gender = Gender::Ambiguous;
@@ -273,11 +273,14 @@ pub mod mind {
         } else if roll > 0.2 {
             gender = Gender::Female;
         }
-        let first_name_tags = if gender.eq(&Gender::Ambiguous) {
+        let mut first_name_tags = if gender.eq(&Gender::Ambiguous) {
             vec![String::from("FirstName")]
         } else {
             vec![String::from("FirstName"), format!("Gender{}", gender)]
         };
+        if era.is_some() {
+            first_name_tags.push(era.unwrap().to_string());
+        }
         let first_name = random_word_by_tag_and(&dict, WordType::Noun, first_name_tags)
             .unwrap()
             .text

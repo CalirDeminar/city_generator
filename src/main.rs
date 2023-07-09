@@ -14,7 +14,7 @@ pub const MULTI_THREADING_FACTOR: usize = 5;
 
 fn main() {
     std::env::set_var("RUST_BACKTRACE", "1");
-    let city = city::city::simulate(200, 200, Some(Era::Fantasy));
+    let city = city::city::simulate(200, 200, Some(Era::Modern));
     export_city(&city);
     export_city_html(&city);
     export_city_stories(&city);

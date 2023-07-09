@@ -122,13 +122,21 @@ pub mod institutions {
     const RANDOM_SACKING_RATE: f32 = 0.1;
     const STARTUP_RATE: f32 = 0.01;
 
-    fn label_insitute_type(i: &InstituteType) -> String {
-        return String::from(match i {
-            InstituteType::PowerStation => "Power Station",
-            InstituteType::WaterTreatmentWorks => "Water Treatment Works",
-            InstituteType::SewageWorks => "Sewage Works",
-            InstituteType::CityHall => "City Hall",
-            InstituteType::PoliceStation => "Police Station",
+    fn label_insitute_type(i: &InstituteType, era: &Option<Era>) -> String {
+        return String::from(match (i, era) {
+            (InstituteType::PowerStation, Some(Era::Fantasy))
+            | (InstituteType::PowerStation, Some(Era::Medieval)) => "Gallows",
+            (InstituteType::PowerStation, _) => "Power Station",
+            (InstituteType::WaterTreatmentWorks, Some(Era::Fantasy))
+            | (InstituteType::WaterTreatmentWorks, Some(Era::Medieval)) => "Spring",
+            (InstituteType::WaterTreatmentWorks, _) => "Water Treatment Works",
+            (InstituteType::SewageWorks, Some(Era::Fantasy))
+            | (InstituteType::SewageWorks, Some(Era::Medieval)) => "Latrines",
+            (InstituteType::SewageWorks, _) => "Sewage Works",
+            (InstituteType::CityHall, _) => "City Hall",
+            (InstituteType::PoliceStation, Some(Era::Fantasy))
+            | (InstituteType::PoliceStation, Some(Era::Medieval)) => "Guard House",
+            (InstituteType::PoliceStation, _) => "Police Station",
             _ => {
                 let r = format!("{:?}", i);
                 return r;
@@ -204,8 +212,8 @@ pub mod institutions {
                 id: Uuid::new_v4(),
                 name: format!(
                     "{} {}",
-                    render_template_2("{{Noun(HistoricalFigure)}}", &dict, era),
-                    label_insitute_type(&i)
+                    render_template_2("{{Noun(HistoricalFigure)}}", &dict, &era),
+                    label_insitute_type(&i, era)
                 ),
                 public: true,
                 institute_type: i,
@@ -270,15 +278,35 @@ pub mod institutions {
         };
     }
 
+    pub fn generate_admin(dict: &Vec<Word>, era: &Option<Era>) -> Institution {
+        let mut rng = rand::thread_rng();
+        let templates = vec![
+            "{{Adjective(Position, Quality, Age, Colour)}} {{Noun(LastName}} {{Noun(ServiceAdmin)}}",
+            "{{Adjective(Position, Quality, Age, Colour)}} {{Noun(LastName}}'s {{Noun(ServiceAdmin)}}",
+            "{{Noun(LastName}} {{Noun(ServiceAdmin)}}",
+            "{{Noun(LastName}}'s {{Noun(ServiceAdmin)}}",
+        ];
+        let name = render_template_2(random_pick(&templates), &dict, era);
+        return Institution {
+            id: Uuid::new_v4(),
+            name,
+            public: false,
+            institute_type: InstituteType::AdministrationService,
+            size: (rng.gen::<f32>() * PRIVATE_INSTITUTE_BASE_SIZE as f32) as usize,
+        };
+    }
+
     pub fn generate_population_institution(dict: &Vec<Word>, era: &Option<Era>) -> Institution {
         let mut rng = rand::thread_rng();
         let roll: f32 = rng.gen();
-        if roll > 0.4 {
+        if roll > 0.75 {
             return generate_restaurant(&dict, era);
-        } else if roll > 0.2 {
+        } else if roll > 0.5 {
             return generate_specialist_retailer(&dict, era);
-        } else {
+        } else if roll > 0.25 {
             return generate_general_retailer(&dict, era);
+        } else {
+            return generate_admin(&dict, era);
         }
     }
 
@@ -381,8 +409,10 @@ pub mod institutions {
                 let new_inst = generate_population_institution(&dict, &city.culture.era);
                 let mind = city.citizens.get_mut(&m.id).unwrap();
                 mind.employer = Some(new_inst.id.clone());
-                mind.activity_log
-                    .push(format!("Created the company: {}", new_inst.name));
+                mind.activity_log.push(format!(
+                    "Created the company  \"{}\" in {}",
+                    new_inst.name, city.year
+                ));
                 drop(mind);
                 add_institution_to_city(city, new_inst, &dict);
             }
