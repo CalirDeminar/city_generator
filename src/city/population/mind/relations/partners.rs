@@ -362,6 +362,7 @@ pub mod partners {
                         }
                         RelationVerb::Spouse => {
                             if rng.gen::<f32>() < MARRIAGE_SPLIT_RATE {
+                                let mind_left = rng.gen::<f32>() < 0.5;
                                 mind.relations
                                     .retain(|(v, id)| !(v.eq(&verb) && id.eq(&partner_id)));
                                 mind.relations
@@ -370,6 +371,11 @@ pub mod partners {
                                     "Broke up with Spouse {} {} in year {}",
                                     partner.first_name, partner.last_name, city.year
                                 ));
+                                if mind_left {
+                                    mind.residence = None;
+                                } else {
+                                    partner.residence = None;
+                                }
 
                                 partner
                                     .relations

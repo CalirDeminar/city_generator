@@ -22,6 +22,7 @@ pub mod city {
     use crate::city::population::mind::relations::friends::friends::*;
     use crate::city::population::mind::relations::parents::parents::*;
     use crate::city::population::mind::relations::partners::partners::*;
+    use crate::city::population::mind::relations::residences::residences::{assign_residences, random_evictions};
     use crate::city::population::population::*;
     use crate::culture::culture::*;
     use crate::language::language::*;
@@ -99,7 +100,7 @@ pub mod city {
         let mut body = html.body();
         writeln!(body.h1(), "{}", city.name).unwrap();
         writeln!(body.p(), "Population: {}", living.clone().count()).unwrap();
-        writeln!(body.p(), "Population: {}", dead.clone().count()).unwrap();
+        writeln!(body.p(), "Dead: {}", dead.clone().count()).unwrap();
         writeln!(body.p(), "Area Count: {}", city.areas.len()).unwrap();
         writeln!(body.p(), "Building Count: {}", city.buildings.len()).unwrap();
         writeln!(body.h2(), "Locations:").unwrap();
@@ -223,91 +224,6 @@ pub mod city {
         return output;
     }
 
-    pub fn assign_residences<'a>(city: &'a mut City) -> &'a mut City {
-        let mut rng = rand::thread_rng();
-        let ref_pop = city.citizens.clone();
-        let random_eviction_apartments: Vec<Uuid> = city.buildings.iter().flat_map(|b| b.floors.iter().flat_map(|f| f.areas.iter().map(|a| a.id.clone()))).filter(|_a| rng.gen::<f32>() < EVICITON_RATE).collect();
-        for id in random_eviction_apartments {
-            for m in ref_pop.values().clone() {
-                if m.residence.is_some() && m.residence.unwrap().eq(&id) {
-                    let m_mut = city.citizens.get_mut(&m.id).unwrap();
-                    m_mut.residence = None;
-
-                    drop(m_mut);
-                }
-            }
-        }
-        let mut new_residences: Vec<(Uuid, Uuid)> = Vec::new();
-        let mut owned_ids: Vec<Uuid> = city
-            .citizens
-            .values()
-            .filter(|c| c.residence.is_some())
-            .map(|c| c.residence.unwrap().clone())
-            .collect();
-       
-
-        
-        for citizen in city.citizens.values_mut().filter(|c| c.alive && c.residence.is_none()) {
-            let guardian = if citizen.age < ADULT_AGE_FROM {
-                find_relation(&citizen, RelationVerb::Parent, &ref_pop)
-            } else {
-                None
-            };
-            let guardian_res = if guardian.is_some() {
-                new_residences
-                    .iter()
-                    .find(|(m_id, _r_id)| m_id.eq(&guardian.unwrap().id))
-            } else {
-                None
-            };
-            let ward = find_relation_minor(&citizen, RelationVerb::Child, &ref_pop);
-            let ward_res: Option<&(Uuid, Uuid)> = if ward.is_some() {
-                new_residences
-                    .iter()
-                    .find(|(m_id, _r_id)| m_id.eq(&ward.unwrap().id))
-            } else {
-                None
-            };
-            let spouse = find_relation(&citizen, RelationVerb::Spouse, &ref_pop);
-            let spouse_res: Option<&(Uuid, Uuid)> = if spouse.is_some() {
-                new_residences
-                    .iter()
-                    .find(|(m_id, _r_id)| m_id.eq(&spouse.unwrap().id))
-            } else {
-                None
-            };
-            // TODO - Currently broken, output looks very wrong
-            if guardian_res.is_some() {
-                new_residences.push((citizen.id.clone(), guardian_res.unwrap().clone().1));
-            } else if ward_res.is_some() {
-                new_residences.push((citizen.id.clone(), ward_res.unwrap().clone().1));
-            } else if spouse_res.is_some() {
-                new_residences.push((citizen.id.clone(), spouse_res.unwrap().clone().1));
-            } else {
-                let mut all_areas: Vec<(&BuildingFloorArea, String, Uuid)> = city
-                    .buildings
-                    .iter()
-                    .flat_map(|b| b.floors.iter().flat_map(|f| f.areas.iter().map(|a| ( a, b.name.clone(), b.location_id.unwrap().clone()))))
-                    .collect();
-
-                all_areas.shuffle(&mut rand::thread_rng());
-
-                let apartment = all_areas
-                    .iter()
-                    .find(|a| a.0.owning_institution.is_none() && !owned_ids.contains(&a.0.id));
-                if apartment.is_some() {
-                    let a = apartment.unwrap();
-                    owned_ids.push(a.0.id);
-                    new_residences.push((citizen.id.clone(), a.0.id.clone()));
-                    citizen.residence = Some(a.0.id.clone());
-                    let location = city.areas.iter().find(|ar| a.2.eq(&ar.id));
-                    citizen.activity_log.push(format!("Moved in to {} {} in year {}", a.0.name, a.1, location.unwrap().name));
-                }
-            }
-        }
-        return city;
-    }
-
     fn count_city_relations_proportions(city: &City, verb: RelationVerb) -> f32 {
         return city
             .citizens
@@ -418,6 +334,7 @@ pub mod city {
             let add_buildings_time = Instant::now().duration_since(add_buildings_start);
 
             let assign_residences_start = Instant::now();
+            random_evictions(&mut city);
             assign_residences(&mut city);
             let residence_assign_time = Instant::now().duration_since(assign_residences_start);
 

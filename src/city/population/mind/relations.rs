@@ -2,6 +2,7 @@ pub mod friends;
 pub mod parental_naming_formats;
 pub mod parents;
 pub mod partners;
+pub mod residences;
 pub mod relations {
     use crate::city::city::City;
     use crate::city::population::{mind::mind::*, population::Population};
