@@ -1,7 +1,7 @@
+pub mod food_institutions;
 pub mod institutions {
     use rand::seq::SliceRandom;
     use rand::Rng;
-    use strum::IntoEnumIterator;
     use uuid::Uuid;
 
     use crate::city::building::building::{Building, BuildingFloor, BuildingFloorArea};
@@ -12,7 +12,6 @@ pub mod institutions {
     use crate::language::language::{
         build_dictionary, random_word_by_tag, random_word_by_tag_and, Era, Word, WordType,
     };
-    use crate::language::nouns::food::food::{random_vegetable, FoodServingTypes};
     use crate::templater::templater::*;
     use crate::utils::utils::random_pick;
 
@@ -104,6 +103,7 @@ pub mod institutions {
         pub public: bool,
         pub institute_type: InstituteType,
         pub size: usize,
+        pub serves: Vec<(String, String)>,
     }
 
     const PUBLIC_INSTITUTES: [InstituteType; 11] = [
@@ -222,6 +222,7 @@ pub mod institutions {
                 public: true,
                 institute_type: i,
                 size: (rng.gen::<f32>() * PUBLIC_INSTITUTE_BASE_SIZE as f32) as usize,
+                serves: Vec::new(),
             });
         }
         return output;
@@ -243,6 +244,7 @@ pub mod institutions {
             public: false,
             institute_type: InstituteType::FoodService,
             size: (rng.gen::<f32>() * PRIVATE_INSTITUTE_BASE_SIZE as f32) as usize,
+            serves: Vec::new(),
         };
     }
 
@@ -261,6 +263,7 @@ pub mod institutions {
             public: false,
             institute_type: InstituteType::SpecialistRetail,
             size: (rng.gen::<f32>() * PRIVATE_INSTITUTE_BASE_SIZE as f32) as usize,
+            serves: Vec::new(),
         };
     }
 
@@ -279,6 +282,7 @@ pub mod institutions {
             public: false,
             institute_type: InstituteType::GeneralRetail,
             size: (rng.gen::<f32>() * PRIVATE_INSTITUTE_BASE_SIZE as f32) as usize,
+            serves: Vec::new(),
         };
     }
 
@@ -297,6 +301,7 @@ pub mod institutions {
             public: false,
             institute_type: InstituteType::AdministrationService,
             size: (rng.gen::<f32>() * PRIVATE_INSTITUTE_BASE_SIZE as f32) as usize,
+            serves: Vec::new(),
         };
     }
 
@@ -422,36 +427,5 @@ pub mod institutions {
             }
         }
         return city;
-    }
-
-    pub fn create_food_institution(dict: &Vec<Word>) {
-        let ftype =
-            random_word_by_tag_and(&dict, WordType::Noun, vec![String::from("RetailerFood")])
-                .unwrap();
-        let food_types: Vec<String> = ftype
-            .tags
-            .iter()
-            .filter(|t| FoodServingTypes::iter().any(|f| t.eq(&&f.to_string())))
-            .map(|s| String::from(s))
-            .collect();
-        for food in food_types {
-            if food.eq(&"Vegetable") {
-                println!("{}", random_vegetable(&dict));
-            }
-        }
-    }
-
-    // #[test]
-    // fn generate_population_institutions_test() {
-    //     let name_dict = gen_name_dict();
-    //     println!("{:#?}", generate_population_institutions(&name_dict));
-    // }
-
-    #[test]
-    fn gen_institutions_test() {
-        let dict = build_dictionary();
-        for _i in 0..10 {
-            create_food_institution(&dict);
-        }
     }
 }

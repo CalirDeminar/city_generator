@@ -15,8 +15,8 @@ pub mod culture {
         pub era: Option<Era>,
         pub historical_figures: Vec<(String, String)>,
         pub landlocked: bool,
-        pub staple_meats: Vec<String>,
-        pub staple_plants: Vec<String>,
+        pub staple_meats: Vec<Word>,
+        pub staple_plants: Vec<Word>,
         pub adult_age: u32,
         pub species_avg_lifespan: u32,
         pub species_avg_lifespan_variance: u32,
@@ -99,10 +99,10 @@ pub mod culture {
         return output;
     }
 
-    fn random_animals(dict: &Vec<Word>, landlocked: bool, era: &Option<Era>) -> Vec<String> {
+    fn random_animals(dict: &Vec<Word>, landlocked: bool, era: &Option<Era>) -> Vec<Word> {
         let mut rng = rand::thread_rng();
         let len = (rng.gen::<f32>() * 5.0) as usize;
-        let mut output: Vec<String> = Vec::new();
+        let mut output: Vec<Word> = Vec::new();
         let mut animal_types = vec![CreatureFamily::CreatureFamilyMammal.to_string()];
         if !landlocked {
             animal_types.push(CreatureFamily::CreatureFamilyFish.to_string());
@@ -121,18 +121,17 @@ pub mod culture {
                     ],
                     era,
                 )
-                .unwrap()
-                .text,
+                .unwrap(),
             );
         }
 
         return output;
     }
 
-    fn random_crops(dict: &Vec<Word>, era: &Option<Era>) -> Vec<String> {
+    fn random_crops(dict: &Vec<Word>, era: &Option<Era>) -> Vec<Word> {
         let mut rng = rand::thread_rng();
         let len = (rng.gen::<f32>() * 7.0) as usize;
-        let mut output: Vec<String> = Vec::new();
+        let mut output: Vec<Word> = Vec::new();
         for _i in 0..len.max(3) {
             output.push(
                 random_word_by_tag(
@@ -143,8 +142,7 @@ pub mod culture {
                     &vec![],
                     era,
                 )
-                .unwrap()
-                .text,
+                .unwrap(),
             );
         }
         return output;
