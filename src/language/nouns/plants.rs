@@ -10,6 +10,8 @@ pub mod plants {
         PlantTypeTree,
         PlantTypeFlower,
         PlantTypeCrop,
+        PlantTypeFruit,
+        PlantTypeGrain,
     }
 
     pub fn plant_tags() -> Vec<String> {

@@ -1,23 +1,23 @@
-Arms,RetailerFood, Modern, Medieval, Fantasy
-Bakery,RetailerFood, Modern, Medieval, Fantasy
-Bar,RetailerFood, Modern, Medieval, Fantasy
-Brasserie,RetailerFood, Modern
-Cafe,RetailerFood, Modern
-Chippie,RetailerFood, Modern
-Coffee,RetailerFood, Modern
-Diner,RetailerFood, Modern
-Grill,RetailerFood, Modern
-Inn,RetailerFood, Modern, Medieval, Fantasy
-Kebab,RetailerFood, Modern
-Kebabs,RetailerFood, Modern
-Kitchen,RetailerFood, Modern, Medieval, Fantasy
-Pizza,RetailerFood, Modern
-Pizzas,RetailerFood, Modern
-Sushi,RetailerFood, Modern
-Sushi-Bar,RetailerFood, Modern
-Tap Room,RetailerFood, Modern, Medieval, Fantasy
-Waffle House,RetailerFood, Modern
-Bakers,RetailerSpecialist, Modern, Medieval, Fantasy
+Arms,RetailerFood, Savory, Vegetable, MeatMammal, MeatBird, MeatFish, DrinkSoft, DrinkAlcohol, Modern, Medieval, Fantasy
+Bakery,RetailerFood, Savory, Dessert, Baked, Modern, Medieval, Fantasy
+Bar,RetailerFood, Savory, DrinkAlcohol, DrinkSpirit, Modern, Medieval, Fantasy
+Brasserie,RetailerFood, Savory, MeatMammal, Modern
+Cafe,RetailerFood, Savory, Dessert, Baked, MeatMammal, MeatBird, DrinkSoft, DrinkHot, Modern
+Chippie,RetailerFood, Savory, MeatFish, Modern
+Coffee,RetailerFood, Savory, Dessert, Baked, MeatMammal, MeatBird, DrinkSoft, DrinkHot, Modern
+Diner,RetailerFood, Savory, Vegetable, MeatMammal, MeatBird, MeatFish, DrinkSoft, Modern
+Grill,RetailerFood,  Savory, Vegetable, MeatMammal, MeatBird, DrinkSoft, Modern
+Inn,RetailerFood,Savory, Vegetable, MeatMammal, MeatBird, MeatFish, DrinkSoft, DrinkAlcohol, Modern, Medieval, Fantasy
+Kebab,RetailerFood, Savory, MeatMammal, Modern
+Kebabs,RetailerFood, Savory, MeatMammal, Modern
+Kitchen,RetailerFood, Savory, Vegetable, MeatMammal, MeatBird, MeatFish, DrinkSoft, Modern, Medieval, Fantasy
+Pizza,RetailerFood, Savory, Vegetable, MeatMammal, MeatBird, MeatFish, DrinkSoft, Modern
+Pizzas,RetailerFood, Savory, Vegetable, MeatMammal, MeatBird, MeatFish, DrinkSoft, Modern
+Sushi,RetailerFood, Savory, Vegetable, MeatFish, DrinkSoft, Modern
+Sushi-Bar,RetailerFood, Savory, Vegetable, MeatFish, DrinkSoft, Modern
+Tap Room,RetailerFood, Savory, Vegetable, MeatMammal, MeatBird, MeatFish, DrinkSoft, DrinkAlcohol, Modern, Medieval, Fantasy
+Waffle House,RetailerFood, Dessert, Baked, MeatMammal, MeatBird, DrinkSoft, DrinkHot, Modern
+Bakers,RetailerSpecialist,  Savory, Dessert, Baked, Modern, Modern, Medieval, Fantasy
 Beauty,RetailerSpecialist, Modern
 Boots,RetailerSpecialist, Modern, Medieval, Fantasy
 Bread,RetailerSpecialist, Modern, Medieval, Fantasy

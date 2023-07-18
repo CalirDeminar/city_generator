@@ -1,6 +1,6 @@
 // trees
 Alder, Plant, PlantTypeTree
-Apple, Plant, PlantTypeTree, PlantTypeCrop, Fruit, BrewableCider
+Apple, Plant, PlantTypeTree, PlantTypeCrop, PlantTypeFruit, BrewableCider
 Ash, Plant, PlantTypeTree, Symbolic
 Aspen, Plant, PlantTypeTree
 Beech, Plant, PlantTypeTree
@@ -21,7 +21,7 @@ Pine, Plant, PlantTypeTree, Symbolic
 Rowan, Plant, PlantTypeTree
 Willow, Plant, PlantTypeTree
 Yew, Plant, PlantTypeTree, Symbolic
-Pear, Plant, PlantTypeTree, PlantTypeCrop, Fruit, BrewableCider
+Pear, Plant, PlantTypeTree, PlantTypeCrop, PlantTypeFruit, BrewableCider
 // flowers
 Bell Flower, Plant, PlantTypeFlower
 Carnation, Plant, PlantTypeFlower
@@ -38,7 +38,7 @@ Mimosa, Plant, PlantTypeFlower
 Primrose, Plant, PlantTypeFlower
 Windflower, Plant, PlantTypeFlower
 // crops
-Strawberry, Plant, Food, Fruit, BrewableCider, BrewableWine
+Strawberry, Plant, Food, PlantTypeFruit, BrewableCider, BrewableWine
 Artichoke, Plant, PlantTypeCrop, Food
 Asparagus, Plant, PlantTypeCrop, Food
 Broad Bean, Plant, PlantTypeCrop, Food
@@ -66,11 +66,11 @@ Spinach, Plant, PlantTypeCrop, Food, Leaf
 Squash, Plant, PlantTypeCrop, Food
 Sweet Potato, Plant, PlantTypeCrop, Food
 Turnip, Plant, PlantTypeCrop, Food
-Grape, Plant, Food, Fruit, BrewableWine
-Blueberry, Plant, Food, Fruit, BrewableWine, BrewableCider
-Blackberry, Plant, Food, Fruit, BrewableWine, BrewableCider
-Raspberry, Plant, Food, Fruit, BrewableWine, BrewableCider
-Rice, Plant, PlantTypeCrop, Food, Grain, BrewableBeer
-Oat, Plant, PlantTypeCrop, Food, Grain, BrewableBeer
-Corn, Plant, PlantTypeCrop, Grain, BrewableBeer
-Wheat, Plant, PlantTypeCrop, Grain, BrewableBeer
+Grape, Plant, Food, PlantTypeFruit, BrewableWine
+Blueberry, Plant, Food, PlantTypeFruit, BrewableWine, BrewableCider
+Blackberry, Plant, Food, PlantTypeFruit, BrewableWine, BrewableCider
+Raspberry, Plant, Food, PlantTypeFruit, BrewableWine, BrewableCider
+Rice, Plant, PlantTypeCrop, Food, PlantTypeGrain, BrewableBeer
+Oat, Plant, PlantTypeCrop, Food, PlantTypeGrain, BrewableBeer
+Corn, Plant, PlantTypeCrop, PlantTypeGrain, BrewableBeer
+Wheat, Plant, PlantTypeCrop, PlantTypeGrain, BrewableBeer

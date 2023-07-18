@@ -16,7 +16,7 @@ pub mod nouns {
 
     use super::{
         creatures::creatures::creature_tags, emotions::emotions::emotion_group_tags,
-        era::eras::era_tags, geography::geography::geography_tags,
+        era::eras::era_tags, food::food::food_tags, geography::geography::geography_tags,
         materials::materials::material_tags, plants::plants::plant_tags,
     };
 
@@ -84,6 +84,7 @@ pub mod nouns {
         output.push(geography_tags());
         output.push(material_tags());
         output.push(plant_tags());
+        output.push(food_tags());
         return output.concat();
     }
 
