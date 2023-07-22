@@ -54,8 +54,10 @@ pub mod parental_naming_formats {
             let mut key = sub_split.first().unwrap().replace("{", "");
             key = key.replace("}", "");
 
-            let m_last_name_split: Vec<&str> = m.1.split("-").collect();
-            let f_last_name_split: Vec<&str> = f.1.split("-").collect();
+            let mut m_last_name_split: Vec<&str> = m.1.split("-").collect();
+            let mut f_last_name_split: Vec<&str> = f.1.split("-").collect();
+            m_last_name_split.shuffle(&mut rand::thread_rng());
+            f_last_name_split.shuffle(&mut rand::thread_rng());
 
             output.push_str(prefix.clone());
             match key.as_str() {

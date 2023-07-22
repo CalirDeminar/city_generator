@@ -1,0 +1,26 @@
+Blonde, HairColour,
+Brown, HairColour,
+Black, HairColour,
+Red, HairColour,
+Grey, HairColour, ElderlyFlag
+White, HairColour, ElderlyFlag
+Short, HairLength
+Moderately Long, HairLength
+Long, HairLength
+Extremely Long, HairLength
+Neat, HairState
+Patchy, HairState
+Flowing, HairState
+Messy, HairState
+Tangled, HairState
+Thin, HairState
+Tall, CreatureHeight
+Short, CreatureHeight
+Average Height, CreatureHeight
+Thin, CreatureBuild
+Willowy, CreatureBuild
+Stout, CreatureBuild
+Broad, CreatureBuild
+Heavy, CreatureBuild
+Delicate, CreatureBuild
+Athletic, CreatureBuild

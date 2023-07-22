@@ -12,10 +12,16 @@ pub mod adjectives {
         Position,
         Quality,
         Colour,
+        HairColour,
+        HairState,
+        HairLength,
+        CreatureHeight,
+        CreatureBuild,
         Size,
         Taste,
         Positive,
         Negative,
+        ElderlyFlag,
     }
 
     fn string_match_adjective_tag(token: &str) -> Option<String> {

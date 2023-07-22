@@ -1,3 +1,4 @@
+pub mod appearance;
 pub mod relations;
 pub mod mind {
     use html_builder::*;
@@ -16,6 +17,8 @@ pub mod mind {
     use crate::language::language::{random_word_by_tag_and, Era, Word, WordType};
 
     use crate::city::population::mind::relations::relations::*;
+
+    use super::appearance::appearance::{random_mind_description, PhysicalDescription};
 
     const HOMOSEXUALITY_CHANCE: f32 = 0.2;
 
@@ -55,6 +58,7 @@ pub mod mind {
         pub sexuality: Sexuality,
         pub alive: bool,
         pub activity_log: Vec<String>,
+        pub physical_description: PhysicalDescription,
     }
 
     pub fn find_address<'a>(
@@ -125,6 +129,16 @@ pub mod mind {
         output.push_str(&format!("Name: {} {}\n", mind.first_name, mind.last_name));
         output.push_str(&format!("Gender: {:?}\n", mind.gender));
         output.push_str(&format!("Age: {}\n", mind.age));
+        let description = &mind.physical_description;
+        output.push_str(&format!(
+            "Description: has {}, {} {} hair and {} eyes. Is {} with a {} build.\n",
+            description.hair_adjectives.first().unwrap(),
+            description.hair_colour,
+            description.hair_length,
+            description.eye_colour,
+            description.height_adjective,
+            description.build_adjective
+        ));
         if workplace.is_some() {
             let (building, _floor, area, workplace_location) =
                 find_institution_address(&workplace.unwrap(), &city);
@@ -184,6 +198,18 @@ pub mod mind {
         .unwrap();
         writeln!(list_element.p(), "Gender: {}", &mind.gender).unwrap();
         writeln!(list_element.p(), "Age: {}", &mind.age).unwrap();
+        let description = &mind.physical_description;
+        writeln!(
+            list_element.p(),
+            "Description: has {}, {} {} hair and {} eyes. Is {} with a {} build.\n",
+            description.hair_adjectives.first().unwrap(),
+            description.hair_colour,
+            description.hair_length,
+            description.eye_colour,
+            description.height_adjective,
+            description.build_adjective
+        )
+        .unwrap();
 
         if workplace.is_some() {
             let (building, _floor, _area, location) =
@@ -309,6 +335,7 @@ pub mod mind {
             sexuality: gen_sexuality(),
             alive: true,
             activity_log: Vec::new(),
+            physical_description: random_mind_description(&dict),
         };
     }
 }

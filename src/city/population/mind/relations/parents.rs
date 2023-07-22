@@ -10,6 +10,7 @@ pub mod parents {
             city::City,
             population::{
                 mind::{
+                    appearance::appearance::generate_child_description,
                     mind::{random_char, Mind},
                     relations::{
                         parental_naming_formats::parental_naming_formats::get_child_last_name,
@@ -197,6 +198,11 @@ pub mod parents {
                     let mut child = random_char(&dict, &city.culture.era, false);
                     child.age = 1;
                     child.last_name = get_child_last_name(&child.gender, m1, m2, &city.culture);
+                    child.physical_description = generate_child_description(
+                        &dict,
+                        &m1.physical_description,
+                        &m2.physical_description,
+                    );
 
                     let mind_1 = city.citizens.get_mut(&m1.id).unwrap();
                     mind_1
