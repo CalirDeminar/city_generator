@@ -133,6 +133,13 @@ pub mod building {
                         inst.unwrap().name
                     )
                     .unwrap();
+                    if inst.unwrap().serves.len() > 0 {
+                        writeln!(a.div(), "{}", "Serves: ").unwrap();
+                        let mut m = a.ul();
+                        for item in inst.unwrap().serves.clone() {
+                            writeln!(m.li(), "{}", item).unwrap();
+                        }
+                    }
                 } else if residents.len() > 0 {
                     let mut first = true;
                     for resident in residents {
