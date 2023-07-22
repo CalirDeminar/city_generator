@@ -35,6 +35,7 @@ pub mod food {
         MeatMammal,
         MeatBird,
         MeatFish,
+        Cheese,
     }
 
     #[derive(PartialEq, Debug, Clone, EnumIter, Display)]
@@ -45,11 +46,7 @@ pub mod food {
 
     #[derive(PartialEq, Debug, Clone, EnumIter, Display)]
     pub enum FoodServingTypes {
-        Vegetable,
-        Fruit,
-        MeatMammal,
-        MeatBird,
-        MeatFish,
+        FoodDish,
         DrinkSoft,
         DrinkAlcohol,
         DrinkSpirit,
@@ -141,18 +138,25 @@ pub mod food {
     pub fn random_food_product_of_type(
         dict: &Vec<Word>,
         culture: &Option<CultureConfig>,
-        dish_type: Word,
+        dish_type: &Word,
     ) -> String {
         let mut output = String::new();
-        let ingredients: Vec<String> = dish_type
+        let mut dish_variations: Vec<&Word> =
+            dict.iter().filter(|w| w.text.eq(&dish_type.text)).collect();
+        dish_variations.shuffle(&mut rand::thread_rng());
+        let target_dish = dish_variations.first().unwrap();
+
+        let ingredients: Vec<String> = target_dish
             .tags
             .iter()
             .filter(|t| FoodConditionTags::iter().any(|f| t.eq(&&f.to_string())))
             .map(|s| String::from(s))
             .collect();
-        for food in ingredients {
-            if output.len() > 0 {
+        for (i, food) in ingredients.iter().enumerate() {
+            if output.len() > 0 && i.eq(&(ingredients.len() - 1)) {
                 output.push_str(" and ");
+            } else if output.len() > 0 {
+                output.push_str(", ");
             }
             if food.eq(&"Vegetable") {
                 output.push_str(
@@ -208,6 +212,17 @@ pub mod food {
                     )
                     .text,
                 );
+            } else if food.eq(&"Cheese") {
+                output.push_str(&format!(
+                    "{} Cheese",
+                    random_ingedient(
+                        &dict,
+                        &culture,
+                        vec![CreatureFamily::CreatureFamilyMammal.to_string()],
+                        vec![],
+                    )
+                    .text
+                ));
             } else if food.eq(&"BrewableBeer") {
                 output.push_str(
                     &random_ingedient(
@@ -244,17 +259,17 @@ pub mod food {
         return output;
     }
 
-    pub fn random_food_product(
+    pub fn random_dish_type(
         dict: &Vec<Word>,
         culture: &Option<CultureConfig>,
-        product_type: MealProducts,
-    ) -> String {
+        product_type: &MealProducts,
+    ) -> Word {
         let era = if culture.is_some() {
             culture.clone().unwrap().era
         } else {
             None
         };
-        let dish_type = random_word_by_tag(
+        return random_word_by_tag(
             &dict,
             WordType::Noun,
             &vec![NounTag::FoodProduct.to_string(), product_type.to_string()],
@@ -263,7 +278,18 @@ pub mod food {
             &era,
         )
         .unwrap();
-        return random_food_product_of_type(dict, culture, dish_type);
+    }
+
+    pub fn random_food_product(
+        dict: &Vec<Word>,
+        culture: &Option<CultureConfig>,
+        product_type: MealProducts,
+    ) -> String {
+        return random_food_product_of_type(
+            dict,
+            culture,
+            &random_dish_type(&dict, &culture, &product_type),
+        );
     }
 
     #[test]

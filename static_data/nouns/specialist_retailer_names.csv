@@ -8,15 +8,7 @@ Coffee,RetailerFood, Savory, Dessert, Baked, MeatMammal, MeatBird, DrinkSoft, Dr
 Diner,RetailerFood, Savory, Vegetable, MeatMammal, MeatBird, MeatFish, DrinkSoft, Modern
 Grill,RetailerFood,  Savory, Vegetable, MeatMammal, MeatBird, DrinkSoft, Modern
 Inn,RetailerFood,Savory, Vegetable, MeatMammal, MeatBird, MeatFish, DrinkSoft, DrinkAlcohol, Modern, Medieval, Fantasy
-Kebab,RetailerFood, Savory, MeatMammal, Modern
-Kebabs,RetailerFood, Savory, MeatMammal, Modern
-Kitchen,RetailerFood, Savory, Vegetable, MeatMammal, MeatBird, MeatFish, DrinkSoft, Modern, Medieval, Fantasy
-Pizza,RetailerFood, Savory, Vegetable, MeatMammal, MeatBird, MeatFish, DrinkSoft, Modern
-Pizzas,RetailerFood, Savory, Vegetable, MeatMammal, MeatBird, MeatFish, DrinkSoft, Modern
-Sushi,RetailerFood, Savory, Vegetable, MeatFish, DrinkSoft, Modern
-Sushi-Bar,RetailerFood, Savory, Vegetable, MeatFish, DrinkSoft, Modern
 Tap Room,RetailerFood, Savory, Vegetable, MeatMammal, MeatBird, MeatFish, DrinkSoft, DrinkAlcohol, Modern, Medieval, Fantasy
-Waffle House,RetailerFood, Dessert, Baked, MeatMammal, MeatBird, DrinkSoft, DrinkHot, Modern
 Bakers,RetailerSpecialist,  Savory, Dessert, Baked, Modern, Modern, Medieval, Fantasy
 Beauty,RetailerSpecialist, Modern
 Boots,RetailerSpecialist, Modern, Medieval, Fantasy
@@ -69,3 +61,10 @@ Magics, RetailerSpecialist, Fantasy
 Millinery, RetailerSpecialist, Modern, Medieval, Fantasy
 Mill, RetailerSpecialist, Modern, Medieval, Fantasy
 Mills, RetailerSpecialist, Modern, Medieval, Fantasy
+// Specialist Food Service Suffixes
+House, SpecialistFoodService, Modern, Medieval, Fantasy
+Hut, SpecialistFoodService, Modern, Medieval, Fantasy
+s, SpecialistFoodService, Modern, Medieval, Fantasy, Suffixable
+Shop, SpecialistFoodService, Modern, Medieval, Fantasy
+Bar, SpecialistFoodService, Modern
+Kitchen, SpecialistFoodService, Modern, Medieval, Fantasy

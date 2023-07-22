@@ -30,7 +30,8 @@ pub mod institutions {
         PoliceStation,
         Hospital,
         // Corporate Infra
-        FoodService,             // Restarants, Bars, Pubs
+        FoodService,             // Cafes, Bars, Pubs
+        SpecialistFoodService,   // Waffle Houses, Noodle Bars, etc
         GeneralRetail,           // Most "general" shops, cornerShops, supermarkets, etc
         SpecialistRetail,        // Specialist Retailers, jewelers, tailors, mechanics
         EntertainmentVenue,      // Thearters, cinemas, nightclubs
@@ -103,7 +104,7 @@ pub mod institutions {
         pub public: bool,
         pub institute_type: InstituteType,
         pub size: usize,
-        pub serves: Vec<(String, String)>,
+        pub serves: Vec<String>,
     }
 
     const PUBLIC_INSTITUTES: [InstituteType; 11] = [
@@ -121,7 +122,7 @@ pub mod institutions {
     ];
 
     const PUBLIC_INSTITUTE_BASE_SIZE: usize = 20;
-    const PRIVATE_INSTITUTE_BASE_SIZE: usize = 10;
+    pub const PRIVATE_INSTITUTE_BASE_SIZE: usize = 10;
 
     const RANDOM_SACKING_RATE: f32 = 0.1;
     const STARTUP_RATE: f32 = 0.01;

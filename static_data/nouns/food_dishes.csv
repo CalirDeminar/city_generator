@@ -15,6 +15,12 @@ Pie, FoodDish, FoodProduct, MeatBird, Mordern, Fantasy, Medieval
 Pie, FoodDish, FoodProduct, MeatBird, Vegetable, Mordern, Fantasy, Medieval
 Pie, FoodDish, FoodProduct, MeatFish, Mordern, Fantasy, Medieval
 Pie, FoodDish, FoodProduct, MeatFish, Vegetable, Mordern, Fantasy, Medieval
+Pie, FoodDish, FoodProduct, MeatMammal, Cheese, Mordern, Fantasy, Medieval
+Pie, FoodDish, FoodProduct, MeatMammal, Cheese, Vegetable, Mordern, Fantasy, Medieval
+Pie, FoodDish, FoodProduct, MeatBird, Cheese, Mordern, Fantasy, Medieval
+Pie, FoodDish, FoodProduct, MeatBird, Cheese, Vegetable, Mordern, Fantasy, Medieval
+Pie, FoodDish, FoodProduct, MeatFish, Cheese, Mordern, Fantasy, Medieval
+Pie, FoodDish, FoodProduct, MeatFish, Cheese, Vegetable, Mordern, Fantasy, Medieval
 Roast, FoodDish, FoodProduct, MeatMammal, Mordern, Fantasy, Medieval
 Roast, FoodDish, FoodProduct, MeatMammal, Vegetable, Mordern, Fantasy, Medieval
 Roast, FoodDish, FoodProduct, MeatBird, Mordern, Fantasy, Medieval
@@ -31,10 +37,15 @@ Steak, FoodDish, FoodProduct, MeatFish, Modern, Fantasy, Medieval
 Sandwich, FoodDish, FoodProduct, MeatMammal, Mordern, Fantasy, Medieval
 Sandwich, FoodDish, FoodProduct, MeatMammal, Vegetable, Mordern, Fantasy, Medieval
 Sandwich, FoodDish, FoodProduct, MeatBird, Mordern, Fantasy, Medieval
-Sandwich, FoodDish, FoodProduct, MeatBird, Vegetable, Mordern, Fantasy, Medieval
+Sandwich, FoodDish, FoodProduct, Cheese, Mordern, Fantasy, Medieval
+Sandwich, FoodDish, FoodProduct, Cheese, MeatBird, Vegetable, Mordern, Fantasy, Medieval
+Sandwich, FoodDish, FoodProduct, Cheese, MeatMammal, Mordern, Fantasy, Medieval
+Sandwich, FoodDish, FoodProduct, Cheese, MeatMammal, Vegetable, Mordern, Fantasy, Medieval
+Sandwich, FoodDish, FoodProduct, Cheese, MeatBird, Mordern, Fantasy, Medieval
+Sandwich, FoodDish, FoodProduct, Cheese, MeatBird, Vegetable, Mordern, Fantasy, Medieval
 // Modern
-Pizza, FoodDish, FoodProduct, MeatMammal, Mordern
-Pizza, FoodDish, FoodProduct, MeatBird, Mordern
+Pizza, FoodDish, FoodProduct, Cheese, MeatMammal, Mordern
+Pizza, FoodDish, FoodProduct, Cheese, MeatBird, Mordern
 Sushi, FoodDish, FoodProduct, MeatFish, Mordern
 Sushi, FoodDish, FoodProduct, MeatFish, Vegetable, Mordern
 Kebab, FoodDish, FoodProduct, MeatMammal, Mordern
@@ -44,6 +55,10 @@ Burger, FoodDish, FoodProduct, MeatMammal, Mordern
 Burger, FoodDish, FoodProduct, MeatMammal, Vegetable, Mordern
 Burger, FoodDish, FoodProduct, MeatBird, Mordern
 Burger, FoodDish, FoodProduct, MeatBird, Vegetable, Mordern
+Burger, FoodDish, FoodProduct, Cheese, MeatMammal, Mordern
+Burger, FoodDish, FoodProduct, Cheese, MeatMammal, Vegetable, Mordern
+Burger, FoodDish, FoodProduct, Cheese, MeatBird, Mordern
+Burger, FoodDish, FoodProduct, Cheese, MeatBird, Vegetable, Mordern
 Noodles, FoodDish, FoodProduct, MeatMammal, Mordern
 Noodles, FoodDish, FoodProduct, MeatMammal, Vegetable, Mordern
 Noodles, FoodDish, FoodProduct, MeatBird, Mordern
@@ -52,6 +67,10 @@ Curry, FoodDish, FoodProduct, MeatMammal, Mordern
 Curry, FoodDish, FoodProduct, MeatMammal, Vegetable, Mordern
 Curry, FoodDish, FoodProduct, MeatBird, Mordern
 Curry, FoodDish, FoodProduct, MeatBird, Vegetable, Mordern
+Curry, FoodDish, FoodProduct, Cheese, MeatMammal, Mordern
+Curry, FoodDish, FoodProduct, Cheese, MeatMammal, Vegetable, Mordern
+Curry, FoodDish, FoodProduct, Cheese, MeatBird, Mordern
+Curry, FoodDish, FoodProduct, Cheese, MeatBird, Vegetable, Mordern
 // Drink
 Beer, FoodProduct, DrinkAlcohol, BrewableBeer, Modern, Medieval, Fantasy
 Ale, FoodProduct, DrinkAlcohol, BrewableBeer, Modern, Medieval, Fantasy

@@ -98,6 +98,10 @@ pub mod nouns {
             if matcher.eq(token.trim()) {
                 return Some(String::from(tag));
             }
+            let regex = Regex::new(r"Serves\(.*\)").unwrap();
+            if regex.is_match(tag) {
+                return Some(String::from(tag));
+            }
         }
         return None;
     }
