@@ -55,6 +55,7 @@ pub mod nouns {
         BuildingTitle,
         GeneralRetailerName,
         RetailerFood,
+        RetailerFoodSpecialist,
         RetailerSpecialist,
         ServiceAdmin,
         Suffixable,

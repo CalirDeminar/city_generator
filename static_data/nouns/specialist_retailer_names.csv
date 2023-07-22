@@ -1,9 +1,9 @@
 Arms, RetailerFood, Serves(Stew), Serves(Soup), Seves(Pie), Serves(Roast), Serves(Burger), Serves(Beer), Serves(Ale), Serves(Cider), Serves(Wine), Modern, Medieval, Fantasy
 Inn, RetailerFood, Serves(Stew), Serves(Soup), Seves(Pie), Serves(Roast), Serves(Burger), Serves(Beer), Serves(Ale), Serves(Cider), Serves(Wine), Modern, Medieval, Fantasy
 Tap Room, RetailerFood, Serves(Stew), Serves(Soup), Seves(Pie), Serves(Roast), Serves(Burger), Serves(Beer), Serves(Ale), Serves(Cider), Serves(Wine), Modern, Medieval, Fantasy
-Cafe, RetailerFood, Serves(Sandwich), Serves(Waffle), Serves(Pie), Modern
-Cofee Shop, RetailerFood, Serves(Sandwich), Serves(Waffle), Serves(Pie), Modern
-Diner, RetailerFood, Serves(Sandwich), Serves(Waffle), Serves(Pie), Serves(Burger), Modern
+Cafe, RetailerFood, Serves(Sandwich), Serves(Waffle), Serves(Pie), Serves(Coffee), Modern
+Coffee Shop, RetailerFood, Serves(Sandwich), Serves(Waffle), Serves(Pie), Serves(Coffee), Modern
+Diner, RetailerFood, Serves(Sandwich), Serves(Waffle), Serves(Pie), Serves(Burger), Serves(Coffee), Modern
 Beauty,RetailerSpecialist, Modern
 Boots,RetailerSpecialist, Modern, Medieval, Fantasy
 Bread,RetailerSpecialist, Modern, Medieval, Fantasy
@@ -56,9 +56,9 @@ Millinery, RetailerSpecialist, Modern, Medieval, Fantasy
 Mill, RetailerSpecialist, Modern, Medieval, Fantasy
 Mills, RetailerSpecialist, Modern, Medieval, Fantasy
 // Specialist Food Service Suffixes
-House, SpecialistFoodService, Modern, Medieval, Fantasy
-Hut, SpecialistFoodService, Modern, Medieval, Fantasy
-s, SpecialistFoodService, Modern, Medieval, Fantasy, Suffixable
-Shop, SpecialistFoodService, Modern, Medieval, Fantasy
-Bar, SpecialistFoodService, Modern
-Kitchen, SpecialistFoodService, Modern, Medieval, Fantasy
+House, RetailerFoodSpecialist, Modern, Medieval, Fantasy
+Hut, RetailerFoodSpecialist, Modern, Medieval, Fantasy
+s, RetailerFoodSpecialist, Modern, Medieval, Fantasy, Suffixable
+Shop, RetailerFoodSpecialist, Modern, Medieval, Fantasy
+Bar, RetailerFoodSpecialist, Modern
+Kitchen, RetailerFoodSpecialist, Modern, Medieval, Fantasy

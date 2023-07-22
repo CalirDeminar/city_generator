@@ -77,3 +77,4 @@ Ale, FoodProduct, DrinkAlcohol, BrewableBeer, Modern, Medieval, Fantasy
 Cider, FoodProduct, DrinkAlcohol, BrewableCider, Modern, Medieval, Fantasy
 Wine, FoodProduct, DrinkAlcohol, BrewableWine, Modern, Medieval, Fantasy
 Whisky, FoodProduct, DrinkSpirit, BrewableWhiskey, Modern, Medieval, Fantasy
+Coffee, FoodProduct, DrinkHot, Modern

@@ -267,7 +267,7 @@ pub mod food {
             }
         }
         output.push_str(&format!(" {}", dish_type.text));
-        return output;
+        return String::from(output.trim());
     }
 
     pub fn random_dish_type(

@@ -41,20 +41,20 @@ pub mod food_institutions {
         }
 
         let templates_pre: Vec<String> = vec![format!(
-            "{{{{Adjective(Position, Quality, Age, Colour)}}}} {{{{Noun(LastName)}}}} {} {{{{Noun(SpecialistFoodService)}}}}",
+            "{{{{Adjective(Position, Quality, Age, Colour)}}}} {{{{Noun(LastName)}}}} {} {{{{Noun(RetailerFoodSpecialist)}}}}",
             random_food_type.text
         ),
         format!(
-            "{{{{Adjective(Position, Quality, Age, Colour)}}}} {{{{Noun(LastName)}}}}'s {} {{{{Noun(SpecialistFoodService)}}}}",
+            "{{{{Adjective(Position, Quality, Age, Colour)}}}} {{{{Noun(LastName)}}}}'s {} {{{{Noun(RetailerFoodSpecialist)}}}}",
             
             random_food_type.text
         ),
         format!(
-            "{{{{Noun(LastName)}}}} {} {{{{Noun(SpecialistFoodService)}}}}",
+            "{{{{Noun(LastName)}}}} {} {{{{Noun(RetailerFoodSpecialist)}}}}",
             
             random_food_type.text
         ),format!(
-            "{{{{Noun(LastName)}}}}'s {} {{{{Noun(SpecialistFoodService)}}}}",
+            "{{{{Noun(LastName)}}}}'s {} {{{{Noun(RetailerFoodSpecialist)}}}}",
             random_food_type.text
         ),];
         let templates: Vec<&str> = templates_pre.iter().map(|i| i.as_str()).collect();

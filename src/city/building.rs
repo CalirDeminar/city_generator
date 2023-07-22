@@ -67,11 +67,15 @@ pub mod building {
                     area.owning_institution.is_some() && i.id.eq(&area.owning_institution.unwrap())
                 });
                 if inst.is_some() {
-                    output.push_str(&format!(
-                        "          {}: {}\n",
-                        area.name,
-                        inst.unwrap().name
-                    ));
+                    let institution: &crate::city::institutions::institutions::Institution =
+                        inst.unwrap();
+                    output.push_str(&format!("          {}: {}\n", area.name, institution.name));
+                    if institution.serves.len() > 0 {
+                        output.push_str(&format!("              Serves:\n"));
+                        for entry in institution.serves.iter() {
+                            output.push_str(&format!("                  * {}\n", entry));
+                        }
+                    }
                 } else {
                     let residents: Vec<&Mind> = city
                         .citizens
