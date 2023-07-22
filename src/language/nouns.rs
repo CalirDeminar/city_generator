@@ -64,6 +64,7 @@ pub mod nouns {
         GenderMale,
         GenderFemale,
         HistoricalFigure,
+        FoodProduct,
     }
 
     fn build_generic_tags() -> Vec<String> {
@@ -91,7 +92,6 @@ pub mod nouns {
     // -- TODO - Split Noun Groups Into -
     // Material Groups - Solid / Liquid / Gas - Metal, Cloth, Normal, etc
     // Geographical Feature Sizes
-
     fn string_match_noun_tag(token: &str, tags: &Vec<String>) -> Option<String> {
         for tag in tags {
             let matcher = format!("{}", tag);

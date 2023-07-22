@@ -60,7 +60,7 @@ Peanut, Plant, PlantTypeCrop, Food
 Pepper, Plant, PlantTypeCrop, Food
 Potatoe, Plant, PlantTypeCrop, Food
 Radish, Plant, PlantTypeCrop, Food
-Rhubarb, Plant, PlantTypeCrop, Food
+Rhubarb, Plant, Food, PlantTypeFruit
 Soybean, Plant, PlantTypeCrop, Food
 Spinach, Plant, PlantTypeCrop, Food, Leaf
 Squash, Plant, PlantTypeCrop, Food

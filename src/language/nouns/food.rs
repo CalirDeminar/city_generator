@@ -6,9 +6,9 @@ pub mod food {
     use uuid::Uuid;
 
     use crate::{
-        culture::culture::CultureConfig,
+        culture::culture::{random_culture, CultureConfig},
         language::{
-            language::{build_dictionary, Word},
+            language::{build_dictionary, random_word_by_tag, Era, Word, WordType},
             nouns::{
                 creatures::creatures::{CreatureCategory, CreatureFamily},
                 nouns::NounTag,
@@ -26,12 +26,15 @@ pub mod food {
         BrewableBeer,
         BrewableCider,
         BrewableMead,
-        BrewableAle,
         BrewableRum,
         BrewableWhiskey,
         Fruit,
         Grain,
         Leaf,
+        Vegetable,
+        MeatMammal,
+        MeatBird,
+        MeatFish,
     }
 
     #[derive(PartialEq, Debug, Clone, EnumIter, Display)]
@@ -43,6 +46,7 @@ pub mod food {
     #[derive(PartialEq, Debug, Clone, EnumIter, Display)]
     pub enum FoodServingTypes {
         Vegetable,
+        Fruit,
         MeatMammal,
         MeatBird,
         MeatFish,
@@ -68,6 +72,12 @@ pub mod food {
         Rum,
     }
 
+    #[derive(PartialEq, Debug, Clone, EnumIter, Display)]
+    pub enum MealProducts {
+        FoodDish,
+        DrinkAlcohol,
+    }
+
     pub fn food_tags() -> Vec<String> {
         let mut output: Vec<String> = Vec::new();
         for tag in FoodServingTypes::iter() {
@@ -79,17 +89,30 @@ pub mod food {
         for tag in FoodConditionTags::iter() {
             output.push(tag.to_string());
         }
+        for tag in MealProducts::iter() {
+            output.push(tag.to_string());
+        }
         return output;
     }
 
-    pub fn random_vegetable(dict: &Vec<Word>, culture: &Option<CultureConfig>) -> String {
+    pub fn random_ingedient<'a>(
+        dict: &'a Vec<Word>,
+        culture: &'a Option<CultureConfig>,
+        include: Vec<String>,
+        exclude: Vec<String>,
+    ) -> &'a Word {
+        let base_exclude_list: Vec<String> = vec![
+            CreatureCategory::CreatureSentient.to_string(),
+            CreatureCategory::CreatureMagical.to_string(),
+            NounTag::FoodProduct.to_string(),
+        ];
         let mut rng = rand::thread_rng();
-        let mut veg: Vec<&Word> = dict
+        let mut ingredients: Vec<&Word> = dict
             .iter()
             .filter(|w| {
-                w.tags.contains(&PlantType::PlantTypeCrop.to_string())
-                    && (!w.tags.contains(&PlantType::PlantTypeFruit.to_string())
-                        && !w.tags.contains(&PlantType::PlantTypeGrain.to_string()))
+                include.iter().all(|i| w.tags.contains(&i))
+                    && !exclude.iter().any(|x| w.tags.contains(&x))
+                    && !base_exclude_list.iter().any(|x| w.tags.contains(&x))
             })
             .collect();
 
@@ -97,117 +120,169 @@ pub mod food {
         if culture.is_some() {
             let c = culture.clone().unwrap();
             for s in c.staple_plants {
-                if veg.contains(&&s) {
+                if ingredients.contains(&&s) {
                     staples_ids.push(s.id);
                 }
             }
-        };
-        if staples_ids.len() > 0 && rng.gen::<f32>() < CULTURAL_FOOD_PREFERENCE_RATE {
-            veg.retain(|b: &&Word| staples_ids.contains(&b.id));
-        }
-
-        veg.shuffle(&mut rand::thread_rng());
-        return veg.first().unwrap().text.clone();
-    }
-
-    pub fn random_meat<'a>(
-        dict: &'a Vec<Word>,
-        culture: &'a Option<CultureConfig>,
-        creature_type: &'a CreatureFamily,
-    ) -> (CreatureFamily, &'a Word) {
-        let mut rng = rand::thread_rng();
-        let mut creatures: Vec<&Word> = dict
-            .iter()
-            .filter(|w| {
-                w.tags
-                    .contains(&CreatureCategory::CreatureAnimal.to_string())
-                    && w.tags.contains(&creature_type.to_string())
-            })
-            .collect();
-
-        let mut staples_ids: Vec<Uuid> = Vec::new();
-        if culture.is_some() {
-            let c = culture.clone().unwrap();
             for s in c.staple_meats {
-                if creatures.contains(&&s) {
+                if ingredients.contains(&&s) {
                     staples_ids.push(s.id);
                 }
             }
         };
         if staples_ids.len() > 0 && rng.gen::<f32>() < CULTURAL_FOOD_PREFERENCE_RATE {
-            creatures.retain(|b: &&Word| staples_ids.contains(&b.id));
+            ingredients.retain(|b: &&Word| staples_ids.contains(&b.id));
         }
 
-        creatures.shuffle(&mut rand::thread_rng());
-        return (creature_type.clone(), creatures.first().unwrap());
+        ingredients.shuffle(&mut rand::thread_rng());
+        return ingredients.first().unwrap().clone();
     }
 
-    pub fn random_alcohol<'a>(
-        dict: &'a Vec<Word>,
-        culture: &'a Option<CultureConfig>,
-    ) -> (AlcoholTypes, &'a Word) {
-        let mut rng = rand::thread_rng();
-        let mut alcohol_types: Vec<AlcoholTypes> = AlcoholTypes::iter().collect();
-        alcohol_types.shuffle(&mut rand::thread_rng());
-        let alcohol_chosen = alcohol_types.first().unwrap();
-        let brewing_tag = match alcohol_chosen {
-            AlcoholTypes::Beer => FoodConditionTags::BrewableBeer,
-            AlcoholTypes::Ale => FoodConditionTags::BrewableBeer,
-            AlcoholTypes::Cider => FoodConditionTags::BrewableCider,
-            AlcoholTypes::Wine => FoodConditionTags::BrewableWine,
-        };
-        let mut bases: Vec<&Word> = dict
+    pub fn random_food_product_of_type(
+        dict: &Vec<Word>,
+        culture: &Option<CultureConfig>,
+        dish_type: Word,
+    ) -> String {
+        let mut output = String::new();
+        let ingredients: Vec<String> = dish_type
+            .tags
             .iter()
-            .filter(|w| w.tags.contains(&brewing_tag.to_string()))
+            .filter(|t| FoodConditionTags::iter().any(|f| t.eq(&&f.to_string())))
+            .map(|s| String::from(s))
             .collect();
-        let mut staples_ids: Vec<Uuid> = Vec::new();
-        if culture.is_some() {
-            let c = culture.clone().unwrap();
-            for s in c.staple_plants {
-                if bases.contains(&&s) {
-                    staples_ids.push(s.id);
-                }
+        for food in ingredients {
+            if output.len() > 0 {
+                output.push_str(" and ");
             }
-        };
-        if staples_ids.len() > 0 && rng.gen::<f32>() < CULTURAL_FOOD_PREFERENCE_RATE {
-            bases.retain(|b: &&Word| staples_ids.contains(&b.id));
+            if food.eq(&"Vegetable") {
+                output.push_str(
+                    &random_ingedient(
+                        &dict,
+                        &culture,
+                        vec![PlantType::PlantTypeCrop.to_string()],
+                        vec![
+                            PlantType::PlantTypeFruit.to_string(),
+                            PlantType::PlantTypeGrain.to_string(),
+                        ],
+                    )
+                    .text,
+                );
+            }
+            if food.eq(&"Fruit") {
+                output.push_str(
+                    &random_ingedient(
+                        &dict,
+                        &culture,
+                        vec![PlantType::PlantTypeFruit.to_string()],
+                        vec![],
+                    )
+                    .text,
+                );
+            } else if food.eq(&"MeatMammal") {
+                output.push_str(
+                    &random_ingedient(
+                        &dict,
+                        &culture,
+                        vec![CreatureFamily::CreatureFamilyMammal.to_string()],
+                        vec![],
+                    )
+                    .text,
+                );
+            } else if food.eq(&"MeatBird") {
+                output.push_str(
+                    &random_ingedient(
+                        &dict,
+                        &culture,
+                        vec![CreatureFamily::CreatureFamilyBird.to_string()],
+                        vec![],
+                    )
+                    .text,
+                );
+            } else if food.eq(&"MeatFish") {
+                output.push_str(
+                    &random_ingedient(
+                        &dict,
+                        &culture,
+                        vec![CreatureFamily::CreatureFamilyFish.to_string()],
+                        vec![],
+                    )
+                    .text,
+                );
+            } else if food.eq(&"BrewableBeer") {
+                output.push_str(
+                    &random_ingedient(
+                        &dict,
+                        &culture,
+                        vec![FoodConditionTags::BrewableBeer.to_string()],
+                        vec![],
+                    )
+                    .text,
+                );
+            } else if food.eq(&"BrewableCider") {
+                output.push_str(
+                    &random_ingedient(
+                        &dict,
+                        &culture,
+                        vec![PlantType::PlantTypeFruit.to_string()],
+                        vec![],
+                    )
+                    .text,
+                );
+            } else if food.eq(&"BrewableWine") {
+                output.push_str(
+                    &random_ingedient(
+                        &dict,
+                        &culture,
+                        vec![PlantType::PlantTypeFruit.to_string()],
+                        vec![],
+                    )
+                    .text,
+                );
+            }
         }
+        output.push_str(&format!(" {}", dish_type.text));
+        return output;
+    }
 
-        bases.shuffle(&mut rand::thread_rng());
-        return (alcohol_chosen.clone(), bases.first().unwrap());
+    pub fn random_food_product(
+        dict: &Vec<Word>,
+        culture: &Option<CultureConfig>,
+        product_type: MealProducts,
+    ) -> String {
+        let era = if culture.is_some() {
+            culture.clone().unwrap().era
+        } else {
+            None
+        };
+        let dish_type = random_word_by_tag(
+            &dict,
+            WordType::Noun,
+            &vec![NounTag::FoodProduct.to_string(), product_type.to_string()],
+            &vec![],
+            &vec![],
+            &era,
+        )
+        .unwrap();
+        return random_food_product_of_type(dict, culture, dish_type);
     }
 
     #[test]
     fn test_random_foods() {
         let dict = build_dictionary();
-        println!("\nVegetables:");
-        for _i in 0..10 {
-            println!("{}", random_vegetable(&dict, &None));
+        let culture = random_culture(&dict, &Some(Era::Modern));
+        println!("Meals:");
+        for _i in 0..20 {
+            println!(
+                "{:?}",
+                random_food_product(&dict, &Some(culture.clone()), MealProducts::FoodDish)
+            );
         }
-        println!("\nMeats Mammal:");
+        println!("Drinks");
         for _i in 0..10 {
             println!(
                 "{:?}",
-                random_meat(&dict, &None, &CreatureFamily::CreatureFamilyMammal)
+                random_food_product(&dict, &Some(culture.clone()), MealProducts::DrinkAlcohol)
             );
-        }
-        println!("\nMeats Bird:");
-        for _i in 0..10 {
-            println!(
-                "{:?}",
-                random_meat(&dict, &None, &CreatureFamily::CreatureFamilyBird)
-            );
-        }
-        println!("\nMeats Fish:");
-        for _i in 0..10 {
-            println!(
-                "{:?}",
-                random_meat(&dict, &None, &CreatureFamily::CreatureFamilyFish)
-            );
-        }
-        println!("\nAlcohols:");
-        for _i in 0..10 {
-            println!("{:?}", random_alcohol(&dict, &None));
         }
     }
 }
