@@ -8,7 +8,9 @@ pub mod food {
     use crate::{
         culture::culture::{random_culture, CultureConfig},
         language::{
-            language::{build_dictionary, random_word_by_tag, Era, Word, WordType},
+            language::{
+                build_dictionary, filter_words_by_tag_and, random_word_by_tag, Era, Word, WordType,
+            },
             nouns::{
                 creatures::creatures::{CreatureCategory, CreatureFamily},
                 nouns::NounTag,
@@ -141,8 +143,12 @@ pub mod food {
         dish_type: &Word,
     ) -> String {
         let mut output = String::new();
-        let mut dish_variations: Vec<&Word> =
-            dict.iter().filter(|w| w.text.eq(&dish_type.text)).collect();
+        let mut dish_variations: Vec<&Word> = dict
+            .iter()
+            .filter(|w| {
+                w.text.eq(&dish_type.text) && w.tags.contains(&NounTag::FoodProduct.to_string())
+            })
+            .collect();
         dish_variations.shuffle(&mut rand::thread_rng());
         let target_dish = dish_variations.first().unwrap();
 
@@ -152,6 +158,11 @@ pub mod food {
             .filter(|t| FoodConditionTags::iter().any(|f| t.eq(&&f.to_string())))
             .map(|s| String::from(s))
             .collect();
+
+        // println!(
+        //     "Dish: {:?}: {:#?} -> {:#?}",
+        //     target_dish.text, target_dish.tags, ingredients
+        // );
         for (i, food) in ingredients.iter().enumerate() {
             if output.len() > 0 && i.eq(&(ingredients.len() - 1)) {
                 output.push_str(" and ");
@@ -269,15 +280,26 @@ pub mod food {
         } else {
             None
         };
-        return random_word_by_tag(
+        let mut dish_types_unique: Vec<String> = Vec::new();
+        let mut target_tags = vec![NounTag::FoodProduct.to_string(), product_type.to_string()];
+        if era.is_some() {
+            target_tags.push(era.unwrap().to_string());
+        }
+        let mut dish_types_repeats = filter_words_by_tag_and(
             &dict,
             WordType::Noun,
-            &vec![NounTag::FoodProduct.to_string(), product_type.to_string()],
-            &vec![],
-            &vec![],
-            &era,
-        )
-        .unwrap();
+            vec![NounTag::FoodProduct.to_string(), product_type.to_string()],
+        );
+        for word in &dish_types_repeats {
+            if !dish_types_unique.contains(&word.text) {
+                dish_types_unique.push(word.text.clone());
+            }
+        }
+        dish_types_unique.shuffle(&mut rand::thread_rng());
+        let target_dish = dish_types_unique.first().unwrap().clone();
+        dish_types_repeats.retain(|w| w.text.eq(&target_dish));
+        dish_types_repeats.shuffle(&mut rand::thread_rng());
+        return dish_types_repeats.first().unwrap().clone();
     }
 
     pub fn random_food_product(

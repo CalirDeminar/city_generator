@@ -98,9 +98,9 @@ pub mod nouns {
             if matcher.eq(token.trim()) {
                 return Some(String::from(tag));
             }
-            let regex = Regex::new(r"Serves\(.*\)").unwrap();
-            if regex.is_match(tag) {
-                return Some(String::from(tag));
+            // let regex = Regex::new(r"Serves\(.*\)").unwrap();
+            if token.trim().contains("Serves(") {
+                return Some(String::from(token));
             }
         }
         return None;
@@ -112,6 +112,7 @@ pub mod nouns {
         let paths = fs::read_dir("./static_data/nouns").unwrap();
         for path in paths {
             let filename = path.unwrap().file_name();
+            println!("Loading Noun: {:?}", filename);
             let data = parse_file(format!("nouns/{}", filename.to_str().unwrap()));
             for (subject, incoming_tags) in data {
                 let mut subject_tags: Vec<String> = Vec::new();

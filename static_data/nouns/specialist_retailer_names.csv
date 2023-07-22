@@ -1,15 +1,9 @@
-Arms,RetailerFood, Savory, Vegetable, MeatMammal, MeatBird, MeatFish, DrinkSoft, DrinkAlcohol, Modern, Medieval, Fantasy
-Bakery,RetailerFood, Savory, Dessert, Baked, Modern, Medieval, Fantasy
-Bar,RetailerFood, Savory, DrinkAlcohol, DrinkSpirit, Modern, Medieval, Fantasy
-Brasserie,RetailerFood, Savory, MeatMammal, Modern
-Cafe,RetailerFood, Savory, Dessert, Baked, MeatMammal, MeatBird, DrinkSoft, DrinkHot, Modern
-Chippie,RetailerFood, Savory, MeatFish, Modern
-Coffee,RetailerFood, Savory, Dessert, Baked, MeatMammal, MeatBird, DrinkSoft, DrinkHot, Modern
-Diner,RetailerFood, Savory, Vegetable, MeatMammal, MeatBird, MeatFish, DrinkSoft, Modern
-Grill,RetailerFood,  Savory, Vegetable, MeatMammal, MeatBird, DrinkSoft, Modern
-Inn,RetailerFood,Savory, Vegetable, MeatMammal, MeatBird, MeatFish, DrinkSoft, DrinkAlcohol, Modern, Medieval, Fantasy
-Tap Room,RetailerFood, Savory, Vegetable, MeatMammal, MeatBird, MeatFish, DrinkSoft, DrinkAlcohol, Modern, Medieval, Fantasy
-Bakers,RetailerSpecialist,  Savory, Dessert, Baked, Modern, Modern, Medieval, Fantasy
+Arms, RetailerFood, Serves(Stew), Serves(Soup), Seves(Pie), Serves(Roast), Serves(Burger), Serves(Beer), Serves(Ale), Serves(Cider), Serves(Wine), Modern, Medieval, Fantasy
+Inn, RetailerFood, Serves(Stew), Serves(Soup), Seves(Pie), Serves(Roast), Serves(Burger), Serves(Beer), Serves(Ale), Serves(Cider), Serves(Wine), Modern, Medieval, Fantasy
+Tap Room, RetailerFood, Serves(Stew), Serves(Soup), Seves(Pie), Serves(Roast), Serves(Burger), Serves(Beer), Serves(Ale), Serves(Cider), Serves(Wine), Modern, Medieval, Fantasy
+Cafe, RetailerFood, Serves(Sandwich), Serves(Waffle), Serves(Pie), Modern
+Cofee Shop, RetailerFood, Serves(Sandwich), Serves(Waffle), Serves(Pie), Modern
+Diner, RetailerFood, Serves(Sandwich), Serves(Waffle), Serves(Pie), Serves(Burger), Modern
 Beauty,RetailerSpecialist, Modern
 Boots,RetailerSpecialist, Modern, Medieval, Fantasy
 Bread,RetailerSpecialist, Modern, Medieval, Fantasy

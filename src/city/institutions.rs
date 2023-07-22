@@ -9,11 +9,16 @@ pub mod institutions {
     use crate::city::locations::locations::Location;
     use crate::city::population::mind::mind::Mind;
     use crate::city::population::mind::relations::relations::ADULT_AGE_FROM;
+    use crate::culture::culture::CultureConfig;
     use crate::language::language::{
         build_dictionary, random_word_by_tag, random_word_by_tag_and, Era, Word, WordType,
     };
     use crate::templater::templater::*;
     use crate::utils::utils::random_pick;
+
+    use super::food_institutions::food_institutions::{
+        random_general_food_outlet, random_specialist_food_outlet,
+    };
 
     #[derive(PartialEq, Debug, Clone)]
     pub enum InstituteType {
@@ -229,26 +234,6 @@ pub mod institutions {
         return output;
     }
 
-    pub fn generate_restaurant(dict: &Vec<Word>, era: &Option<Era>) -> Institution {
-        let mut rng = rand::thread_rng();
-        let templates = vec![
-            "{{Adjective(Position, Quality, Age, Colour)}} {{Noun(LastName)}} {{Noun(RetailerFood)}}",
-             "{{Adjective(Position, Quality, Age, Colour)}} {{Noun(HistoricalFigure)}}'s {{Noun(RetailerFood)}}",
-             "{{Noun(LastName)}} {{Noun(RetailerFood)}}",
-             "{{Noun(LastName)}}'s {{Noun(RetailerFood)}}",
-             "{{Noun(HistoricalFigure)}}'s {{Noun(RetailerFood)}}",
-        ];
-        let name = render_template_2(random_pick(&templates), &dict, era);
-        return Institution {
-            id: Uuid::new_v4(),
-            name,
-            public: false,
-            institute_type: InstituteType::FoodService,
-            size: (rng.gen::<f32>() * PRIVATE_INSTITUTE_BASE_SIZE as f32) as usize,
-            serves: Vec::new(),
-        };
-    }
-
     pub fn generate_specialist_retailer(dict: &Vec<Word>, era: &Option<Era>) -> Institution {
         let mut rng = rand::thread_rng();
         let templates = vec![
@@ -306,28 +291,46 @@ pub mod institutions {
         };
     }
 
-    pub fn generate_population_institution(dict: &Vec<Word>, era: &Option<Era>) -> Institution {
+    pub fn generate_population_institution(
+        dict: &Vec<Word>,
+        culture: &Option<CultureConfig>,
+    ) -> Institution {
         let mut rng = rand::thread_rng();
-        let roll: f32 = rng.gen();
-        if roll > 0.75 {
-            return generate_restaurant(&dict, era);
-        } else if roll > 0.5 {
-            return generate_specialist_retailer(&dict, era);
-        } else if roll > 0.25 {
-            return generate_general_retailer(&dict, era);
+        let era = if culture.is_some() {
+            culture.clone().unwrap().era
         } else {
-            return generate_admin(&dict, era);
+            None
+        };
+        let roll: f32 = rng.gen();
+        if roll > 0.875 {
+            return random_specialist_food_outlet(&dict, &culture);
+        } else if roll > 0.75 {
+            return random_general_food_outlet(&dict, &culture);
+        } else if roll > 0.5 {
+            return generate_specialist_retailer(&dict, &era);
+        } else if roll > 0.25 {
+            return generate_general_retailer(&dict, &era);
+        } else {
+            return generate_admin(&dict, &era);
         }
     }
 
-    pub fn generate_population_institutions(size: usize, era: &Option<Era>) -> Vec<Institution> {
+    pub fn generate_population_institutions(
+        size: usize,
+        culture: &Option<CultureConfig>,
+    ) -> Vec<Institution> {
+        let era = if culture.is_some() {
+            culture.clone().unwrap().era
+        } else {
+            None
+        };
         let language_dict = build_dictionary();
         let mut output: Vec<Institution> = Vec::new();
-        for i in generate_public_institutions(&language_dict, era) {
+        for i in generate_public_institutions(&language_dict, &era) {
             output.push(i);
         }
         for _i in 0..((size as i32 - output.len() as i32).max(1)) {
-            output.push(generate_population_institution(&language_dict, era));
+            output.push(generate_population_institution(&language_dict, &culture));
         }
         return output;
     }
@@ -416,7 +419,7 @@ pub mod institutions {
             .filter(|c| c.alive && c.age > ADULT_AGE_FROM && c.employer.is_none());
         for m in unemployed {
             if rng.gen::<f32>() < STARTUP_RATE {
-                let new_inst = generate_population_institution(&dict, &city.culture.era);
+                let new_inst = generate_population_institution(&dict, &Some(city.culture.clone()));
                 let mind = city.citizens.get_mut(&m.id).unwrap();
                 mind.employer = Some(new_inst.id.clone());
                 mind.activity_log.push(format!(
