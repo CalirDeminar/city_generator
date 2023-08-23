@@ -133,11 +133,11 @@ pub mod mind {
         output.push_str(&format!(
             "Description: They have {}, {} {} hair and {} eyes. They are {} with a {} build.\n",
             description.hair_adjectives.first().unwrap(),
-            description.hair_colour,
-            description.hair_length,
-            description.eye_colour,
-            description.height_adjective,
-            description.build_adjective
+            description.hair_colour.to_lowercase(),
+            description.hair_length.to_lowercase(),
+            description.eye_colour.to_lowercase(),
+            description.height_adjective.to_lowercase(),
+            description.build_adjective.to_lowercase()
         ));
         if workplace.is_some() {
             let (building, _floor, area, workplace_location) =
