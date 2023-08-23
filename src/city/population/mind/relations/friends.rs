@@ -42,7 +42,11 @@ pub mod friends {
             let mut to_add_1: Vec<&'a Mind> = Vec::new();
             let source = population.get(&target_age).unwrap();
             for m in source {
-                if !m.id.eq(&mind.id) && !m.relations.iter().any(|(_v, id)| id.eq(&mind.id)) {
+                if !m.id.eq(&mind.id)
+                    && m.relations.len() < FRIEND_OUTGOING_MAX as usize
+                    && !mind.relations.iter().any(|(_v, id)| id.eq(&m.id))
+                    && !m.relations.iter().any(|(_v, id)| id.eq(&mind.id))
+                {
                     if m.gender.eq(&mind.gender) {
                         to_add_0.push(m.clone());
                     } else {
@@ -61,6 +65,7 @@ pub mod friends {
         age_population: &'a AgeCache,
         friend_cache: &'a mut (AgeCache<'a>, AgeCache<'a>),
         culture: &CultureConfig,
+        pending_friends: &Vec<Uuid>,
     ) -> (Option<Uuid>, &'a mut (AgeCache<'a>, AgeCache<'a>)) {
         let mut cache = friend_cache;
         let mut rng = rand::thread_rng();
@@ -113,24 +118,8 @@ pub mod friends {
             let roll = rng.gen::<f32>();
             let mut working_buffers: (&Vec<&Mind>, &Vec<&Mind>) = (&Vec::new(), &Vec::new());
             if roll < same_gender_target_roll {
-                // buffer_same_gender.shuffle(&mut rng);
-                // let rtn = buffer_same_gender.first().unwrap();
-                // cache
-                //     .0
-                //     .get_mut(&rtn.age)
-                //     .unwrap()
-                //     .retain(|m| !m.id.eq(&rtn.id));
-                // return (Some(rtn.id), cache);
                 working_buffers = (buffer_same_gender_below, buffer_same_gender_above);
             } else if roll < same_gender_target_roll + different_gender_target_roll {
-                // buffer_different_gender.shuffle(&mut rng);
-                // let rtn = buffer_different_gender.first().unwrap();
-                // cache
-                //     .1
-                //     .get_mut(&rtn.age)
-                //     .unwrap()
-                //     .retain(|m| !m.id.eq(&rtn.id));
-                // return (Some(rtn.id), cache);
                 working_buffers = (buffer_different_gender_below, buffer_different_gender_above);
             }
             let buffer_choice_limit = working_buffers.0.len() as f32
@@ -143,21 +132,18 @@ pub mod friends {
             };
             target_buffer.shuffle(&mut rng);
             let r = target_buffer.first();
-            if r.is_some() {
+            if r.is_some() && !pending_friends.iter().any(|m| r.unwrap().id.eq(&m)) {
                 let rtn = r.unwrap();
-                if buffer_choice {
-                    cache
-                        .0
-                        .get_mut(&rtn.age)
-                        .unwrap()
-                        .retain(|m| !m.id.eq(&rtn.id));
-                } else {
-                    cache
-                        .1
-                        .get_mut(&rtn.age)
-                        .unwrap()
-                        .retain(|m| !m.id.eq(&rtn.id));
-                }
+                cache
+                    .0
+                    .get_mut(&rtn.age)
+                    .unwrap()
+                    .retain(|m| !m.id.eq(&rtn.id));
+                cache
+                    .1
+                    .get_mut(&rtn.age)
+                    .unwrap()
+                    .retain(|m| !m.id.eq(&rtn.id));
                 return (Some(rtn.id), cache);
             }
         }
@@ -184,15 +170,15 @@ pub mod friends {
         friendable_population.retain(|_id, m| m.alive);
         let ids = friendable_population.keys();
 
-        let mut relations_to_add: Vec<(Uuid, RelationVerb, Uuid)> = Vec::new();
-
         let population_by_age = hash_population_by_age(&friendable_population);
 
         for mind_id in ids {
             // city.citizens.shuffle(&mut rng);
-            let mind = city.citizens.get(&mind_id).unwrap();
+            let mind = city.citizens.get(&mind_id).unwrap().clone();
             let mut friend_cache: (AgeCache, AgeCache) = (HashMap::new(), HashMap::new());
             let mut cache = &mut friend_cache;
+
+            let mut pending_friends: Vec<Uuid> = vec![];
 
             let friend_count = mind
                 .relations
@@ -206,21 +192,38 @@ pub mod friends {
             for _i in 0..acquaintances_to_add_count {
                 // Extremely slow line
                 let possible_friend_id: Option<Uuid>;
-                (possible_friend_id, cache) =
-                    get_friend(&mind, &population_by_age, cache, &city.culture);
+
+                (possible_friend_id, cache) = get_friend(
+                    &mind,
+                    &population_by_age,
+                    cache,
+                    &city.culture,
+                    &pending_friends,
+                );
 
                 if possible_friend_id.is_some() {
                     let friend_id = possible_friend_id.unwrap();
-                    relations_to_add.push((
-                        mind.id.clone(),
-                        RelationVerb::Acquaintance,
-                        friend_id.clone(),
-                    ));
-                    relations_to_add.push((
-                        friend_id.clone(),
-                        RelationVerb::Acquaintance,
-                        mind.id.clone(),
-                    ));
+                    pending_friends.push(friend_id.clone());
+
+                    let friend_m = city.citizens.get_mut(&friend_id).unwrap();
+                    friend_m
+                        .relations
+                        .push((RelationVerb::Acquaintance, mind.id.clone()));
+                    // let cache_entry_0 = cache.0.get(&friend_m.age).unwrap();
+                    // if cache_entry_0.iter().any(|m| m.id.eq(&friend_m.id)) {
+                    //     println!("Repeat Cache Persisting - 0")
+                    // }
+                    // let cache_entry_1 = cache.1.get(&friend_m.age).unwrap();
+                    // if cache_entry_1.iter().any(|m| m.id.eq(&friend_m.id)) {
+                    //     println!("Repeat Cache Persisting - 1")
+                    // }
+                    drop(friend_m);
+
+                    let mind_m = city.citizens.get_mut(&mind.id).unwrap();
+                    mind_m
+                        .relations
+                        .push((RelationVerb::Acquaintance, friend_id.clone()));
+                    drop(mind_m);
                 }
             }
             // TO DO - Split out to own function
@@ -294,10 +297,6 @@ pub mod friends {
                     _ => {}
                 }
             }
-        }
-        for (mind_id, verb, relation_id) in relations_to_add {
-            let mind = city.citizens.get_mut(&mind_id).unwrap();
-            mind.relations.push((verb, relation_id));
         }
         return city;
     }
