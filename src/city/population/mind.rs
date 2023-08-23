@@ -131,7 +131,7 @@ pub mod mind {
         output.push_str(&format!("Age: {}\n", mind.age));
         let description = &mind.physical_description;
         output.push_str(&format!(
-            "Description: has {}, {} {} hair and {} eyes. Is {} with a {} build.\n",
+            "Description: They have {}, {} {} hair and {} eyes. They are {} with a {} build.\n",
             description.hair_adjectives.first().unwrap(),
             description.hair_colour,
             description.hair_length,

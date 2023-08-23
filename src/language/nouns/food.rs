@@ -12,7 +12,7 @@ pub mod food {
                 build_dictionary, filter_words_by_tag_and, random_word_by_tag, Era, Word, WordType,
             },
             nouns::{
-                creatures::creatures::{CreatureCategory, CreatureFamily},
+                creatures::creatures::{CreatureCategory, CreatureFamily, CreatureSize},
                 nouns::NounTag,
                 plants::plants::PlantType,
             },
@@ -94,10 +94,11 @@ pub mod food {
         return output;
     }
 
-    pub fn random_ingedient<'a>(
+    pub fn random_ingredient<'a>(
         dict: &'a Vec<Word>,
         culture: &'a Option<CultureConfig>,
         include: Vec<String>,
+        one_of: Vec<String>,
         exclude: Vec<String>,
     ) -> &'a Word {
         let base_exclude_list: Vec<String> = vec![
@@ -112,6 +113,7 @@ pub mod food {
                 include.iter().all(|i| w.tags.contains(&i))
                     && !exclude.iter().any(|x| w.tags.contains(&x))
                     && !base_exclude_list.iter().any(|x| w.tags.contains(&x))
+                    && (one_of.len() == 0 || one_of.iter().any(|x| w.tags.contains(&x)))
             })
             .collect();
 
@@ -171,10 +173,11 @@ pub mod food {
             }
             if food.eq(&"Vegetable") {
                 output.push_str(
-                    &random_ingedient(
+                    &random_ingredient(
                         &dict,
                         &culture,
                         vec![PlantType::PlantTypeCrop.to_string()],
+                        vec![],
                         vec![
                             PlantType::PlantTypeFruit.to_string(),
                             PlantType::PlantTypeGrain.to_string(),
@@ -185,40 +188,44 @@ pub mod food {
             }
             if food.eq(&"Fruit") {
                 output.push_str(
-                    &random_ingedient(
+                    &random_ingredient(
                         &dict,
                         &culture,
                         vec![PlantType::PlantTypeFruit.to_string()],
+                        vec![],
                         vec![],
                     )
                     .text,
                 );
             } else if food.eq(&"MeatMammal") {
                 output.push_str(
-                    &random_ingedient(
+                    &random_ingredient(
                         &dict,
                         &culture,
                         vec![CreatureFamily::CreatureFamilyMammal.to_string()],
+                        vec![],
                         vec![],
                     )
                     .text,
                 );
             } else if food.eq(&"MeatBird") {
                 output.push_str(
-                    &random_ingedient(
+                    &random_ingredient(
                         &dict,
                         &culture,
                         vec![CreatureFamily::CreatureFamilyBird.to_string()],
+                        vec![],
                         vec![],
                     )
                     .text,
                 );
             } else if food.eq(&"MeatFish") {
                 output.push_str(
-                    &random_ingedient(
+                    &random_ingredient(
                         &dict,
                         &culture,
                         vec![CreatureFamily::CreatureFamilyFish.to_string()],
+                        vec![],
                         vec![],
                     )
                     .text,
@@ -226,40 +233,47 @@ pub mod food {
             } else if food.eq(&"Cheese") {
                 output.push_str(&format!(
                     "{} Cheese",
-                    random_ingedient(
+                    random_ingredient(
                         &dict,
                         &culture,
-                        vec![CreatureFamily::CreatureFamilyMammal.to_string()],
+                        vec![CreatureFamily::CreatureFamilyMammal.to_string(),],
+                        vec![
+                            CreatureSize::CreatureSizeNormal.to_string(),
+                            CreatureSize::CreatureSizeLarge.to_string(),
+                        ],
                         vec![],
                     )
                     .text
                 ));
             } else if food.eq(&"BrewableBeer") {
                 output.push_str(
-                    &random_ingedient(
+                    &random_ingredient(
                         &dict,
                         &culture,
                         vec![FoodConditionTags::BrewableBeer.to_string()],
+                        vec![],
                         vec![],
                     )
                     .text,
                 );
             } else if food.eq(&"BrewableCider") {
                 output.push_str(
-                    &random_ingedient(
+                    &random_ingredient(
                         &dict,
                         &culture,
                         vec![PlantType::PlantTypeFruit.to_string()],
+                        vec![],
                         vec![],
                     )
                     .text,
                 );
             } else if food.eq(&"BrewableWine") {
                 output.push_str(
-                    &random_ingedient(
+                    &random_ingredient(
                         &dict,
                         &culture,
                         vec![PlantType::PlantTypeFruit.to_string()],
+                        vec![],
                         vec![],
                     )
                     .text,

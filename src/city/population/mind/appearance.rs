@@ -29,15 +29,26 @@ pub mod appearance {
 
     pub fn random_mind_description(dict: &Vec<Word>) -> PhysicalDescription {
         return PhysicalDescription {
-            hair_colour: random_descriptor(&dict, AdjectiveTag::HairColour.to_string()).text,
-            hair_length: random_descriptor(&dict, AdjectiveTag::HairLength.to_string()).text,
+            hair_colour: random_descriptor(&dict, AdjectiveTag::HairColour.to_string())
+                .text
+                .to_lowercase(),
+            hair_length: random_descriptor(&dict, AdjectiveTag::HairLength.to_string())
+                .text
+                .to_lowercase(),
             hair_adjectives: vec![
-                random_descriptor(&dict, AdjectiveTag::HairState.to_string()).text,
+                random_descriptor(&dict, AdjectiveTag::HairState.to_string())
+                    .text
+                    .to_lowercase(),
             ],
-            eye_colour: random_descriptor(&dict, AdjectiveTag::Colour.to_string()).text,
+            eye_colour: random_descriptor(&dict, AdjectiveTag::Colour.to_string())
+                .text
+                .to_lowercase(),
             height_adjective: random_descriptor(&dict, AdjectiveTag::CreatureHeight.to_string())
-                .text,
-            build_adjective: random_descriptor(&dict, AdjectiveTag::CreatureBuild.to_string()).text,
+                .text
+                .to_lowercase(),
+            build_adjective: random_descriptor(&dict, AdjectiveTag::CreatureBuild.to_string())
+                .text
+                .to_lowercase(),
         };
     }
 
