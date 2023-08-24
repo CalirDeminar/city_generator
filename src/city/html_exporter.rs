@@ -22,6 +22,7 @@ pub mod html_exporter {
         let mut html = document.html().attr("lang='en'");
         writeln!(html.head().title(), "City Name: {}", &city.name).unwrap();
         html.link().attr("rel='stylesheet' href='./style.css'");
+
         let mut body = html.body();
         writeln!(body.h1(), "{}", city.name).unwrap();
         writeln!(body.p(), "Population: {}", living.clone().count()).unwrap();
@@ -39,7 +40,7 @@ pub mod html_exporter {
         for m in living {
             print_mind_html(&mut citizen_list.li(), &m, &city);
         }
-
+        html.script().attr("src=\"./script.js\"");
         let mut file = File::create("./export.html").unwrap();
         file.write_all(document.finish().into_bytes().as_slice())
             .unwrap();
@@ -55,6 +56,7 @@ pub mod html_exporter {
         let mut floors = base.ul();
         for floor in &building.floors {
             let mut f = floors.li();
+
             if floor.level > 0 {
                 writeln!(f.h6(), "Floor {}", floor.level).unwrap();
             } else if floor.level.eq(&-1) {
@@ -62,6 +64,10 @@ pub mod html_exporter {
             } else {
                 writeln!(f.h6(), "Ground Floor").unwrap();
             }
+            let mut fw = f.div().attr(&format!(
+                "class=\"floor_container\" style='grid-template-columns: repeat({}, auto);'",
+                (f32::sqrt(floor.areas.len() as f32)).ceil() as usize
+            ));
 
             for area in &floor.areas {
                 let inst = city.institutions.iter().find(|i| {
@@ -72,36 +78,45 @@ pub mod html_exporter {
                     .values()
                     .filter(|m| m.residence.is_some() && m.residence.unwrap().eq(&area.id))
                     .collect();
-                let mut a = f.li().attr(&format!("id='{}'", area.id));
-                writeln!(a, "{}: ", area.name).unwrap();
+                let mut a = fw
+                    .div()
+                    .attr(&format!("id='{}'; class=\"floor_area_container\"", area.id));
+                let mut label = a
+                    .div()
+                    .attr("style='align-content: center; width: min-content;'");
+                writeln!(label, "{}: ", area.name).unwrap();
                 if inst.is_some() {
                     writeln!(
-                        a.a().attr(&format!("href='#{}'", inst.unwrap().id)),
+                        a.a().attr(&format!(
+                            "href='#{}' style='white-space: nowrap;'",
+                            inst.unwrap().id
+                        )),
                         "{}",
                         inst.unwrap().name
                     )
                     .unwrap();
                     if inst.unwrap().serves.len() > 0 {
-                        writeln!(a.div(), "{}", "Serves: ").unwrap();
-                        let mut m = a.ul();
+                        let mut label = a.div().attr("class=\"menu\" style=\"cursor: pointer;\"");
+                        writeln!(label, "{}", "Menu ⌄").unwrap();
+                        let mut header = label
+                            .ul()
+                            .attr(&format!("class=\"menu-hide\" style='display: none;'"));
                         for item in inst.unwrap().serves.clone() {
-                            writeln!(m.li(), "{}", item).unwrap();
+                            writeln!(header.li(), "{}", item).unwrap();
                         }
                     }
                 } else if residents.len() > 0 {
-                    let mut first = true;
                     for resident in residents {
-                        if !first {
-                            writeln!(a, ", ").unwrap();
-                        }
                         writeln!(
-                            a.a().attr(&format!("href='#{}'", resident.id)),
+                            a.a().attr(&format!(
+                                "href='#{}' class=\"floor_resident_nametag\"",
+                                resident.id
+                            )),
                             "{} {}",
                             resident.first_name,
                             resident.last_name
                         )
                         .unwrap();
-                        first = false;
                     }
                 } else {
                     writeln!(a, " None").unwrap();
