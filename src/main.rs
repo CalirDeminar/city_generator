@@ -3,7 +3,6 @@ use language::language::Era;
 
 pub mod city;
 pub mod culture;
-pub mod data_parser;
 pub mod language;
 pub mod names;
 pub mod parser;

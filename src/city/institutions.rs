@@ -10,9 +10,7 @@ pub mod institutions {
     use crate::city::population::mind::mind::Mind;
     use crate::city::population::mind::relations::relations::ADULT_AGE_FROM;
     use crate::culture::culture::CultureConfig;
-    use crate::language::language::{
-        build_dictionary, random_word_by_tag, random_word_by_tag_and, Era, Word, WordType,
-    };
+    use crate::language::language::*;
     use crate::templater::templater::*;
     use crate::utils::utils::random_pick;
 

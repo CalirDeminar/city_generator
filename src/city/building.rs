@@ -10,7 +10,7 @@ pub mod building {
             locations::locations::{gen_location, Location},
             population::mind::mind::*,
         },
-        culture::culture::{random_culture, CultureConfig},
+        culture::culture::*,
         language::language::*,
         templater::templater::*,
         utils::utils::random_pick,

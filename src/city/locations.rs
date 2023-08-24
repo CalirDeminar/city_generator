@@ -2,20 +2,18 @@ pub mod locations {
     // {descriptor?} {name?} {large_natural_feature} {smaller_feature}
     //  Hampton   River                 Valley
     use html_builder::*;
-    use rand::seq::SliceRandom;
+    
     use rand::Rng;
-    use rand_distr::{Distribution, Normal};
     use std::fmt::Write as fmtWrite;
     use uuid::Uuid;
 
     use crate::city::building::building::{print_building, print_building_html, Building};
     use crate::city::city::City;
-    use crate::culture::culture::*;
+    
     use crate::language::language::*;
     use crate::templater::templater::*;
     use crate::utils::utils::random_pick;
 
-    const LOCATION_MEAN_INSTITUTIONS: f32 = 10.0;
 
     #[derive(PartialEq, Debug, Clone)]
     pub struct Location {
@@ -90,15 +88,9 @@ pub mod locations {
         };
     }
 
-    fn get_institute_count_for_area() -> usize {
-        return (Normal::new(LOCATION_MEAN_INSTITUTIONS, LOCATION_MEAN_INSTITUTIONS / 2.0)
-            .unwrap()
-            .sample(&mut rand::thread_rng()) as usize)
-            .max(1);
-    }
-
     #[test]
     fn test_gen_location_name() {
+        use crate::culture::culture::*;
         let dict = build_dictionary();
         let name_dict = build_culture_dictionary(&dict, &random_culture(&dict, &None));
         for _i in 0..10 {

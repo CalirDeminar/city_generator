@@ -1,7 +1,7 @@
 pub mod appearance {
     use crate::language::{
         adjectives::adjectives::AdjectiveTag,
-        language::{build_dictionary, random_word_by_tag, Word, WordType},
+        language::*,
     };
     use rand::Rng;
 

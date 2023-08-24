@@ -28,7 +28,6 @@ pub mod city {
     use crate::language::language::*;
 
     const MAX_WORKING_AGE: u32 = 60;
-    const EVICITON_RATE: f32 = 0.05;
 
     #[derive(PartialEq, Debug, Clone)]
     pub struct City {
@@ -120,23 +119,6 @@ pub mod city {
             .unwrap();
     }
 
-    fn count_residential_apartments(city: &City) -> usize {
-        let apartments: Vec<&BuildingFloorArea> = city
-            .buildings
-            .iter()
-            .flat_map(|b| {
-                b.floors
-                    .iter()
-                    .filter(|f| {
-                        f.floor_type
-                            .eq(&super::building::building::FloorType::Residential)
-                    })
-                    .flat_map(|f| f.areas.iter())
-            })
-            .collect();
-        return apartments.len();
-    }
-
     fn find_free_building<'a>(city: &'a mut City) -> Option<&'a mut Building> {
         return city.buildings.iter_mut().find(|b| {
             b.floors.iter().any(|f| {
@@ -222,15 +204,6 @@ pub mod city {
         }
         output.shuffle(&mut rand::thread_rng());
         return output;
-    }
-
-    fn count_city_relations_proportions(city: &City, verb: RelationVerb) -> f32 {
-        return city
-            .citizens
-            .values()
-            .filter(|c| c.relations.iter().any(|(v, _id)| v.eq(&verb)))
-            .count() as f32
-            / city.citizens.len() as f32;
     }
 
     pub fn old_age_pass_per_year<'a>(city: &'a mut City, culture: &CultureConfig) -> &'a mut City {

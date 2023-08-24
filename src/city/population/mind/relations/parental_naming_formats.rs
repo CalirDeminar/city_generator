@@ -154,9 +154,6 @@ pub mod parental_naming_formats {
             target_format = cf;
         }
 
-        let m_last_split: Vec<&str> = partner_m.last_name.split("-").collect();
-        let f_last_split: Vec<&str> = partner_f.last_name.split("-").collect();
-
         return parse_format(
             target_format,
             (

@@ -1,6 +1,5 @@
 pub mod templater {
     use crate::{
-        culture::culture::*,
         language::{language::*, nouns::nouns::NounTag},
         names::names::*,
     };
@@ -89,6 +88,7 @@ pub mod templater {
 
     #[test]
     fn test_render_template() {
+        use crate::culture::culture::*;
         let example_template: &str =
             "{{Noun(!LastName, !HistoricalFigure)}} {{Noun(GeographyFeatureSizeLocalFeature)}}";
         let d = build_dictionary();

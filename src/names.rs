@@ -1,4 +1,3 @@
-// pub mod data_parser;
 pub mod names {
     use regex::Regex;
     use std::fs::File;

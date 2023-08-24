@@ -3,15 +3,10 @@ pub mod population {
     use uuid::Uuid;
 
     use crate::city::population::mind::mind::*;
-    use crate::city::population::mind::relations::relations::*;
     use crate::language::language::Era;
     use crate::{city::city::City, language::language::Word};
     use std::collections::HashMap;
     use std::{fs::File, io::Write};
-
-    use super::mind::relations::{
-        parents::parents::link_parents, partners::partners::link_partners,
-    };
 
     pub type Population = HashMap<Uuid, Mind>;
 
