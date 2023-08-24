@@ -284,6 +284,16 @@ pub mod city {
         return city;
     }
 
+    fn create_benchmarker(label: String) ->  impl Fn() -> u128 {
+        let label_padding: usize = 30;
+        let epoch = Instant::now();
+        return move || {
+            let duration = Instant::now().duration_since(epoch.clone()).as_millis();
+            println!("{}:{}{}ms", label, " ".repeat(label_padding - label.len()),duration);
+            return duration;
+        };
+    }
+
     pub fn simulate(size: usize, age: usize, era: Option<Era>) -> City {
         let dict = build_dictionary();
         let culture = random_culture(&dict, &era);
@@ -307,59 +317,51 @@ pub mod city {
         }
 
         for i in 0..age {
-            println!("Y{} - Pop: {} - Dead: {}", i, city.citizens.values().filter(|c| c.alive).count(), city.citizens.values().filter(|c| !c.alive).count());
-            let old_age_start = Instant::now();
+            println!("\n\nYear: {}", i);
+            println!("Population: {}", city.citizens.values().filter(|c| c.alive).count());
+            println!("Dead: {}", city.citizens.values().filter(|c| !c.alive).count());
+            
+            let old_age_benchmarker = create_benchmarker(String::from("Old Age"));
             old_age_pass_per_year(&mut city, &culture);
-            let old_age_time = Instant::now().duration_since(old_age_start);
+            old_age_benchmarker();
             // Very Slow
-            let link_friends_start = Instant::now();
+            let friend_linking_benchmarker = create_benchmarker(String::from("Link Friends"));
             link_friends_within_population_by_year(&mut city);
-            let friend_link_time = Instant::now().duration_since(link_friends_start);
+            friend_linking_benchmarker();
 
-            let link_partners_start = Instant::now();
+            let partner_linking_benchmarker = create_benchmarker(String::from("Link Partners"));
             link_partners_by_year(&mut city);
-            let partner_link_time =
-                Instant::now().duration_since(link_partners_start);
+            partner_linking_benchmarker();
 
-            let update_partners_start = Instant::now();
+            let partner_update_benchmarker = create_benchmarker(String::from("Update Partners"));
             update_partners_by_year(&mut city);
-            let partner_update_time = Instant::now().duration_since(update_partners_start);
+            partner_update_benchmarker();
 
-            let gen_children_start = Instant::now();
+            let generate_children_benchmarker = create_benchmarker(String::from("Generate Children"));
             generate_children_per_year(&mut city, &culture, &dict);
-            let generate_children_time = Instant::now().duration_since(gen_children_start);
+            generate_children_benchmarker();
 
-            let add_buildings_start = Instant::now();
+            let add_buildings_benchmarker = create_benchmarker(String::from("Add Buildings"));
             add_buildings_per_year(&mut city, &dict);
-            let add_buildings_time = Instant::now().duration_since(add_buildings_start);
+            add_buildings_benchmarker();
 
-            let assign_residences_start = Instant::now();
+            let eviction_benchmarker = create_benchmarker(String::from("Evictions"));
             random_evictions(&mut city);
             assign_residences(&mut city);
-            let residence_assign_time = Instant::now().duration_since(assign_residences_start);
+            eviction_benchmarker();
 
-            let random_sackings_start = Instant::now();
+            let sackings_benchmarker = create_benchmarker(String::from("Sackings"));
             random_sackings_per_year(&mut city);
-            let random_sackings_time = Instant::now().duration_since(random_sackings_start);
+            sackings_benchmarker();
 
-            let assign_employer_start = Instant::now();
+            let employee_asignment_benchmarker = create_benchmarker(String::from("Assign Employers"));
             assign_employment_per_year(&mut city);
-            let assign_employer_time = Instant::now().duration_since(assign_employer_start);
-            let startups_start = Instant::now();
+            employee_asignment_benchmarker();
+
+            let create_startups_benchmarker = create_benchmarker(String::from("Create Startups"));
             create_startups_per_year(&mut city, &dict);       
-            let startups_time = startups_start.elapsed();  // TODO - create new institutions - allow institutions to come and go
-            println!("Exec Time - Old Age: {} - Friend Link: {} - Partner Link: {} - Partner Update: {} - Generate Children: {} - Add Buildlings: {} - Residence Assignment: {} - Random Sackings: {} - Assign Employer: {} - Create Startups: {}",
-                old_age_time.as_millis(), 
-                friend_link_time.as_millis(), 
-                partner_link_time.as_millis(), 
-                partner_update_time.as_millis(), 
-                generate_children_time.as_millis(), 
-                add_buildings_time.as_millis(),
-                residence_assign_time.as_millis(),
-                random_sackings_time.as_millis(),
-                assign_employer_time.as_millis(),
-                startups_time.as_millis(),
-            );
+            create_startups_benchmarker();
+
             for citizen in city.citizens.values_mut().filter(|c| c.alive) {
                 citizen.age += 1;
             }
