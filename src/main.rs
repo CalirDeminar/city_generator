@@ -1,4 +1,7 @@
-use city::city::{export_city, export_city_html, export_city_stories};
+use city::{
+    city::{export_city, export_city_stories},
+    html_exporter::html_exporter::export_city_html,
+};
 use language::language::Era;
 
 pub mod city;
@@ -13,7 +16,7 @@ pub const MULTI_THREADING_FACTOR: usize = 5;
 
 fn main() {
     std::env::set_var("RUST_BACKTRACE", "1");
-    let city = city::city::simulate(250, 200, Some(Era::Modern));
+    let city = city::city::simulate(250, 60, Some(Era::Modern));
     export_city(&city);
     export_city_html(&city);
     export_city_stories(&city);

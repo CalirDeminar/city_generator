@@ -1,4 +1,5 @@
 pub mod building;
+pub mod html_exporter;
 pub mod institutions;
 pub mod locations;
 pub mod population;
@@ -8,10 +9,8 @@ pub mod city {
     use std::io::Write;
     use std::time::Instant;
 
-    use html_builder::*;
     use rand::seq::SliceRandom;
     use rand::Rng;
-    use std::fmt::Write as fmtWrite;
     use uuid::Uuid;
 
     use super::building::building::*;
@@ -22,7 +21,9 @@ pub mod city {
     use crate::city::population::mind::relations::friends::friends::*;
     use crate::city::population::mind::relations::parents::parents::*;
     use crate::city::population::mind::relations::partners::partners::*;
-    use crate::city::population::mind::relations::residences::residences::{assign_residences, random_evictions};
+    use crate::city::population::mind::relations::residences::residences::{
+        assign_residences, random_evictions,
+    };
     use crate::city::population::population::*;
     use crate::culture::culture::*;
     use crate::language::language::*;
@@ -37,28 +38,27 @@ pub mod city {
         pub areas: Vec<Location>,
         pub buildings: Vec<Building>,
         pub culture: CultureConfig,
-        pub year: usize
+        pub year: usize,
     }
 
     pub fn print_city(city: &City) -> String {
         let mut output: String = String::new();
         let alive_population = city.citizens.values().filter(|c| c.alive).count();
-        let adult_population = city.citizens.values().filter(|c| c.alive && c.age > ADULT_AGE_FROM).count();
+        let adult_population = city
+            .citizens
+            .values()
+            .filter(|c| c.alive && c.age > ADULT_AGE_FROM)
+            .count();
         output.push_str(&format!("City Name: {}\n", city.name));
+        output.push_str(&format!("Population: {}\n", alive_population));
         output.push_str(&format!(
-            "Population: {}\n",
-            alive_population
-        ));
-        output.push_str(
-    &format!(
-                "Employment Rate: {}\n", 
-                city
-                .citizens
+            "Employment Rate: {}\n",
+            city.citizens
                 .values()
-                .filter(|c|c.alive && c.employer.is_some()).count() as f32
+                .filter(|c| c.alive && c.employer.is_some())
+                .count() as f32
                 / adult_population as f32
-                )
-            );
+        ));
         output.push_str(&format!(
             "Dead: {}\n",
             city.citizens.iter().filter(|(_id, c)| !c.alive).count()
@@ -80,43 +80,17 @@ pub mod city {
         let mut file = File::create("./stories_export.txt").unwrap();
         let mut output = String::new();
         for citizen in city.citizens.values() {
-            output.push_str(&format!("==== {} {} - {} ====\n", citizen.first_name, citizen.last_name, citizen.gender.to_string()));
+            output.push_str(&format!(
+                "==== {} {} - {} ====\n",
+                citizen.first_name,
+                citizen.last_name,
+                citizen.gender.to_string()
+            ));
             for line in citizen.activity_log.iter() {
                 output.push_str(&format!("  {}\n", line));
             }
         }
         file.write_all(output.into_bytes().as_slice()).unwrap();
-    }
-
-    pub fn export_city_html(city: &City) {
-        let living = city.citizens.values().filter(|c| c.alive);
-        let dead = city.citizens.values().filter(|c| !c.alive);
-        let mut document = Buffer::new();
-        document.doctype();
-        let mut html = document.html().attr("lang='en'");
-        writeln!(html.head().title(), "City Name: {}", &city.name).unwrap();
-        html.link().attr("rel='stylesheet' href='./style.css'");
-        let mut body = html.body();
-        writeln!(body.h1(), "{}", city.name).unwrap();
-        writeln!(body.p(), "Population: {}", living.clone().count()).unwrap();
-        writeln!(body.p(), "Dead: {}", dead.clone().count()).unwrap();
-        writeln!(body.p(), "Area Count: {}", city.areas.len()).unwrap();
-        writeln!(body.p(), "Building Count: {}", city.buildings.len()).unwrap();
-        writeln!(body.h2(), "Locations:").unwrap();
-        let mut loc_list = body.ul();
-        for area in &city.areas {
-            print_location_html(&mut loc_list.li(), &area, &city);
-        }
-
-        writeln!(body.h2(), "Citizens").unwrap();
-        let mut citizen_list = body.ul();
-        for m in living {
-            print_mind_html(&mut citizen_list.li(), &m, &city);
-        }
-
-        let mut file = File::create("./export.html").unwrap();
-        file.write_all(document.finish().into_bytes().as_slice())
-            .unwrap();
     }
 
     fn find_free_building<'a>(city: &'a mut City) -> Option<&'a mut Building> {
@@ -130,7 +104,6 @@ pub mod city {
             })
         });
     }
-
 
     fn add_institution_to_building<'a>(
         building: &'a mut Building,
@@ -170,7 +143,6 @@ pub mod city {
         city.institutions.push(institution);
         return city;
     }
-    
 
     fn add_public_institution_to_city<'a>(
         city: &'a mut City,
@@ -224,29 +196,41 @@ pub mod city {
                         - culture.species_avg_lifespan_variance as f32))
                     / 10.0);
             if rng.gen::<f32>() < death_odds {
-                mind.activity_log.push(format!("Died in year {} age {}", city.year, mind.age));
+                mind.activity_log
+                    .push(format!("Died in year {} age {}", city.year, mind.age));
                 mind.alive = false;
                 mind.employer = None;
                 mind.residence = None;
                 dead_ids.push(mind.id.clone());
             }
         }
-        let social_verbs = vec![RelationVerb::Acquaintance, RelationVerb::Friend, RelationVerb::CloseFriend, RelationVerb::Colleague];
+        let social_verbs = vec![
+            RelationVerb::Acquaintance,
+            RelationVerb::Friend,
+            RelationVerb::CloseFriend,
+            RelationVerb::Colleague,
+        ];
         for mind in city.citizens.values_mut() {
             for (verb, id) in mind.relations.clone() {
                 if dead_ids.contains(&id) {
                     match verb {
                         RelationVerb::Partner => {
-                            mind.relations.retain(|(v, id)| !(id.eq(&mind.id) && v.eq(&verb)));
+                            mind.relations
+                                .retain(|(v, id)| !(id.eq(&mind.id) && v.eq(&verb)));
                             mind.relations.push((RelationVerb::LatePartner, id.clone()));
                         }
                         RelationVerb::Spouse => {
-                            mind.relations.retain(|(v, id)| !(id.eq(&mind.id) && v.eq(&verb)));
+                            mind.relations
+                                .retain(|(v, id)| !(id.eq(&mind.id) && v.eq(&verb)));
                             mind.relations.push((RelationVerb::LateSpouse, id.clone()));
                         }
 
-                        RelationVerb::Acquaintance | RelationVerb::Friend | RelationVerb::CloseFriend | RelationVerb::Colleague => {
-                            mind.relations.retain(|(v, id)| !(id.eq(&mind.id) && social_verbs.contains(&v)));
+                        RelationVerb::Acquaintance
+                        | RelationVerb::Friend
+                        | RelationVerb::CloseFriend
+                        | RelationVerb::Colleague => {
+                            mind.relations
+                                .retain(|(v, id)| !(id.eq(&mind.id) && social_verbs.contains(&v)));
                         }
 
                         _ => {}
@@ -257,12 +241,17 @@ pub mod city {
         return city;
     }
 
-    fn create_benchmarker(label: String) ->  impl Fn() -> u128 {
+    fn create_benchmarker(label: String) -> impl Fn() -> u128 {
         let label_padding: usize = 30;
         let epoch = Instant::now();
         return move || {
             let duration = Instant::now().duration_since(epoch.clone()).as_millis();
-            println!("{}:{}{}ms", label, " ".repeat(label_padding - label.len()),duration);
+            println!(
+                "{}:{}{}ms",
+                label,
+                " ".repeat(label_padding - label.len()),
+                duration
+            );
             return duration;
         };
     }
@@ -280,7 +269,7 @@ pub mod city {
             areas: Vec::new(),
             institutions: Vec::new(),
             culture: culture.clone(),
-            year: 0
+            year: 0,
         };
         generate_population_baseline(&dict, size, &mut city);
         let public_institutions = generate_public_institutions(&dict, &era);
@@ -291,9 +280,15 @@ pub mod city {
 
         for i in 0..age {
             println!("\n\nYear: {}", i);
-            println!("Population: {}", city.citizens.values().filter(|c| c.alive).count());
-            println!("Dead: {}", city.citizens.values().filter(|c| !c.alive).count());
-            
+            println!(
+                "Population: {}",
+                city.citizens.values().filter(|c| c.alive).count()
+            );
+            println!(
+                "Dead: {}",
+                city.citizens.values().filter(|c| !c.alive).count()
+            );
+
             let old_age_benchmarker = create_benchmarker(String::from("Old Age"));
             old_age_pass_per_year(&mut city, &culture);
             old_age_benchmarker();
@@ -310,7 +305,8 @@ pub mod city {
             update_partners_by_year(&mut city);
             partner_update_benchmarker();
 
-            let generate_children_benchmarker = create_benchmarker(String::from("Generate Children"));
+            let generate_children_benchmarker =
+                create_benchmarker(String::from("Generate Children"));
             generate_children_per_year(&mut city, &culture, &dict);
             generate_children_benchmarker();
 
@@ -327,12 +323,13 @@ pub mod city {
             random_sackings_per_year(&mut city);
             sackings_benchmarker();
 
-            let employee_asignment_benchmarker = create_benchmarker(String::from("Assign Employers"));
+            let employee_asignment_benchmarker =
+                create_benchmarker(String::from("Assign Employers"));
             assign_employment_per_year(&mut city);
             employee_asignment_benchmarker();
 
             let create_startups_benchmarker = create_benchmarker(String::from("Create Startups"));
-            create_startups_per_year(&mut city, &dict);       
+            create_startups_per_year(&mut city, &dict);
             create_startups_benchmarker();
 
             for citizen in city.citizens.values_mut().filter(|c| c.alive) {

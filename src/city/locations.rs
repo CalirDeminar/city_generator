@@ -1,19 +1,16 @@
 pub mod locations {
     // {descriptor?} {name?} {large_natural_feature} {smaller_feature}
     //  Hampton   River                 Valley
-    use html_builder::*;
-    
+
     use rand::Rng;
-    use std::fmt::Write as fmtWrite;
     use uuid::Uuid;
 
-    use crate::city::building::building::{print_building, print_building_html, Building};
+    use crate::city::building::building::{print_building, Building};
     use crate::city::city::City;
-    
+
     use crate::language::language::*;
     use crate::templater::templater::*;
     use crate::utils::utils::random_pick;
-
 
     #[derive(PartialEq, Debug, Clone)]
     pub struct Location {
@@ -37,28 +34,6 @@ pub mod locations {
         }
         output.push_str("===========\n");
         return output;
-    }
-
-    pub fn print_location_html<'a>(
-        node: &'a mut Node<'a>,
-        location: &Location,
-        city: &City,
-    ) -> &'a mut Node<'a> {
-        let buildings: Vec<&Building> = city
-            .buildings
-            .iter()
-            .filter(|b| b.location_id.is_some() && b.location_id.unwrap().eq(&location.id))
-            .collect();
-
-        let mut list_element = node.div().attr(&format!("id='{}'", location.id));
-        writeln!(list_element.h3(), "{}", location.name).unwrap();
-        writeln!(list_element.h4(), "Buildings: ").unwrap();
-        let mut building_list = list_element.ul();
-        for building in buildings {
-            let mut element = building_list.li();
-            print_building_html(&mut element, &building, &city);
-        }
-        return node;
     }
 
     pub fn gen_location_name(dict: &Vec<Word>, long: bool, era: &Option<Era>) -> String {

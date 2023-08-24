@@ -1,8 +1,6 @@
 pub mod appearance;
 pub mod relations;
 pub mod mind {
-    use html_builder::*;
-    use std::fmt::Write as fmtWrite;
 
     use rand::Rng;
     use rand_distr::{Distribution, Normal};
@@ -169,115 +167,6 @@ pub mod mind {
         }
         output.push_str(&format!("===========\n"));
         return output;
-    }
-
-    pub fn print_mind_html<'a>(
-        node: &'a mut Node<'a>,
-        mind: &Mind,
-        city: &City,
-    ) -> &'a mut Node<'a> {
-        let workplace = city
-            .institutions
-            .iter()
-            .find(|i| mind.employer.is_some() && mind.employer.unwrap().eq(&i.id));
-
-        let mut relations: Vec<(&RelationVerb, String, Uuid)> = mind
-            .relations
-            .iter()
-            .map(|(verb, id)| (verb, get_name_from_id(&id, &city.citizens), id.clone()))
-            .collect();
-        relations.sort_by_key(|a| a.0.to_string());
-
-        let mut list_element = node.div().attr(&format!("id='{}'", mind.id));
-        writeln!(
-            list_element.h3(),
-            "Name: {} {}",
-            &mind.first_name,
-            &mind.last_name
-        )
-        .unwrap();
-        writeln!(list_element.p(), "Gender: {}", &mind.gender).unwrap();
-        writeln!(list_element.p(), "Age: {}", &mind.age).unwrap();
-        let description = &mind.physical_description;
-        writeln!(
-            list_element.p(),
-            "Description: has {}, {} {} hair and {} eyes. Is {} with a {} build.\n",
-            description.hair_adjectives.first().unwrap(),
-            description.hair_colour,
-            description.hair_length,
-            description.eye_colour,
-            description.height_adjective,
-            description.build_adjective
-        )
-        .unwrap();
-
-        if workplace.is_some() {
-            let (building, _floor, _area, location) =
-                find_institution_address(&workplace.unwrap(), &city);
-            let mut p = list_element.p();
-            writeln!(p, "Employer: {} at", workplace.unwrap().name).unwrap();
-            writeln!(
-                p.a().attr(&format!("href='#{}'", building.id)),
-                "{}",
-                building.name
-            )
-            .unwrap();
-            writeln!(p, " in ").unwrap();
-            writeln!(
-                p.a().attr(&format!("href='#{}'", location.id)),
-                "{}",
-                location.name
-            )
-            .unwrap();
-        } else {
-            writeln!(list_element.p(), "Employer: None").unwrap();
-        }
-        if mind.residence.is_some() {
-            let (building, apartment, residential_location) = find_address(mind, city);
-            let mut line = list_element.p();
-            writeln!(line, "Lives at: ").unwrap();
-            writeln!(
-                line.a().attr(&format!("href='#{}'", apartment.id)),
-                "{}",
-                apartment.name
-            )
-            .unwrap();
-            writeln!(line, " - ").unwrap();
-            writeln!(
-                line.a().attr(&format!("href='#{}'", building.id)),
-                "{}",
-                building.name
-            )
-            .unwrap();
-            writeln!(line, " - ").unwrap();
-            writeln!(
-                line.a()
-                    .attr(&format!("href='#{}'", residential_location.id)),
-                "{}",
-                residential_location.name
-            )
-            .unwrap();
-        }
-
-        if relations.len() < 1 {
-            writeln!(list_element.p(), "Relations: None").unwrap();
-        } else {
-            writeln!(list_element.p(), "Relations:").unwrap();
-            let mut relation_list = list_element.ul();
-            for (verb, name, id) in relations {
-                let mut list_el = relation_list.li();
-                let mut list_el_para = list_el.p();
-                writeln!(list_el_para, "{:?}:", verb).unwrap();
-                writeln!(
-                    list_el_para.a().attr(&format!("href='#{}'", id)),
-                    "{}",
-                    name
-                )
-                .unwrap();
-            }
-        }
-
-        return node;
     }
 
     fn gen_sexuality() -> Sexuality {
