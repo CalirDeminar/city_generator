@@ -1,12 +1,13 @@
 pub mod residences {
     use rand::Rng;
+    use rand::seq::SliceRandom;
     use uuid::Uuid;
 
     use crate::city::building::building::BuildingFloorArea;
     use crate::city::city::City;
     use crate::city::population::mind::mind::Mind;
     use crate::city::population::mind::relations::relations::{
-        find_relation, find_relation_minor, RelationVerb, ADULT_AGE_FROM,
+        find_relation, RelationVerb, ADULT_AGE_FROM,
     };
 
     const EVICITON_RATE: f32 = 0.05;
@@ -57,7 +58,7 @@ pub mod residences {
             .map(|c| c.residence.unwrap().clone())
             .collect();
 
-        let all_areas: Vec<(&BuildingFloorArea, String, Uuid)> = city
+        let mut all_areas: Vec<(&BuildingFloorArea, String, Uuid)> = city
             .buildings
             .iter()
             .flat_map(|b| {
@@ -68,6 +69,7 @@ pub mod residences {
                 })
             })
             .collect();
+        all_areas.shuffle(&mut rand::thread_rng());
 
         for citizen in ref_pop
             .values()
