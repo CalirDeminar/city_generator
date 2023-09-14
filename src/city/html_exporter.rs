@@ -10,7 +10,7 @@ pub mod html_exporter {
         locations::locations::Location,
         population::mind::{
             mind::{find_address, get_name_from_id, Mind},
-            relations::relations::RelationVerb,
+            relations::{relations::RelationVerb, friends::friends::SOCIAL_RELATIONS},
         },
     };
 
@@ -96,11 +96,11 @@ pub mod html_exporter {
                     )
                     .unwrap();
                     if inst.unwrap().serves.len() > 0 {
-                        let mut label = a.div().attr("class=\"menu\" style=\"cursor: pointer;\"");
+                        let mut label = a.div().attr("class=\"collapsable_toggle\" style=\"cursor: pointer;\"");
                         writeln!(label, "{}", "Menu ⌄").unwrap();
                         let mut header = label
                             .ul()
-                            .attr(&format!("class=\"menu-hide\" style='display: none;'"));
+                            .attr(&format!("class=\"collapse\" style='display: none;'"));
                         for item in inst.unwrap().serves.clone() {
                             writeln!(header.li(), "{}", item).unwrap();
                         }
@@ -157,13 +157,6 @@ pub mod html_exporter {
             .institutions
             .iter()
             .find(|i| mind.employer.is_some() && mind.employer.unwrap().eq(&i.id));
-
-        let mut relations: Vec<(&RelationVerb, String, Uuid)> = mind
-            .relations
-            .iter()
-            .map(|(verb, id)| (verb, get_name_from_id(&id, &city.citizens), id.clone()))
-            .collect();
-        relations.sort_by_key(|a| a.0.to_string());
 
         let mut list_element = node.div().attr(&format!("id='{}'", mind.id));
         writeln!(
@@ -235,13 +228,26 @@ pub mod html_exporter {
             )
             .unwrap();
         }
+        let mut relations: Vec<(&RelationVerb, String, Uuid)> = mind
+            .relations
+            .iter()
+            .map(|(verb, id)| (verb, get_name_from_id(&id, &city.citizens), id.clone()))
+            .collect();
+        relations.sort_by_key(|a| a.0.to_string());
 
-        if relations.len() < 1 {
-            writeln!(list_element.p(), "Relations: None").unwrap();
+        let mut social_relations= relations.clone();
+        social_relations.retain(|(verb, _, _)| SOCIAL_RELATIONS.contains(&verb));
+        let mut immediate_relations = relations.clone();
+        immediate_relations.retain(|(verb, _, _)| vec![RelationVerb::Parent, RelationVerb::Child, RelationVerb::Partner, RelationVerb::Spouse, RelationVerb::ExPartner, RelationVerb::ExSpouse, RelationVerb::Sibling].contains(&verb));
+        let mut extended_relations = relations.clone();
+        extended_relations.retain(|(verb, _, _)| vec![RelationVerb::Grandchild, RelationVerb::Grandparent, RelationVerb::Pibling, RelationVerb::Nibling].contains(&verb));
+
+        if immediate_relations.len() < 1 {
+            writeln!(list_element.p(), "Immediate Relations: None").unwrap();
         } else {
-            writeln!(list_element.p(), "Relations:").unwrap();
+            writeln!(list_element.p(), "Immediate Relations:").unwrap();
             let mut relation_list = list_element.ul();
-            for (verb, name, id) in relations {
+            for (verb, name, id) in immediate_relations {
                 let mut list_el = relation_list.li();
                 let mut list_el_para = list_el.p();
                 writeln!(list_el_para, "{:?}:", verb).unwrap();
@@ -253,6 +259,41 @@ pub mod html_exporter {
                 .unwrap();
             }
         }
+        if social_relations.len() < 1 {
+            writeln!(list_element.p(), "Social Relations: None").unwrap();
+        } else {
+            writeln!(list_element.p(), "Social Relations:").unwrap();
+            let mut relation_list = list_element.ul();
+            for (verb, name, id) in social_relations {
+                let mut list_el = relation_list.li();
+                let mut list_el_para = list_el.p();
+                writeln!(list_el_para, "{:?}:", verb).unwrap();
+                writeln!(
+                    list_el_para.a().attr(&format!("href='#{}'", id)),
+                    "{}",
+                    name
+                )
+                .unwrap();
+            }
+        }
+        if extended_relations.len() < 1 {
+            writeln!(list_element.p(), "Extended Relations: None").unwrap();
+        } else {
+            writeln!(list_element.p(), "Extended Relations:").unwrap();
+            let mut relation_list = list_element.ul();
+            for (verb, name, id) in extended_relations {
+                let mut list_el = relation_list.li();
+                let mut list_el_para = list_el.p();
+                writeln!(list_el_para, "{:?}:", verb).unwrap();
+                writeln!(
+                    list_el_para.a().attr(&format!("href='#{}'", id)),
+                    "{}",
+                    name
+                )
+                .unwrap();
+            }
+        }
+        
 
         return node;
     }
