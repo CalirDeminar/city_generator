@@ -11,7 +11,9 @@ pub mod parents {
             population::{
                 mind::{
                     appearance::appearance::generate_child_description,
-                    mind::{random_char, Mind},
+                    mind::{
+                        add_birth_to_mind_log, add_new_relation_to_mind_log, random_char, Mind,
+                    },
                     relations::{
                         parental_naming_formats::parental_naming_formats::get_child_last_name,
                         partners::partners::TAKEN_VERBS,
@@ -153,6 +155,12 @@ pub mod parents {
     }
 
     fn couple_will_bear(m1: &Mind, m2: &Mind, culture: &CultureConfig) -> bool {
+        if m1.age < culture.adult_age || m2.age < culture.adult_age {
+            return false;
+        }
+        if m1.gender.eq(&m2.gender) {
+            return false;
+        }
         let mut rng = rand::thread_rng();
         let (verb, _id) = m1
             .relations
@@ -169,9 +177,7 @@ pub mod parents {
             .iter()
             .filter(|(v, _id)| v.eq(&RelationVerb::Child))
             .count();
-        if m1.age < culture.adult_age || m2.age < culture.adult_age {
-            return false;
-        }
+
         let base_chance = if verb.eq(&RelationVerb::Spouse) {
             SPOUSE_CHILD_CHANCE
         } else {
@@ -208,34 +214,19 @@ pub mod parents {
                     mind_1
                         .relations
                         .push((RelationVerb::Child, child.id.clone()));
-                    mind_1.activity_log.push(format!(
-                        "Gained {} {} as a Child in year {}",
-                        child.first_name, child.last_name, city.year
-                    ));
+                    add_new_relation_to_mind_log(mind_1, city.year, RelationVerb::Child, &child);
                     drop(mind_1);
 
                     let mind_2 = city.citizens.get_mut(&m2.id).unwrap();
                     mind_2
                         .relations
                         .push((RelationVerb::Child, child.id.clone()));
-                    mind_2.activity_log.push(format!(
-                        "Gained {} {} as a Child in year {}",
-                        child.first_name, child.last_name, city.year
-                    ));
+                    add_new_relation_to_mind_log(mind_2, city.year, RelationVerb::Child, &child);
                     drop(mind_2);
 
                     child.relations.push((RelationVerb::Parent, m1.id.clone()));
                     child.relations.push((RelationVerb::Parent, m2.id.clone()));
-                    child.activity_log.push(format!(
-                        "Born as {} {} to {} {} and {} {} in year {}",
-                        child.first_name,
-                        child.last_name,
-                        pm1.unwrap().first_name,
-                        pm1.unwrap().last_name,
-                        pm2.unwrap().first_name,
-                        pm2.unwrap().last_name,
-                        city.year
-                    ));
+                    add_birth_to_mind_log(&mut child, city.year, pm1.unwrap(), pm2.unwrap());
                     link_family_at_birth(city, &mut child);
                     city.citizens.insert(child.id.clone(), child.clone());
                 }

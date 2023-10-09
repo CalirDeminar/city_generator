@@ -7,7 +7,10 @@ pub mod institutions {
     use crate::city::building::building::{Building, BuildingFloor, BuildingFloorArea};
     use crate::city::city::{add_institution_to_city, City};
     use crate::city::locations::locations::Location;
-    use crate::city::population::mind::mind::Mind;
+    use crate::city::population::mind::mind::{
+        add_leaving_workplace_to_mind_log, add_new_workplace_to_mind_log,
+        add_startup_creation_to_mind_log, Mind,
+    };
     use crate::city::population::mind::relations::relations::ADULT_AGE_FROM;
     use crate::culture::culture::CultureConfig;
     use crate::language::language::*;
@@ -347,11 +350,7 @@ pub mod institutions {
                     .find(|i| i.id.eq(&mind.employer.unwrap()));
                 mind.employer = None;
 
-                mind.activity_log.push(format!(
-                    "Left company: {} in year {}",
-                    employer.unwrap().name,
-                    city.year
-                ));
+                add_leaving_workplace_to_mind_log(mind, city.year, &employer.unwrap().name);
             }
         }
         return city;
@@ -393,10 +392,7 @@ pub mod institutions {
 
                 let mind_mut = city.citizens.get_mut(&mind.id).unwrap();
                 mind_mut.employer = Some(inst.id.clone());
-                mind_mut.activity_log.push(format!(
-                    "Started work at: {} in year {}",
-                    inst.name, city.year
-                ));
+                add_new_workplace_to_mind_log(mind_mut, city.year, &inst.name);
                 drop(mind_mut);
 
                 if emp_count + 1 < inst.size {
@@ -420,10 +416,7 @@ pub mod institutions {
                 let new_inst = generate_population_institution(&dict, &Some(city.culture.clone()));
                 let mind = city.citizens.get_mut(&m.id).unwrap();
                 mind.employer = Some(new_inst.id.clone());
-                mind.activity_log.push(format!(
-                    "Created the company  \"{}\" in {}",
-                    new_inst.name, city.year
-                ));
+                add_startup_creation_to_mind_log(mind, city.year, &new_inst.name);
                 drop(mind);
                 add_institution_to_city(city, new_inst, &dict);
             }

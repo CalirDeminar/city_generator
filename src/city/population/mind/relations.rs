@@ -16,6 +16,8 @@ pub mod relations {
         // family
         Parent,
         Child,
+        AdoptedParent,
+        AdoptedChild,
         Partner,
         ExPartner,
         LatePartner,
@@ -233,10 +235,12 @@ pub mod relations {
                                 sibling
                                     .relations
                                     .push((RelationVerb::Sibling, child.id.clone()));
-                                sibling.activity_log.push(format!(
-                                    "Gained {} {} as a Sibling in year {}",
-                                    child.first_name, child.last_name, city.year
-                                ));
+                                add_new_relation_to_mind_log(
+                                    sibling,
+                                    city.year,
+                                    RelationVerb::Sibling,
+                                    &child,
+                                );
                             }
                             drop(sibling);
                         }
@@ -254,10 +258,12 @@ pub mod relations {
                                 pibling
                                     .relations
                                     .push((RelationVerb::Nibling, child.id.clone()));
-                                pibling.activity_log.push(format!(
-                                    "Gained {} {} as a Nibling in year {}",
-                                    child.first_name, child.last_name, city.year
-                                ));
+                                add_new_relation_to_mind_log(
+                                    pibling,
+                                    city.year,
+                                    RelationVerb::Nibling,
+                                    &child,
+                                );
                             }
                             let pibling_relations = pibling.relations.clone();
                             drop(pibling);
@@ -279,10 +285,12 @@ pub mod relations {
                                     pibling_spouse
                                         .relations
                                         .push((RelationVerb::Nibling, child.id.clone()));
-                                    pibling_spouse.activity_log.push(format!(
-                                        "Gained {} {} as a Nibling in year {}",
-                                        child.first_name, child.last_name, city.year
-                                    ));
+                                    add_new_relation_to_mind_log(
+                                        pibling_spouse,
+                                        city.year,
+                                        RelationVerb::Nibling,
+                                        &child,
+                                    );
                                 }
                             }
                         }
@@ -299,10 +307,12 @@ pub mod relations {
                             grandparent
                                 .relations
                                 .push((RelationVerb::Grandchild, child.id.clone()));
-                            grandparent.activity_log.push(format!(
-                                "Gained {} {} as a Grandchild in year {}",
-                                child.first_name, child.last_name, city.year
-                            ));
+                            add_new_relation_to_mind_log(
+                                grandparent,
+                                city.year,
+                                RelationVerb::Grandchild,
+                                &child,
+                            );
                         }
                         // println!("Add Grandparent");
                     }
@@ -318,10 +328,12 @@ pub mod relations {
                                 cousin
                                     .relations
                                     .push((RelationVerb::Cousin, child.id.clone()));
-                                cousin.activity_log.push(format!(
-                                    "Gained {} {} as a Cousin in year {}",
-                                    child.first_name, child.last_name, city.year
-                                ));
+                                add_new_relation_to_mind_log(
+                                    cousin,
+                                    city.year,
+                                    RelationVerb::Cousin,
+                                    &child,
+                                );
                             }
                         }
                         drop(cousin);

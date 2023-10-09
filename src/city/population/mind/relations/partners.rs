@@ -202,16 +202,10 @@ pub mod partners {
                 let mind_2_mut = mind_2.unwrap();
 
                 mind_1_mut.relations.push((verb.clone(), id_2.clone()));
-                mind_1_mut.activity_log.push(format!(
-                    "Gained {} {} as a {}",
-                    mind_2_mut.first_name, mind_2_mut.last_name, verb
-                ));
+                add_new_relation_to_mind_log(mind_1_mut, city.year, verb.clone(), &mind_2_mut);
 
                 mind_2_mut.relations.push((verb.clone(), id_1.clone()));
-                mind_2_mut.activity_log.push(format!(
-                    "Gained {} {} as a {}",
-                    mind_1_mut.first_name, mind_1_mut.last_name, verb
-                ));
+                add_new_relation_to_mind_log(mind_2_mut, city.year, verb.clone(), &mind_1_mut);
             } else {
                 println!("Mind Lookup Failed");
             }
@@ -276,17 +270,11 @@ pub mod partners {
             let m2 = city.citizens.get(&id_2).unwrap().clone();
             let mind_1 = city.citizens.get_mut(&id_1).unwrap();
             mind_1.relations.push((RelationVerb::Partner, id_2.clone()));
-            mind_1.activity_log.push(format!(
-                "Gained {} {} as a Partner in year {}",
-                m2.first_name, m2.last_name, city.year
-            ));
+            add_romatic_event_to_mind_log(mind_1, city.year, RelationVerb::Partner, &m2, "Gained");
             drop(mind_1);
             let mind_2 = city.citizens.get_mut(&id_2).unwrap();
             mind_2.relations.push((RelationVerb::Partner, id_1.clone()));
-            mind_2.activity_log.push(format!(
-                "Gained {} {} as a Partner in year {}",
-                m1.first_name, m1.last_name, city.year
-            ));
+            add_romatic_event_to_mind_log(mind_2, city.year, RelationVerb::Partner, &m1, "Gained");
             drop(mind_2);
         }
         return city;
@@ -319,10 +307,13 @@ pub mod partners {
                                     .retain(|(v, id)| !(v.eq(&verb) && id.eq(&partner_id)));
                                 mind.relations
                                     .push((RelationVerb::ExPartner, partner_id.clone()));
-                                mind.activity_log.push(format!(
-                                    "Broke up with Partner {} {} in year {}",
-                                    partner.first_name, partner.last_name, city.year
-                                ));
+                                add_romatic_event_to_mind_log(
+                                    mind,
+                                    city.year,
+                                    RelationVerb::Partner,
+                                    partner,
+                                    "Broke up with",
+                                );
 
                                 partner
                                     .relations
@@ -330,10 +321,13 @@ pub mod partners {
                                 partner
                                     .relations
                                     .push((RelationVerb::ExPartner, mind.id.clone()));
-                                partner.activity_log.push(format!(
-                                    "Broke up with Partner {} {} in year {}",
-                                    mind.first_name, mind.last_name, city.year
-                                ));
+                                add_romatic_event_to_mind_log(
+                                    partner,
+                                    city.year,
+                                    RelationVerb::Partner,
+                                    mind,
+                                    "Broke up with",
+                                );
                             } else if mind.age > ADULT_AGE_FROM
                                 && partner.age > ADULT_AGE_FROM
                                 && rng.gen::<f32>() < PARTNER_MARRIAGE_RATE
@@ -346,10 +340,13 @@ pub mod partners {
                                     .retain(|(v, id)| !(v.eq(&verb) && id.eq(&partner_id)));
                                 mind.relations
                                     .push((RelationVerb::Spouse, partner_id.clone()));
-                                mind.activity_log.push(format!(
-                                    "Married Partner {} {} in year {}",
-                                    partner.first_name, partner.last_name, city.year
-                                ));
+                                add_romatic_event_to_mind_log(
+                                    mind,
+                                    city.year,
+                                    RelationVerb::Partner,
+                                    partner,
+                                    "Married",
+                                );
 
                                 partner
                                     .relations
@@ -357,10 +354,13 @@ pub mod partners {
                                 partner
                                     .relations
                                     .push((RelationVerb::Spouse, mind.id.clone()));
-                                partner.activity_log.push(format!(
-                                    "Married Partner {} {} in year {}",
-                                    mind.first_name, mind.last_name, city.year
-                                ));
+                                add_romatic_event_to_mind_log(
+                                    partner,
+                                    city.year,
+                                    RelationVerb::Partner,
+                                    mind,
+                                    "Married",
+                                );
                             }
                         }
                         RelationVerb::Spouse => {
@@ -370,10 +370,13 @@ pub mod partners {
                                     .retain(|(v, id)| !(v.eq(&verb) && id.eq(&partner_id)));
                                 mind.relations
                                     .push((RelationVerb::ExSpouse, partner_id.clone()));
-                                mind.activity_log.push(format!(
-                                    "Broke up with Spouse {} {} in year {}",
-                                    partner.first_name, partner.last_name, city.year
-                                ));
+                                add_romatic_event_to_mind_log(
+                                    mind,
+                                    city.year,
+                                    RelationVerb::Spouse,
+                                    partner,
+                                    "Broke up with",
+                                );
                                 if mind_left {
                                     mind.residence = None;
                                 } else {
@@ -386,10 +389,13 @@ pub mod partners {
                                 partner
                                     .relations
                                     .push((RelationVerb::ExSpouse, mind.id.clone()));
-                                partner.activity_log.push(format!(
-                                    "Broke up with Spouse {} {} in year {}",
-                                    mind.first_name, mind.last_name, city.year
-                                ));
+                                add_romatic_event_to_mind_log(
+                                    partner,
+                                    city.year,
+                                    RelationVerb::Spouse,
+                                    mind,
+                                    "Broke up with",
+                                );
                             }
                         }
                         _ => {}

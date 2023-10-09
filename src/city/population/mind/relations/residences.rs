@@ -1,11 +1,11 @@
 pub mod residences {
-    use rand::Rng;
     use rand::seq::SliceRandom;
+    use rand::Rng;
     use uuid::Uuid;
 
     use crate::city::building::building::BuildingFloorArea;
     use crate::city::city::City;
-    use crate::city::population::mind::mind::Mind;
+    use crate::city::population::mind::mind::{add_residence_to_mind_log, Mind};
     use crate::city::population::mind::relations::relations::{
         find_relation, RelationVerb, ADULT_AGE_FROM,
     };
@@ -118,13 +118,13 @@ pub mod residences {
                 owned_ids.push(area.id.clone());
                 let mind = city.citizens.get_mut(&citizen.id).unwrap();
                 mind.residence = Some(area.id.clone());
-                mind.activity_log.push(format!(
-                    "Moved into {} {} in {} in year {}",
-                    area.name,
-                    building_name,
-                    location.unwrap().name,
+                add_residence_to_mind_log(
+                    mind,
                     city.year,
-                ));
+                    &area.name,
+                    building_name,
+                    &location.unwrap().name,
+                );
                 drop(mind);
             }
         }

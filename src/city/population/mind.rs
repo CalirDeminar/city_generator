@@ -227,4 +227,119 @@ pub mod mind {
             physical_description: random_mind_description(&dict),
         };
     }
+
+    pub fn add_new_relation_to_mind_log<'a>(
+        mind: &'a mut Mind,
+        year: usize,
+        verb: RelationVerb,
+        relation: &Mind,
+    ) -> &'a mut Mind {
+        mind.activity_log.push(format!(
+            "Year: {} - {} {} aged {} gained {} {} as a {}",
+            year,
+            mind.first_name,
+            mind.last_name,
+            mind.age,
+            relation.first_name,
+            relation.last_name,
+            verb
+        ));
+        return mind;
+    }
+
+    pub fn add_romatic_event_to_mind_log<'a>(
+        mind: &'a mut Mind,
+        year: usize,
+        verb: RelationVerb,
+        relation: &Mind,
+        action: &str,
+    ) -> &'a mut Mind {
+        mind.activity_log.push(format!(
+            "Year: {} - {} {} aged {} {} {} {} {}",
+            year,
+            mind.first_name,
+            mind.last_name,
+            mind.age,
+            action,
+            verb,
+            relation.first_name,
+            relation.last_name
+        ));
+        return mind;
+    }
+
+    pub fn add_residence_to_mind_log<'a>(
+        mind: &'a mut Mind,
+        year: usize,
+        area_name: &str,
+        building_name: &str,
+        location_name: &str,
+    ) -> &'a mut Mind {
+        mind.activity_log.push(format!(
+            "Year: {} - {} {} aged {} moved into {} {} in {}",
+            year,
+            mind.first_name,
+            mind.last_name,
+            mind.age,
+            area_name,
+            building_name,
+            location_name
+        ));
+        return mind;
+    }
+
+    pub fn add_birth_to_mind_log<'a>(
+        mind: &'a mut Mind,
+        year: usize,
+        parent_1: &Mind,
+        parent_2: &Mind,
+    ) -> &'a mut Mind {
+        mind.activity_log.push(format!(
+            "Year: {} - {} {} born to {} {} and {} {}",
+            year,
+            mind.first_name,
+            mind.last_name,
+            parent_1.first_name,
+            parent_1.last_name,
+            parent_2.first_name,
+            parent_2.last_name
+        ));
+        return mind;
+    }
+
+    pub fn add_new_workplace_to_mind_log<'a>(
+        mind: &'a mut Mind,
+        year: usize,
+        company_name: &str,
+    ) -> &'a mut Mind {
+        mind.activity_log.push(format!(
+            "Year: {} - {} {} aged {} started work at {}",
+            year, mind.first_name, mind.last_name, mind.age, company_name
+        ));
+        return mind;
+    }
+
+    pub fn add_leaving_workplace_to_mind_log<'a>(
+        mind: &'a mut Mind,
+        year: usize,
+        company_name: &str,
+    ) -> &'a mut Mind {
+        mind.activity_log.push(format!(
+            "Year: {} - {} {} aged {} left company {}",
+            year, mind.first_name, mind.last_name, mind.age, company_name
+        ));
+        return mind;
+    }
+
+    pub fn add_startup_creation_to_mind_log<'a>(
+        mind: &'a mut Mind,
+        year: usize,
+        company_name: &str,
+    ) -> &'a mut Mind {
+        mind.activity_log.push(format!(
+            "Year: {} - {} {} aged {} created the company {}",
+            year, mind.first_name, mind.last_name, mind.age, company_name
+        ));
+        return mind;
+    }
 }
