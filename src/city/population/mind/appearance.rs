@@ -60,12 +60,12 @@ pub mod appearance {
     ) -> String {
         let mut rng = rand::thread_rng();
         let roll = rng.gen::<f32>();
-        if roll > 0.55 {
+        if roll < 0.45 {
             return a1.clone();
-        } else if roll > 0.1 {
+        } else if roll < 0.9 {
             return a2.clone();
         } else {
-            return random_descriptor(&dict, tag).text;
+            return random_descriptor(&dict, tag).text.to_lowercase();
         }
     }
 

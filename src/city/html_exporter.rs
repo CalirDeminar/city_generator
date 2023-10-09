@@ -173,8 +173,8 @@ pub mod html_exporter {
             list_element.p(),
             "Description: has {}, {} {} hair and {} eyes. Is {} with a {} build.\n",
             description.hair_adjectives.first().unwrap(),
-            description.hair_colour,
             description.hair_length,
+            description.hair_colour,
             description.eye_colour,
             description.height_adjective,
             description.build_adjective
