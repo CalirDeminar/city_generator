@@ -1,4 +1,5 @@
 pub mod food_institutions;
+pub mod visits;
 pub mod institutions {
     use rand::seq::SliceRandom;
     use rand::Rng;
@@ -111,6 +112,9 @@ pub mod institutions {
         pub institute_type: InstituteType,
         pub size: usize,
         pub serves: Vec<String>,
+        pub customer_cost_multipler: f32,
+        pub wealth: usize,
+        pub annual_visits: usize,
     }
 
     const PUBLIC_INSTITUTES: [InstituteType; 11] = [
@@ -230,6 +234,9 @@ pub mod institutions {
                 institute_type: i,
                 size: (rng.gen::<f32>() * PUBLIC_INSTITUTE_BASE_SIZE as f32) as usize,
                 serves: Vec::new(),
+                customer_cost_multipler: rng.gen::<f32>() * 5.0,
+                annual_visits: 0,
+                wealth: 0
             });
         }
         return output;
@@ -251,6 +258,9 @@ pub mod institutions {
             institute_type: InstituteType::SpecialistRetail,
             size: (rng.gen::<f32>() * PRIVATE_INSTITUTE_BASE_SIZE as f32) as usize,
             serves: Vec::new(),
+            customer_cost_multipler: rng.gen::<f32>() * 5.0,
+            annual_visits: 0,
+            wealth: 0
         };
     }
 
@@ -270,6 +280,9 @@ pub mod institutions {
             institute_type: InstituteType::GeneralRetail,
             size: (rng.gen::<f32>() * PRIVATE_INSTITUTE_BASE_SIZE as f32) as usize,
             serves: Vec::new(),
+            customer_cost_multipler: rng.gen::<f32>() * 5.0,
+            annual_visits: 0,
+            wealth: 0
         };
     }
 
@@ -289,6 +302,9 @@ pub mod institutions {
             institute_type: InstituteType::AdministrationService,
             size: (rng.gen::<f32>() * PRIVATE_INSTITUTE_BASE_SIZE as f32) as usize,
             serves: Vec::new(),
+            customer_cost_multipler: rng.gen::<f32>() * 5.0,
+            annual_visits: 0,
+            wealth: 0
         };
     }
 
@@ -304,14 +320,19 @@ pub mod institutions {
         };
         let roll: f32 = rng.gen();
         if roll > 0.875 {
+            // 12.5%
             return random_specialist_food_outlet(&dict, &culture);
         } else if roll > 0.75 {
+            //12.5%
             return random_general_food_outlet(&dict, &culture);
         } else if roll > 0.5 {
+            //25%
             return generate_specialist_retailer(&dict, &era);
         } else if roll > 0.25 {
+            //25%
             return generate_general_retailer(&dict, &era);
         } else {
+            //25%
             return generate_admin(&dict, &era);
         }
     }
@@ -346,8 +367,7 @@ pub mod institutions {
             if rng.gen::<f32>() < RANDOM_SACKING_RATE {
                 let employer = city
                     .institutions
-                    .iter()
-                    .find(|i| i.id.eq(&mind.employer.unwrap()));
+                    .get(&mind.employer.unwrap());
                 mind.employer = None;
 
                 add_leaving_workplace_to_mind_log(mind, city.year, &employer.unwrap().name);
@@ -375,7 +395,7 @@ pub mod institutions {
                 },
             );
         let mut under_strength_institutions: Vec<(&Institution, usize)> = isntitutions_ref
-            .iter()
+            .values()
             .map(|i| {
                 let employee_count = employed
                     .iter()

@@ -17,6 +17,7 @@ pub mod city {
     use super::population::mind::mind::*;
     use super::population::mind::relations::relations::*;
     use crate::city::institutions::institutions::*;
+    use crate::city::institutions::visits::visits::run_citizen_shopping;
     use crate::city::locations::{locations, locations::*};
     use crate::city::population::mind::relations::friends::friends::*;
     use crate::city::population::mind::relations::parents::parents::*;
@@ -34,7 +35,7 @@ pub mod city {
     pub struct City {
         pub name: String,
         pub citizens: Population,
-        pub institutions: Vec<Institution>,
+        pub institutions: HashMap<Uuid, Institution>,
         pub areas: Vec<Location>,
         pub buildings: Vec<Building>,
         pub culture: CultureConfig,
@@ -140,7 +141,7 @@ pub mod city {
         //     let mut worker = city.citizens.values_mut().find(|m| m.id.eq(&w.id)).unwrap();
         //     worker.employer = Some(institution.id.clone());
         // }
-        city.institutions.push(institution);
+        city.institutions.insert(institution.id.clone(), institution);
         return city;
     }
 
@@ -162,7 +163,7 @@ pub mod city {
             worker.employer = Some(institution.id.clone());
         }
 
-        city.institutions.push(institution);
+        city.institutions.insert(institution.id.clone(), institution);
 
         return city;
     }
@@ -267,7 +268,7 @@ pub mod city {
             buildings: Vec::new(),
             citizens: HashMap::new(),
             areas: Vec::new(),
-            institutions: Vec::new(),
+            institutions: HashMap::new(),
             culture: culture.clone(),
             year: 0,
         };
@@ -331,6 +332,10 @@ pub mod city {
             let create_startups_benchmarker = create_benchmarker(String::from("Create Startups"));
             create_startups_per_year(&mut city, &dict);
             create_startups_benchmarker();
+
+            let create_shopping_benchmarker = create_benchmarker(String::from("Shopping"));
+            run_citizen_shopping(&mut city);
+            create_shopping_benchmarker();
 
             for citizen in city.citizens.values_mut().filter(|c| c.alive) {
                 citizen.age += 1;

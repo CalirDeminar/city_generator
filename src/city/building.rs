@@ -61,9 +61,7 @@ pub mod building {
                 output.push_str(&format!("      Ground Floor\n"));
             }
             for area in &floor.areas {
-                let inst = city.institutions.iter().find(|i| {
-                    area.owning_institution.is_some() && i.id.eq(&area.owning_institution.unwrap())
-                });
+                let inst = if area.owning_institution.is_some() { city.institutions.get(&area.owning_institution.unwrap()) } else {None};
                 if inst.is_some() {
                     let institution: &crate::city::institutions::institutions::Institution =
                         inst.unwrap();

@@ -9,7 +9,7 @@ pub mod html_exporter {
         institutions::institutions::find_institution_address,
         locations::locations::Location,
         population::mind::{
-            mind::{find_address, get_name_from_id, Mind},
+            mind::{find_address, get_name_from_id, Mind, find_employer},
             relations::{relations::RelationVerb, friends::friends::SOCIAL_RELATIONS},
         },
     };
@@ -70,9 +70,7 @@ pub mod html_exporter {
             ));
 
             for area in &floor.areas {
-                let inst = city.institutions.iter().find(|i| {
-                    area.owning_institution.is_some() && i.id.eq(&area.owning_institution.unwrap())
-                });
+                let inst = if area.owning_institution.is_some() { city.institutions.get(&area.owning_institution.unwrap()) } else {None};
                 let residents: Vec<&Mind> = city
                     .citizens
                     .values()
@@ -153,10 +151,7 @@ pub mod html_exporter {
         mind: &Mind,
         city: &City,
     ) -> &'a mut Node<'a> {
-        let workplace = city
-            .institutions
-            .iter()
-            .find(|i| mind.employer.is_some() && mind.employer.unwrap().eq(&i.id));
+        let workplace = find_employer(&mind, &city);
 
         let mut list_element = node.div().attr(&format!("id='{}'", mind.id));
         writeln!(

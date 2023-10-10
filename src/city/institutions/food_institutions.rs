@@ -62,6 +62,9 @@ pub mod food_institutions {
             institute_type: InstituteType::SpecialistFoodService,
             size: (rng.gen::<f32>() * PRIVATE_INSTITUTE_BASE_SIZE as f32) as usize,
             serves: menu,
+            customer_cost_multipler: rng.gen::<f32>() * 5.0,
+            annual_visits: 0,
+            wealth: 0
         }
     }
 
@@ -98,7 +101,10 @@ pub mod food_institutions {
             public: false,
             institute_type: InstituteType::FoodService,
             size: (rng.gen::<f32>() * PRIVATE_INSTITUTE_BASE_SIZE as f32) as usize,
-            serves: menu
+            serves: menu,
+            customer_cost_multipler: rng.gen::<f32>() * 5.0,
+            annual_visits: 0,
+            wealth: 0
         };
     }
 

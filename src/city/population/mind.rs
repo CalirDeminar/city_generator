@@ -2,6 +2,8 @@ pub mod appearance;
 pub mod relations;
 pub mod mind {
 
+    use std::collections::HashMap;
+
     use rand::Rng;
     use rand_distr::{Distribution, Normal};
     use strum_macros::Display;
@@ -10,6 +12,7 @@ pub mod mind {
     use crate::city::building::building::{Building, BuildingFloorArea};
     use crate::city::city::City;
     use crate::city::institutions::institutions::*;
+    use crate::city::institutions::visits::visits::get_habitual_institutions;
     use crate::city::locations::locations::Location;
     use crate::city::population::population::Population;
     use crate::language::language::{random_word_by_tag_and, Era, Word, WordType};
@@ -57,6 +60,7 @@ pub mod mind {
         pub alive: bool,
         pub activity_log: Vec<String>,
         pub physical_description: PhysicalDescription,
+        pub institution_visits: HashMap<Uuid, usize>
     }
 
     pub fn find_address<'a>(
@@ -107,10 +111,7 @@ pub mod mind {
     }
 
     pub fn find_employer<'a>(mind: &Mind, city: &'a City) -> Option<&'a Institution> {
-        return city
-            .institutions
-            .iter()
-            .find(|i| mind.employer.is_some() && mind.employer.unwrap().eq(&i.id));
+        return if mind.employer.is_some() { city.institutions.get(&mind.employer.unwrap())} else {None};
     }
 
     pub fn print_mind(mind: &Mind, city: &City) -> String {
@@ -164,6 +165,15 @@ pub mod mind {
             for (verb, name) in relations {
                 output.push_str(&format!("  {:?}: {}\n", verb, name));
             }
+        }
+        let (habitual_inst_ids, _s) = get_habitual_institutions(mind);
+        if habitual_inst_ids.len() > 0 {
+            output.push_str(&format!("Habitual Institutions:\n"));
+        }
+        
+        for id in habitual_inst_ids {
+            let inst = city.institutions.get(id).unwrap();
+            output.push_str(&format!("{}\n", inst.name));
         }
         output.push_str(&format!("===========\n"));
         return output;
@@ -225,6 +235,7 @@ pub mod mind {
             alive: true,
             activity_log: Vec::new(),
             physical_description: random_mind_description(&dict),
+            institution_visits: HashMap::new(),
         };
     }
 
