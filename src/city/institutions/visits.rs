@@ -1,19 +1,16 @@
 pub mod visits {
-    use uuid::Uuid;
     use crate::city::{
-        city::City,
-        population::mind::mind::Mind,
-        institutions::institutions::{ InstituteType },
+        city::City, institutions::institutions::InstituteType, population::mind::mind::Mind,
     };
     use rand::Rng;
+    use uuid::Uuid;
     // use rand::seq::SliceRandom;
 
-    const HABIT_FRACTION: f32 = 0.1;
+    // const HABIT_FRACTION: f32 = 0.1;
 
     pub fn get_habitual_institutions(mind: &Mind) -> (Vec<&Uuid>, f32) {
-        
         let total_visits: usize = mind.institution_visits.values().sum();
-        
+
         if total_visits.eq(&0) {
             return (Vec::new(), 0.0);
         }
@@ -24,16 +21,13 @@ pub mod visits {
         visits.sort_by(|a, b| a.1.cmp(&b.1));
         let top_ten: Vec<&Uuid> = visits[0..limit].iter().map(|(id, _c)| *id).collect();
         let top_ten_sum = visits[0..limit].iter().fold(0, |acc, i| i.1 + acc);
-        return (
-            top_ten,
-            top_ten_sum as f32 / total_visits as f32,
-        );
+        return (top_ten, (top_ten_sum as f32 / total_visits as f32));
     }
 
     fn calculate_annual_visits_for_mind<'a>(
         city: &'a mut City,
         mind_id: &Uuid,
-        institutions: &Vec<&Uuid>
+        institutions: &Vec<&Uuid>,
     ) {
         let mut rng = rand::thread_rng();
 
@@ -51,7 +45,8 @@ pub mod visits {
         }
 
         let visit_count = (rng.gen::<f32>() * 365.0).round() as usize;
-        let habit_visit_odds = habit_scale;
+        // TODO - this powf value be related to some mind personality value "amount somebody sticks to a habit"
+        let habit_visit_odds = habit_scale.powf(0.5);
         for _i in 0..visit_count {
             let inst_key = if rng.gen::<f32>() < habit_visit_odds && habitual_keys.len() > 0 {
                 habitual_keys[(rng.gen::<f32>() * (habitual_keys.len() as f32)) as usize]
@@ -66,7 +61,8 @@ pub mod visits {
                 &0
             };
 
-            mind.institution_visits.insert(inst.id.clone(), old_count + 1);
+            mind.institution_visits
+                .insert(inst.id.clone(), old_count + 1);
             inst.annual_visits += 1;
 
             drop(inst);
@@ -80,15 +76,16 @@ pub mod visits {
         let shopping_institutions: Vec<&Uuid> = insts
             .values()
             .clone()
-            .filter(|i|
+            .filter(|i| {
                 vec![
                     InstituteType::FoodService,
                     InstituteType::SpecialistFoodService,
                     InstituteType::GeneralRetail,
                     InstituteType::SpecialistRetail,
-                    InstituteType::EntertainmentVenue
-                ].contains(&i.institute_type)
-            )
+                    InstituteType::EntertainmentVenue,
+                ]
+                .contains(&i.institute_type)
+            })
             .map(|inst| &inst.id)
             .collect();
         for mind_id in citizens.keys() {

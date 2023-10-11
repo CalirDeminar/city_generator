@@ -60,7 +60,7 @@ pub mod mind {
         pub alive: bool,
         pub activity_log: Vec<String>,
         pub physical_description: PhysicalDescription,
-        pub institution_visits: HashMap<Uuid, usize>
+        pub institution_visits: HashMap<Uuid, usize>,
     }
 
     pub fn find_address<'a>(
@@ -111,7 +111,11 @@ pub mod mind {
     }
 
     pub fn find_employer<'a>(mind: &Mind, city: &'a City) -> Option<&'a Institution> {
-        return if mind.employer.is_some() { city.institutions.get(&mind.employer.unwrap())} else {None};
+        return if mind.employer.is_some() {
+            city.institutions.get(&mind.employer.unwrap())
+        } else {
+            None
+        };
     }
 
     pub fn print_mind(mind: &Mind, city: &City) -> String {
@@ -166,14 +170,14 @@ pub mod mind {
                 output.push_str(&format!("  {:?}: {}\n", verb, name));
             }
         }
-        let (habitual_inst_ids, _s) = get_habitual_institutions(mind);
+        let (habitual_inst_ids, habit_scale) = get_habitual_institutions(mind);
         if habitual_inst_ids.len() > 0 {
-            output.push_str(&format!("Habitual Institutions:\n"));
+            output.push_str(&format!("Habitual Institutions ({}):\n", habit_scale));
         }
-        
+
         for id in habitual_inst_ids {
             let inst = city.institutions.get(id).unwrap();
-            output.push_str(&format!("{}\n", inst.name));
+            output.push_str(&format!("  {}\n", inst.name));
         }
         output.push_str(&format!("===========\n"));
         return output;

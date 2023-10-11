@@ -31,8 +31,8 @@ pub mod parents {
     const MIN_CHILD_BEARING_AGE: u32 = 20;
     const CHILD_LIMIT: usize = 3;
 
-    const SPOUSE_CHILD_CHANCE: f32 = 0.09;
-    const PARTNER_CHILD_CHANCE: f32 = 0.03;
+    const SPOUSE_CHILD_CHANCE: f32 = 0.12;
+    const PARTNER_CHILD_CHANCE: f32 = 0.04;
 
     fn find_couples(population: &Population) -> Vec<(&Mind, &Mind)> {
         let mut output: Vec<(&Mind, &Mind)> = Vec::new();
