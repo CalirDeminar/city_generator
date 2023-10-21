@@ -346,7 +346,7 @@ pub mod institutions {
         // 25% admin
         if roll < 0.25 {
             // food
-            if rng.gen::<f32>() < 0.5 {
+            if rng.gen::<f32>() < 0.4 {
                 // specialist
                 return random_specialist_food_outlet(&dict, &culture);
             } else {

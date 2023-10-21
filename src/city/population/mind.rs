@@ -60,7 +60,8 @@ pub mod mind {
         pub alive: bool,
         pub activity_log: Vec<String>,
         pub physical_description: PhysicalDescription,
-        pub institution_visits: HashMap<Uuid, usize>,
+        pub institution_shopping_visits: HashMap<Uuid, usize>,
+        pub institution_social_visits: HashMap<Uuid, usize>,
     }
 
     pub fn find_address<'a>(
@@ -170,9 +171,32 @@ pub mod mind {
                 output.push_str(&format!("  {:?}: {}\n", verb, name));
             }
         }
-        let (habitual_inst_ids, habit_scale) = get_habitual_institutions(mind);
+        let (habitual_inst_ids, habit_scale) = get_habitual_institutions(
+            mind,
+            &crate::city::institutions::visits::visits::VisitType::Shopping,
+        );
         if habitual_inst_ids.len() > 0 {
-            output.push_str(&format!("Habitual Institutions ({}):\n", habit_scale));
+            output.push_str(&format!(
+                "Habitual Shopping Institutions ({}):\n",
+                habit_scale
+            ));
+        }
+
+        for id in habitual_inst_ids {
+            let inst = city.institutions.get(id).unwrap();
+            output.push_str(&format!("  {}\n", inst.name));
+        }
+        output.push_str(&format!("===========\n"));
+
+        let (habitual_inst_ids, habit_scale) = get_habitual_institutions(
+            mind,
+            &crate::city::institutions::visits::visits::VisitType::Social,
+        );
+        if habitual_inst_ids.len() > 0 {
+            output.push_str(&format!(
+                "Habitual Social Institutions ({}):\n",
+                habit_scale
+            ));
         }
 
         for id in habitual_inst_ids {
@@ -239,7 +263,8 @@ pub mod mind {
             alive: true,
             activity_log: Vec::new(),
             physical_description: random_mind_description(&dict),
-            institution_visits: HashMap::new(),
+            institution_shopping_visits: HashMap::new(),
+            institution_social_visits: HashMap::new(),
         };
     }
 
