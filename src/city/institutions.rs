@@ -236,7 +236,7 @@ pub mod institutions {
                 serves: Vec::new(),
                 customer_cost_multipler: rng.gen::<f32>() * 5.0,
                 annual_visits: 0,
-                wealth: 0
+                wealth: 0,
             });
         }
         return output;
@@ -260,7 +260,7 @@ pub mod institutions {
             serves: Vec::new(),
             customer_cost_multipler: rng.gen::<f32>() * 5.0,
             annual_visits: 0,
-            wealth: 0
+            wealth: 0,
         };
     }
 
@@ -282,7 +282,7 @@ pub mod institutions {
             serves: Vec::new(),
             customer_cost_multipler: rng.gen::<f32>() * 5.0,
             annual_visits: 0,
-            wealth: 0
+            wealth: 0,
         };
     }
 
@@ -304,7 +304,29 @@ pub mod institutions {
             serves: Vec::new(),
             customer_cost_multipler: rng.gen::<f32>() * 5.0,
             annual_visits: 0,
-            wealth: 0
+            wealth: 0,
+        };
+    }
+
+    pub fn generate_entertainment(dict: &Vec<Word>, era: &Option<Era>) -> Institution {
+        let mut rng = rand::thread_rng();
+        let templates = vec![
+            "{{Adjective(Position, Quality, Age, Colour)}} {{Noun(LastName}} {{Noun(EntertainmentVenu)}}",
+            "{{Adjective(Position, Quality, Age, Colour)}} {{Noun(LastName}}'s {{Noun(EntertainmentVenu)}}",
+            "{{Noun(LastName}} {{Noun(EntertainmentVenu)}}",
+            "{{Noun(LastName}}'s",
+        ];
+        let name = render_template_2(random_pick(&templates), &dict, era);
+        return Institution {
+            id: Uuid::new_v4(),
+            name,
+            public: false,
+            institute_type: InstituteType::EntertainmentVenue,
+            size: (rng.gen::<f32>() * PRIVATE_INSTITUTE_BASE_SIZE as f32) as usize,
+            serves: Vec::new(),
+            customer_cost_multipler: rng.gen::<f32>() * 5.0,
+            annual_visits: 0,
+            wealth: 0,
         };
     }
 
@@ -319,20 +341,32 @@ pub mod institutions {
             None
         };
         let roll: f32 = rng.gen();
-        if roll > 0.875 {
-            // 12.5%
-            return random_specialist_food_outlet(&dict, &culture);
-        } else if roll > 0.75 {
-            //12.5%
-            return random_general_food_outlet(&dict, &culture);
-        } else if roll > 0.5 {
-            //25%
-            return generate_specialist_retailer(&dict, &era);
-        } else if roll > 0.25 {
-            //25%
-            return generate_general_retailer(&dict, &era);
+        // 25% food
+        // 50% retailer
+        // 25% admin
+        if roll < 0.25 {
+            // food
+            if rng.gen::<f32>() < 0.5 {
+                // specialist
+                return random_specialist_food_outlet(&dict, &culture);
+            } else {
+                // general
+                return random_general_food_outlet(&dict, &culture);
+            }
+        } else if roll < 0.75 {
+            // retailer
+            let roll2 = rng.gen::<f32>();
+            if roll2 < 0.33 {
+                // speciallist
+                return generate_specialist_retailer(&dict, &era);
+            } else if roll2 < 0.66 {
+                // general
+                return generate_general_retailer(&dict, &era);
+            } else {
+                return generate_entertainment(&dict, &era);
+            }
         } else {
-            //25%
+            // admin
             return generate_admin(&dict, &era);
         }
     }
@@ -365,9 +399,7 @@ pub mod institutions {
             .filter(|c| c.alive && c.employer.is_some());
         for mind in employed {
             if rng.gen::<f32>() < RANDOM_SACKING_RATE {
-                let employer = city
-                    .institutions
-                    .get(&mind.employer.unwrap());
+                let employer = city.institutions.get(&mind.employer.unwrap());
                 mind.employer = None;
 
                 add_leaving_workplace_to_mind_log(mind, city.year, &employer.unwrap().name);

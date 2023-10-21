@@ -1,4 +1,13 @@
 Theatre, EntertainmentVenue, Modern, Medieval, Fantasy
+Library, EntertainmentVenue, Modern, Medieval, Fantasy
+Music Hall, EntertainmentVenue, Modern, Medieval, Fantasy
 Stadium, EntertainmentVenue, Modern, Medieval, Fantasy
-Brothel, EntertainmentVenue, Medieval, Fantasy
 Bath House, EntertainmentVenue, Modern, Medieval, Fantasy
+Barbers, EntertainmentVenue, Modern, Medieval, Fantasy
+Salon, EntertainmentVenue, Modern
+Tattoos, EntertainmentVenue, Modern, Medieval, Fantasy
+Piercings, EntertainmentVenu, Modern, Medieval, Fantasy
+Billards Club, EntertainmentVenu, Medieval, Fantasy
+Pool Hall, EntertainmentVenu, Modern
+Auguries, EntertainmentVenu, Fantasy
+Arcade, EntertainmentVenu, Modern

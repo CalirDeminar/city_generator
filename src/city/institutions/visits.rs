@@ -79,7 +79,6 @@ pub mod visits {
             .filter(|i| {
                 vec![
                     InstituteType::FoodService,
-                    InstituteType::SpecialistFoodService,
                     InstituteType::GeneralRetail,
                     InstituteType::SpecialistRetail,
                     InstituteType::EntertainmentVenue,

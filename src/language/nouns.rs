@@ -57,6 +57,7 @@ pub mod nouns {
         RetailerFood,
         RetailerFoodSpecialist,
         RetailerSpecialist,
+        EntertainmentVenu,
         ServiceAdmin,
         Suffixable,
         // Names / People

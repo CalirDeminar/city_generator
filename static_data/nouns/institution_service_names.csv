@@ -13,6 +13,7 @@ Post, ServiceAdmin, Modern
 Shipping, ServiceAdmin, Modern, Medieval, Fantasy
 Couriers, ServiceAdmin, Modern, Medieval, Fantasy
 Wagoneers, ServiceAdmin, Medieval, Fantasy
+Stables, ServiceAdmin, Medieval, Fantasy
 Scribes, ServiceAdmin, Medieval, Fantasy
 Scribing, ServiceAdmin, Medieval, Fantasy
 Investigators, ServiceAdmin, Modern, Medieval, Fantasy
@@ -28,9 +29,5 @@ Systems, ServiceAdmin, Modern
 Technologies, ServiceAdmin, Modern
 Laboritories, ServiceAdmin, Modern
 Appraisers, ServiceAdmin, Modern, Medieval, Fantasy
-Enchanters, ServiceAdmin, Fantasy
-Auguries, ServiceAdmin, Fantasy
 Mercenaries, ServiceAdmin, Medieval, Fantasy
-Barbers, ServiceAdmin, Modern, Medieval, Fantasy
-Tattoos, ServiceAdmin, Modern, Medieval, Fantasy
-Piercings, ServiceAdmin, Modern, Medieval, Fantasy
+PMC, ServiceAdmin, Modern
