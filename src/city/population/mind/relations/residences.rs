@@ -21,7 +21,7 @@ pub mod residences {
             .collect();
         let random_eviction_apartments: Vec<Uuid> = city
             .buildings
-            .iter()
+            .values()
             .flat_map(|b| {
                 b.floors
                     .iter()
@@ -60,7 +60,7 @@ pub mod residences {
 
         let mut all_areas: Vec<(&BuildingFloorArea, String, Uuid)> = city
             .buildings
-            .iter()
+            .values()
             .flat_map(|b| {
                 b.floors.iter().flat_map(|f| {
                     f.areas
@@ -114,7 +114,7 @@ pub mod residences {
 
             if apartment.is_some() {
                 let (area, building_name, location_id) = apartment.unwrap();
-                let location = city.areas.iter().find(|ar| location_id.eq(&ar.id));
+                let location = city.areas.get(location_id);
                 owned_ids.push(area.id.clone());
                 let mind = city.citizens.get_mut(&citizen.id).unwrap();
                 mind.residence = Some(area.id.clone());

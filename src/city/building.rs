@@ -33,6 +33,7 @@ pub mod building {
         pub name: String,
         pub area_type: FloorAreaType,
         pub owning_institution: Option<Uuid>,
+        pub floor_id: Uuid,
     }
     #[derive(PartialEq, Debug, Clone)]
     pub struct BuildingFloor {
@@ -40,6 +41,7 @@ pub mod building {
         pub level: i32,
         pub floor_type: FloorType,
         pub areas: Vec<BuildingFloorArea>,
+        pub building_id: Uuid,
     }
     #[derive(PartialEq, Debug, Clone)]
     pub struct Building {
@@ -104,7 +106,8 @@ pub mod building {
             .any(|c| c.residence.is_some() && c.residence.unwrap().eq(&area.id));
     }
 
-    fn new_floor(level: i32, floor_type: FloorType, culture: &CultureConfig) -> BuildingFloor {
+    fn new_floor(level: i32, floor_type: FloorType, building_id: &Uuid, culture: &CultureConfig) -> BuildingFloor {
+        let floor_id = Uuid::new_v4();
         let mut rng = rand::thread_rng();
         let mut areas: Vec<BuildingFloorArea> = Vec::new();
         let footprint = culture.avg_building_footprint / 2;
@@ -116,6 +119,7 @@ pub mod building {
                     name: format!("{}{:0>2}", level, i + 1),
                     area_type: FloorAreaType::Lobby,
                     owning_institution: None,
+                    floor_id
                 });
             } else if level.eq(&(-1)) && i == 0 {
                 areas.push(BuildingFloorArea {
@@ -123,6 +127,7 @@ pub mod building {
                     name: format!("{}{:0>2}", level, i + 1),
                     area_type: FloorAreaType::Utilities,
                     owning_institution: None,
+                    floor_id
                 });
             } else {
                 if floor_type.eq(&FloorType::Residential) {
@@ -131,6 +136,7 @@ pub mod building {
                         name: format!("{}{:0>2}", level, i + 1),
                         area_type: FloorAreaType::Apartment,
                         owning_institution: None,
+                        floor_id
                     });
                 } else {
                     areas.push(BuildingFloorArea {
@@ -138,15 +144,17 @@ pub mod building {
                         name: format!("{}{:0>2}", level, i + 1),
                         area_type: FloorAreaType::Commercial,
                         owning_institution: None,
+                        floor_id
                     });
                 }
             }
         }
         return BuildingFloor {
-            id: Uuid::new_v4(),
+            id: floor_id,
             level,
             floor_type,
             areas,
+            building_id: building_id.clone()
         };
     }
 
@@ -164,6 +172,7 @@ pub mod building {
         culture: &CultureConfig,
         residential: bool,
     ) -> Building {
+        let id = Uuid::new_v4();
         let name_templates = vec![
             "{{{{Adjective(Position, Quality, Age, Colour)}} {{Noun(LastName)}} {{Noun(BuildingTitle)}}",
             "{{Noun(LastName)}} {{Noun(BuildingTitle)}}",
@@ -187,10 +196,10 @@ pub mod building {
             } else {
                 FloorType::Residential
             };
-            floors.push(new_floor(i, floor_type, culture));
+            floors.push(new_floor(i, floor_type, &id, culture));
         }
         return Building {
-            id: Uuid::new_v4(),
+            id,
             name: render_template_2(random_pick(&name_templates), &dict, &culture.era),
             floors,
             location_id,
@@ -198,9 +207,9 @@ pub mod building {
     }
 
     fn find_free_area<'a>(city: &'a mut City) -> Option<&'a mut Location> {
-        return city.areas.iter_mut().find(|a| {
+        return city.areas.values_mut().find(|a| {
             city.buildings
-                .iter_mut()
+                .values_mut()
                 .filter(|b| b.location_id.is_some() && b.location_id.unwrap().eq(&a.id))
                 .count()
                 < a.size
@@ -211,10 +220,11 @@ pub mod building {
         city: &'a mut City,
         dict: &Vec<Word>,
         residential: bool,
-    ) -> &'a mut City {
+    ) -> (&'a mut City, Uuid) {
         let mut free_location = find_free_area(city);
         if free_location.is_none() {
-            city.areas.push(gen_location(&dict, &city.culture.era));
+            let loc = gen_location(&dict, &city.culture.era);
+            city.areas.insert(loc.id.clone(), loc);
             free_location = find_free_area(city);
         }
         let new_building = new_building(
@@ -223,14 +233,15 @@ pub mod building {
             &city.culture,
             residential,
         );
-        city.buildings.push(new_building);
-        return city;
+        let building_id = new_building.id.clone();
+        city.buildings.insert(new_building.id.clone(), new_building);
+        return (city, building_id);
     }
 
     fn count_available_apartments(city: &City) -> usize {
         return city
             .buildings
-            .iter()
+            .values()
             .flat_map(|b| {
                 b.floors
                     .iter()

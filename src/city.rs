@@ -36,8 +36,10 @@ pub mod city {
         pub name: String,
         pub citizens: Population,
         pub institutions: HashMap<Uuid, Institution>,
-        pub areas: Vec<Location>,
-        pub buildings: Vec<Building>,
+        pub areas: HashMap<Uuid, Location>,
+        pub buildings: HashMap<Uuid, Building>,
+        pub building_floors: HashMap<Uuid, BuildingFloor>,
+        pub building_floor_areas: HashMap<Uuid, BuildingFloorArea>,
         pub culture: CultureConfig,
         pub year: usize,
     }
@@ -64,7 +66,7 @@ pub mod city {
             "Dead: {}\n",
             city.citizens.iter().filter(|(_id, c)| !c.alive).count()
         ));
-        for a in &city.areas {
+        for a in city.areas.values() {
             output.push_str(&print_location(&a, &city));
         }
         output.push_str(&print_population(&city));
@@ -95,7 +97,7 @@ pub mod city {
     }
 
     fn find_free_building<'a>(city: &'a mut City) -> Option<&'a mut Building> {
-        return city.buildings.iter_mut().find(|b| {
+        return city.buildings.values_mut().find(|b| {
             b.floors.iter().any(|f| {
                 f.floor_type
                     .eq(&super::building::building::FloorType::Commercial)
@@ -156,8 +158,8 @@ pub mod city {
         let all_workers = find_workers(&city);
         let workers = all_workers.iter().take(employee_count as usize);
 
-        add_building_to_city(city, &dict, false);
-        add_institution_to_building(city.buildings.last_mut().unwrap(), &institution);
+        let (_city, id) = add_building_to_city(city, &dict, false);
+        add_institution_to_building(city.buildings.get_mut(&id).unwrap(), &institution);
 
         for w in workers {
             let mut worker = city.citizens.values_mut().find(|m| m.id.eq(&w.id)).unwrap();
@@ -267,9 +269,11 @@ pub mod city {
         let dict = build_culture_dictionary(&dict, &culture);
         let mut city = City {
             name: locations::gen_location_name(&dict, false, &era),
-            buildings: Vec::new(),
+            buildings: HashMap::new(),
+            building_floors: HashMap::new(),
+            building_floor_areas: HashMap::new(),
             citizens: HashMap::new(),
-            areas: Vec::new(),
+            areas: HashMap::new(),
             institutions: HashMap::new(),
             culture: culture.clone(),
             year: 0,

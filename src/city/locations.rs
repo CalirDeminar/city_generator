@@ -26,7 +26,7 @@ pub mod locations {
         output.push_str("Buildings: \n");
         let buildings: Vec<&Building> = city
             .buildings
-            .iter()
+            .values()
             .filter(|b| b.location_id.is_some() && b.location_id.unwrap().eq(&location.id))
             .collect();
         for building in &buildings {

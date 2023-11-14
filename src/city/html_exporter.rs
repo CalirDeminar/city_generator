@@ -31,7 +31,7 @@ pub mod html_exporter {
         writeln!(body.p(), "Building Count: {}", city.buildings.len()).unwrap();
         writeln!(body.h2(), "Locations:").unwrap();
         let mut loc_list = body.ul();
-        for area in &city.areas {
+        for area in city.areas.values() {
             print_location_html(&mut loc_list.li(), &area, &city);
         }
 
@@ -131,7 +131,7 @@ pub mod html_exporter {
     ) -> &'a mut Node<'a> {
         let buildings: Vec<&Building> = city
             .buildings
-            .iter()
+            .values()
             .filter(|b| b.location_id.is_some() && b.location_id.unwrap().eq(&location.id))
             .collect();
 

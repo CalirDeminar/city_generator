@@ -70,7 +70,7 @@ pub mod mind {
     ) -> (&'a Building, &'a BuildingFloorArea, &'a Location) {
         let city_floor_areas: Vec<&BuildingFloorArea> = city
             .buildings
-            .iter()
+            .values()
             .flat_map(|b| b.floors.iter().flat_map(|f| f.areas.iter()))
             .collect();
         let area = city_floor_areas
@@ -79,7 +79,7 @@ pub mod mind {
             .unwrap();
         let building = city
             .buildings
-            .iter()
+            .values()
             .find(|b| {
                 b.floors
                     .iter()
@@ -88,7 +88,7 @@ pub mod mind {
             .unwrap();
         let location = city
             .areas
-            .iter()
+            .values()
             .find(|a| a.id.eq(&building.location_id.unwrap()))
             .unwrap();
         return (building, area, location);

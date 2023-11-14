@@ -163,7 +163,7 @@ pub mod institutions {
         institution: &Institution,
         city: &'a City,
     ) -> Option<&'a Building> {
-        return city.buildings.iter().find(|b| {
+        return city.buildings.values().find(|b| {
             b.floors.iter().any(|f| {
                 f.areas.iter().any(|a| {
                     a.owning_institution.is_some()
@@ -184,7 +184,7 @@ pub mod institutions {
     ) {
         let building = city
             .buildings
-            .iter()
+            .values()
             .find(|b| {
                 b.floors.iter().any(|f| {
                     f.areas.iter().any(|a| {
@@ -213,7 +213,7 @@ pub mod institutions {
             .unwrap();
         let location = city
             .areas
-            .iter()
+            .values()
             .find(|a| a.id.eq(&building.location_id.unwrap()))
             .unwrap();
         return (building, floor, area, location);
