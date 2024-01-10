@@ -7,6 +7,7 @@ use language::language::Era;
 pub mod city;
 pub mod culture;
 pub mod language;
+pub mod language2;
 pub mod names;
 pub mod parser;
 pub mod templater;
