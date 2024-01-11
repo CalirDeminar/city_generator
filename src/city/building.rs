@@ -1,4 +1,6 @@
 pub mod building {
+    use std::collections::HashSet;
+
     use rand::Rng;
     use uuid::Uuid;
 
@@ -41,6 +43,7 @@ pub mod building {
         pub level: i32,
         pub floor_type: FloorType,
         pub areas: Vec<BuildingFloorArea>,
+        pub area_ids: HashSet<Uuid>,
         pub building_id: Uuid,
     }
     #[derive(PartialEq, Debug, Clone)]
@@ -48,6 +51,7 @@ pub mod building {
         pub id: Uuid,
         pub name: String,
         pub floors: Vec<BuildingFloor>,
+        pub floor_ids: HashSet<Uuid>,
         pub location_id: Option<Uuid>,
     }
 
@@ -154,6 +158,7 @@ pub mod building {
             level,
             floor_type,
             areas,
+            area_ids: HashSet::new(),
             building_id: building_id.clone()
         };
     }
@@ -202,14 +207,15 @@ pub mod building {
             id,
             name: render_template_2(random_pick(&name_templates), &dict, &culture.era),
             floors,
+            floor_ids: HashSet::new(),
             location_id,
         };
     }
 
-    fn find_free_area<'a>(city: &'a mut City) -> Option<&'a mut Location> {
-        return city.areas.values_mut().find(|a| {
+    fn find_free_area(city: &City) -> Option<&Location> {
+        return city.areas.values().find(|a| {
             city.buildings
-                .values_mut()
+                .values()
                 .filter(|b| b.location_id.is_some() && b.location_id.unwrap().eq(&a.id))
                 .count()
                 < a.size
@@ -238,6 +244,62 @@ pub mod building {
         return (city, building_id);
     }
 
+    pub fn add_building_to_city_2<'a>(city: &'a mut City, dict: &Vec<Word>, residential: bool) -> (&'a mut City, Uuid) {
+        let building_id = Uuid::new_v4();
+        // Building Gen
+        let name_templates = vec![
+            "{{{{Adjective(Position, Quality, Age, Colour)}} {{Noun(LastName)}} {{Noun(BuildingTitle)}}",
+            "{{Noun(LastName)}} {{Noun(BuildingTitle)}}",
+            "{{{{Adjective(Position, Quality, Age, Colour)}} {{Noun(BuildingTitle)}}",
+        ];
+        let name = render_template_2(random_pick(&name_templates), &dict, &city.culture.era);
+
+        let mut free_location = find_free_area(city);
+        if free_location.is_none() {
+            let loc = gen_location(&dict, &city.culture.era);
+            city.areas.insert(loc.id.clone(), loc);
+            free_location = find_free_area(city);
+        }
+
+        let mut building = Building {
+            id: building_id,
+            name,
+            floors: Vec::new(),
+            floor_ids: HashSet::new(),
+            location_id: Some(free_location.unwrap().id),
+        };
+
+        // Floor Gen
+        let mut rng = rand::thread_rng();
+        let floor_count =
+            ((rng.gen::<f32>() * ((&city.culture.avg_building_floors * 2) + 1) as f32) as i32).max(2);
+        let commercial_floor_count = if residential {
+            0
+        } else {
+            ((floor_count as f32 / 2.0) * (rng.gen::<f32>()))
+                .floor()
+                .max(1.0) as i32
+        };
+        let has_basement = rng.gen::<f32>() > 0.5;
+        for i in (if has_basement { -1 } else { 0 })..=floor_count {
+            let floor_type = if (i) < commercial_floor_count && i >= 0 {
+                FloorType::Commercial
+            } else {
+                FloorType::Residential
+            };
+            let floor = new_floor(i, floor_type, &building_id, &city.culture);
+            
+            building.floor_ids.insert(floor.id.clone());
+            city.building_floors.insert(floor.id.clone(), floor);
+        }
+
+        // Final Clean Up
+
+
+        city.buildings.insert(building_id.clone(), building);
+        return (city, building_id);
+    }
+
     fn count_available_apartments(city: &City) -> usize {
         return city
             .buildings
@@ -256,7 +318,7 @@ pub mod building {
         let acceptable_homeless_count = living_citizen_count / 100;
         let mut free_apartment_count = count_available_apartments(&city);
         while free_apartment_count < (living_citizen_count - acceptable_homeless_count) {
-            add_building_to_city(city, &dict, true);
+            add_building_to_city_2(city, &dict, true);
             free_apartment_count = count_available_apartments(&city);
         }
         return city;

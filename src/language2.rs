@@ -12,9 +12,9 @@ pub mod language2 {
     const ADJECTIVE_FLAG: &str = "ADJECTIVE";
     const GROUP_FLAG: &str = "GROUP";
 
-    static GROUP_PATTERN: &str = r"HAS_GROUP\(([a-zA-Z]*)\)";
-    static HAS_ADJECTIVE_PATTERN: &str = r"HAS_ADJECTIVE\(([a-zA-Z]*)\)";
-    static HAS_NOUN_PATTERN: &str = r"HAS_NOUN\(([a-zA-Z]*)\)";
+    static GROUP_PATTERN: &str = r"HAS_GROUP\(([a-zA-Z ]*)\)";
+    static HAS_ADJECTIVE_PATTERN: &str = r"HAS_ADJECTIVE\(([a-zA-Z ]*)\)";
+    static HAS_NOUN_PATTERN: &str = r"HAS_NOUN\(([a-zA-Z ]*)\)";
 
     #[derive(PartialEq, Debug, Clone, Default)]
     pub struct Noun {
@@ -271,6 +271,7 @@ pub mod language2 {
             let dict = build_dictionary();
             // println!("Full Dict: {:#?}", dict);
             println!("Noun Groups: {:#?}", dict.noun_groups.keys());
+            println!("Adjective Groups: {:#?}", dict.adjective_groups.keys());
         }
     }
 }
