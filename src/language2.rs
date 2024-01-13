@@ -1,3 +1,4 @@
+pub mod names;
 pub mod language2 {
     use std::{
         collections::{HashMap, HashSet},
@@ -5,6 +6,7 @@ pub mod language2 {
         io::{self, BufRead},
     };
 
+    use rand::seq::SliceRandom;
     use regex::Regex;
     use uuid::Uuid;
 
@@ -57,6 +59,12 @@ pub mod language2 {
                 .iter()
                 .map(|id| self.nouns.get(id).unwrap())
                 .collect();
+        }
+
+        pub fn pick_noun_with_groups(&self, groups: Vec<String>) -> &Noun {
+            let mut options = self.nouns_with_groups(groups);
+            options.shuffle(&mut rand::thread_rng());
+            return options.first().unwrap();
         }
 
         pub fn adjectives_with_groups(&self, groups: Vec<String>) -> Vec<&Adjective> {

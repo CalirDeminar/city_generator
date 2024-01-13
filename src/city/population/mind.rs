@@ -18,8 +18,12 @@ pub mod mind {
     use crate::language::language::{random_word_by_tag_and, Era, Word, WordType};
 
     use crate::city::population::mind::relations::relations::*;
+    use crate::language2::language2::Dictionary;
+    use crate::language2::names::names::name;
 
-    use super::appearance::appearance::{random_mind_description, PhysicalDescription};
+    use super::appearance::appearance::{
+        empty_description, random_mind_description, PhysicalDescription,
+    };
 
     const HOMOSEXUALITY_CHANCE: f32 = 0.2;
 
@@ -263,6 +267,43 @@ pub mod mind {
             alive: true,
             activity_log: Vec::new(),
             physical_description: random_mind_description(&dict),
+            institution_shopping_visits: HashMap::new(),
+            institution_social_visits: HashMap::new(),
+        };
+    }
+
+    pub fn random_char2<'a>(dict: &Dictionary, era: &Option<Era>) -> Mind {
+        let mut rng = rand::thread_rng();
+        let roll: f32 = rng.gen();
+        let mut gender = Gender::Ambiguous;
+        if roll > 0.6 {
+            gender = Gender::Male;
+        } else if roll > 0.2 {
+            gender = Gender::Female;
+        }
+        let era_string = if era.is_some() {
+            Some(era.unwrap().to_string())
+        } else {
+            None
+        };
+        let (first_name, last_name) = name(&dict, &gender, era_string);
+
+        let distribution = Normal::new(5.0, 10.0).unwrap();
+        return Mind {
+            id: Uuid::new_v4(),
+            first_name,
+            last_name,
+            gender,
+            relations: Vec::new(),
+            age: (rng.gen::<f32>() * 40.0) as u32
+                + 15
+                + distribution.sample(&mut rand::thread_rng()) as u32,
+            employer: None,
+            residence: None,
+            sexuality: gen_sexuality(),
+            alive: true,
+            activity_log: Vec::new(),
+            physical_description: empty_description(),
             institution_shopping_visits: HashMap::new(),
             institution_social_visits: HashMap::new(),
         };

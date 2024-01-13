@@ -1,8 +1,5 @@
 pub mod appearance {
-    use crate::language::{
-        adjectives::adjectives::AdjectiveTag,
-        language::*,
-    };
+    use crate::language::{adjectives::adjectives::AdjectiveTag, language::*};
     use rand::Rng;
 
     #[derive(PartialEq, Debug, Clone)]
@@ -13,6 +10,17 @@ pub mod appearance {
         pub eye_colour: String,
         pub height_adjective: String,
         pub build_adjective: String,
+    }
+
+    pub fn empty_description() -> PhysicalDescription {
+        return PhysicalDescription {
+            hair_length: String::new(),
+            hair_colour: String::new(),
+            hair_adjectives: Vec::new(),
+            eye_colour: String::new(),
+            height_adjective: String::new(),
+            build_adjective: String::new(),
+        };
     }
 
     fn random_descriptor(dict: &Vec<Word>, target: String) -> Word {

@@ -1,0 +1,23 @@
+//
+Creature Magical, GROUP, HAS_GROUP(Creature), HAS_GROUP(Fantasy)
+Creature Family Other, GROUP, HAS_GROUP(Creature)
+Creature Family Mammal, GROUP, HAS_GROUP(Creature)
+Creature Family Reptile, GROUP, HAS_GROUP(Creature)
+Creature Family Bird, GROUP, HAS_GROUP(Creature)
+Creature Family Fish, GROUP, HAS_GROUP(Creature)
+// Sentient creatures
+Human, NOUN, HAS_GROUP(Creature Family Mammal), HAS_GROUP(Sentient), HAS_GROUP(Creature Size Normal)
+Dwarf, NOUN, HAS_GROUP(Creature Family Mammal), HAS_GROUP(Sentient), HAS_GROUP(Creature Size Normal)
+Elf, NOUN, HAS_GROUP(Creature Family Mammal), HAS_GROUP(Sentient), HAS_GROUP(Creature Size Normal)
+Goblin, NOUN, HAS_GROUP(Creature Family Mammal), HAS_GROUP(Sentient), HAS_GROUP(Creature Size Normal)
+Kobold, NOUN, HAS_GROUP(Creature Family Mammal), HAS_GROUP(Sentient), HAS_GROUP(Creature Size Small)
+Troll, NOUN, HAS_GROUP(Creature Family Mammal), HAS_GROUP(Sentient), HAS_GROUP(Creature Size Normal)
+Gnome, NOUN, HAS_GROUP(Creature Family Mammal), HAS_GROUP(Sentient), HAS_GROUP(Creature Size Small)
+Orc, NOUN, HAS_GROUP(Creature Family Mammal), HAS_GROUP(Sentient), HAS_GROUP(Creature Size Normal)
+// Fantasy
+// Animals
+//  Mammals
+//  Reptiles
+//  Insects
+//  Birds
+//  Sea
