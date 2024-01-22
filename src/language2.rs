@@ -1,4 +1,5 @@
 pub mod names;
+pub mod templater2;
 pub mod language2 {
     use std::{
         collections::{HashMap, HashSet},
@@ -36,6 +37,13 @@ pub mod language2 {
     }
 
     #[derive(PartialEq, Debug, Clone, Default)]
+    pub struct Template {
+        pub id: Uuid,
+        pub template: String,
+        pub groups: HashSet<String>,
+    }
+
+    #[derive(PartialEq, Debug, Clone, Default)]
     pub struct Dictionary {
         pub nouns: HashMap<Uuid, Noun>,
         pub adjectives: HashMap<Uuid, Adjective>,
@@ -61,6 +69,14 @@ pub mod language2 {
                 .collect();
         }
 
+        pub fn nouns_with_any_groups(&self, groups: Vec<String>) -> Vec<&Noun> {
+            return self
+                .nouns
+                .values()
+                .filter(|noun| noun.groups.iter().any(|group| groups.contains(group)))
+                .collect();
+        }
+
         pub fn pick_noun_with_groups(&self, groups: Vec<String>) -> &Noun {
             let mut options = self.nouns_with_groups(groups);
             options.shuffle(&mut rand::thread_rng());
@@ -80,6 +96,14 @@ pub mod language2 {
             return initial_ids
                 .iter()
                 .map(|id| self.adjectives.get(id).unwrap())
+                .collect();
+        }
+
+        pub fn adjectives_with_any_groups(&self, groups: Vec<String>) -> Vec<&Adjective> {
+            return self
+                .adjectives
+                .values()
+                .filter(|adjective| adjective.groups.iter().any(|group| groups.contains(group)))
                 .collect();
         }
 
@@ -257,29 +281,35 @@ pub mod language2 {
 
         use super::Dictionary;
 
-        #[test]
-        fn test_parsing() {
-            let mut dict = Dictionary {
-                nouns: HashMap::new(),
-                noun_groups: HashMap::new(),
-                adjectives: HashMap::new(),
-                adjective_groups: HashMap::new(),
-                group_groups: HashMap::new(),
-            };
-            dict.parse_datafile_line(String::from(
-                "Gold, NOUN, HAS_GROUP(Metal), HAS_ADJECTIVE(Golden)",
-            ));
-            dict.parse_datafile_line(String::from("Metal, GROUP, HAS_GROUP(Material)"));
-            dict.append_group_groups();
-            println!("After: {:#?}", dict);
-        }
+        // #[test]
+        // fn test_parsing() {
+        //     let mut dict = Dictionary {
+        //         nouns: HashMap::new(),
+        //         noun_groups: HashMap::new(),
+        //         adjectives: HashMap::new(),
+        //         adjective_groups: HashMap::new(),
+        //         group_groups: HashMap::new(),
+        //     };
+        //     dict.parse_datafile_line(String::from(
+        //         "Gold, NOUN, HAS_GROUP(Metal), HAS_ADJECTIVE(Golden)",
+        //     ));
+        //     dict.parse_datafile_line(String::from("Metal, GROUP, HAS_GROUP(Material)"));
+        //     dict.append_group_groups();
+        //     println!("After: {:#?}", dict);
+        // }
+
+        // #[test]
+        // fn full_parsing() {
+        //     let dict = build_dictionary();
+        //     // println!("Full Dict: {:#?}", dict);
+        //     println!("Noun Groups: {:#?}", dict.noun_groups.keys());
+        //     println!("Adjective Groups: {:#?}", dict.adjective_groups.keys());
+        // }
 
         #[test]
-        fn full_parsing() {
+        fn tag_and_filter() {
             let dict = build_dictionary();
-            // println!("Full Dict: {:#?}", dict);
-            println!("Noun Groups: {:#?}", dict.noun_groups.keys());
-            println!("Adjective Groups: {:#?}", dict.adjective_groups.keys());
+            println!("{:#?}", dict.nouns_with_groups(vec![String::from("Metal")]));
         }
     }
 }

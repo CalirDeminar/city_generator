@@ -1,7 +1,8 @@
 // Groups
 Vegetable, GROUP, HAS_GROUP(Food), HAS_GROUP(Plant), HAS_GROUP(Crop)
 Fruit, GROUP, HAS_GROUP(Food), HAS_GROUP(Plant), HAS_GROUP(Crop)
-Tree, GROUP, HAS_GROUP(Plant)
+Tree, GROUP, HAS_GROUP(Plant), HAS_GROUP(Wood)
+Wood, GROUP, HAS_GROUP(Material)
 Flower, GROUP, HAS_GROUP(Plant)
 Grain, GROUP, HAS_GROUP(Food), HAS_GROUP(Plant)
 // trees
