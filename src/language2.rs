@@ -9,11 +9,14 @@ pub mod language2 {
 
     use rand::seq::SliceRandom;
     use regex::Regex;
+    use strum::IntoEnumIterator;
+    use strum_macros::EnumIter;
     use uuid::Uuid;
 
     const NOUN_FLAG: &str = "NOUN";
     const ADJECTIVE_FLAG: &str = "ADJECTIVE";
     const GROUP_FLAG: &str = "GROUP";
+    const TEMPLATE_FLAG: &str = "TEMPLATE";
 
     static GROUP_PATTERN: &str = r"HAS_GROUP\(([a-zA-Z ]*)\)";
     static HAS_ADJECTIVE_PATTERN: &str = r"HAS_ADJECTIVE\(([a-zA-Z ]*)\)";
@@ -47,13 +50,45 @@ pub mod language2 {
     pub struct Dictionary {
         pub nouns: HashMap<Uuid, Noun>,
         pub adjectives: HashMap<Uuid, Adjective>,
+        pub templates: HashMap<Uuid, Template>,
         pub noun_groups: HashMap<String, HashSet<Uuid>>,
         pub adjective_groups: HashMap<String, HashSet<Uuid>>,
+        pub template_groups: HashMap<String, HashSet<Uuid>>,
         pub group_groups: HashMap<String, HashSet<String>>,
+    }
+    #[derive(PartialEq, Debug, Clone)]
+    pub enum WordType {
+        Noun,
+        Adjective
+    }
+    #[derive(PartialEq, Debug, Clone)]
+    pub enum LogicalOperator {
+        AND,
+        OR
+    }
+
+    #[derive(PartialEq, Debug, Clone, Default, EnumIter)]
+    pub enum Era {
+        #[default]
+        Modern,
+        Future,
+        Fantasy,
+        Medieval,
     }
 
     impl Dictionary {
-        pub fn nouns_with_groups(&self, groups: Vec<String>) -> Vec<&Noun> {
+        pub fn get_word_base_with_groups(&self, word_type: WordType, groups: Vec<String>, logical_operator: LogicalOperator) -> &str {
+            if word_type.eq(&WordType::Noun){
+                let mut list = self.nouns_with_groups(groups, logical_operator);
+                list.shuffle(&mut rand::thread_rng());
+                return &list.first().unwrap().base;
+            } else {
+                let mut list = self.adjectives_with_groups(groups, logical_operator);
+                list.shuffle(&mut rand::thread_rng());
+                return &list.first().unwrap().base;
+            }
+        }
+        pub fn nouns_with_groups(&self, groups: Vec<String>, logical_operator: LogicalOperator) -> Vec<&Noun> {
             let mut initial_ids = self
                 .noun_groups
                 .get(groups.first().unwrap())
@@ -61,7 +96,13 @@ pub mod language2 {
                 .clone();
             for i in 1..groups.len() {
                 let common_ids = self.noun_groups.get(groups.get(i).unwrap()).unwrap();
-                initial_ids.retain(|id| common_ids.contains(&id));
+                if logical_operator.eq(&LogicalOperator::AND) {
+                    initial_ids.retain(|id| common_ids.contains(&id));
+                } else {
+                    for id in common_ids {
+                        initial_ids.insert(*id);
+                    }
+                }
             }
             return initial_ids
                 .iter()
@@ -69,21 +110,13 @@ pub mod language2 {
                 .collect();
         }
 
-        pub fn nouns_with_any_groups(&self, groups: Vec<String>) -> Vec<&Noun> {
-            return self
-                .nouns
-                .values()
-                .filter(|noun| noun.groups.iter().any(|group| groups.contains(group)))
-                .collect();
-        }
-
         pub fn pick_noun_with_groups(&self, groups: Vec<String>) -> &Noun {
-            let mut options = self.nouns_with_groups(groups);
+            let mut options = self.nouns_with_groups(groups, LogicalOperator::AND);
             options.shuffle(&mut rand::thread_rng());
             return options.first().unwrap();
         }
 
-        pub fn adjectives_with_groups(&self, groups: Vec<String>) -> Vec<&Adjective> {
+        pub fn adjectives_with_groups(&self, groups: Vec<String>, logical_operator: LogicalOperator) -> Vec<&Adjective> {
             let mut initial_ids = self
                 .adjective_groups
                 .get(groups.first().unwrap())
@@ -91,19 +124,18 @@ pub mod language2 {
                 .clone();
             for i in 1..groups.len() {
                 let common_ids = self.adjective_groups.get(groups.get(i).unwrap()).unwrap();
-                initial_ids.retain(|id| common_ids.contains(&id));
+
+                if logical_operator.eq(&LogicalOperator::AND) {
+                    initial_ids.retain(|id| common_ids.contains(&id));
+                } else {
+                    for id in common_ids {
+                        initial_ids.insert(*id);
+                    }
+                }
             }
             return initial_ids
                 .iter()
                 .map(|id| self.adjectives.get(id).unwrap())
-                .collect();
-        }
-
-        pub fn adjectives_with_any_groups(&self, groups: Vec<String>) -> Vec<&Adjective> {
-            return self
-                .adjectives
-                .values()
-                .filter(|adjective| adjective.groups.iter().any(|group| groups.contains(group)))
                 .collect();
         }
 
@@ -176,10 +208,32 @@ pub mod language2 {
             dict.adjectives.insert(id, adjective);
         }
 
+        fn create_template(dict: &mut Dictionary, template: &str, data: Vec<&str>) {
+            let id = Uuid::new_v4();
+            let mut template = Template {
+                id,
+                template: String::from(template),
+                groups: HashSet::new()
+            };
+            for e in data {
+                let entry = e.trim();
+                let group_attempt = Self::extract_contained_term(entry, GROUP_PATTERN);
+                if group_attempt.is_some() {
+                    let group = group_attempt.unwrap();
+                    template.groups.insert(String::from(group));
+                    if !dict.template_groups.contains_key(group) {
+                        dict.template_groups.insert(String::from(group), HashSet::new());
+                    }
+                    dict.template_groups.get_mut(group).unwrap().insert(id);
+                }
+            }
+            dict.templates.insert(id, template);
+        }
+
         fn append_group_groups(&mut self) {
-            let noun_groups = self.noun_groups.clone();
-            let adjective_groups = self.adjective_groups.clone();
             for (parent_tag, child_tags) in self.group_groups.iter() {
+                let noun_groups = self.noun_groups.clone();
+                let adjective_groups = self.adjective_groups.clone();
                 for child_tag in child_tags {
                     // nouns
                     if self.noun_groups.contains_key(child_tag) {
@@ -219,8 +273,8 @@ pub mod language2 {
         pub fn parse_datafile_line(&mut self, line: String) {
             let mut elements = line.split(",");
             let base = elements.next().unwrap();
-            let data: Vec<&str> = elements.map(|element| element).collect();
-
+            let data: Vec<&str> = elements.map(|element| element.trim()).collect();
+            
             if data.contains(&GROUP_FLAG) {
                 for e in data {
                     let entry = e.trim();
@@ -243,6 +297,8 @@ pub mod language2 {
                 Self::create_noun(self, base, data);
             } else if data.iter().any(|e| e.trim().eq(ADJECTIVE_FLAG)) {
                 Self::create_adjective(self, base, data);
+            } else if data.iter().any(|e| e.trim().eq(TEMPLATE_FLAG)) {
+                Self::create_template(self, base, data);
             }
         }
     }
@@ -255,6 +311,8 @@ pub mod language2 {
             adjectives: HashMap::new(),
             adjective_groups: HashMap::new(),
             group_groups: HashMap::new(),
+            templates: HashMap::new(),
+            template_groups: HashMap::new(),
         };
         for path in paths {
             let filename = path.unwrap().file_name();
@@ -269,7 +327,9 @@ pub mod language2 {
                 }
             }
         }
-        dict.append_group_groups();
+        for _i in 0..10 {
+            dict.append_group_groups();
+        }
         return dict;
     }
 
@@ -277,7 +337,7 @@ pub mod language2 {
     pub mod tests {
         use std::collections::HashMap;
 
-        use crate::language2::language2::build_dictionary;
+        use crate::language2::language2::{build_dictionary, LogicalOperator};
 
         use super::Dictionary;
 
@@ -309,7 +369,8 @@ pub mod language2 {
         #[test]
         fn tag_and_filter() {
             let dict = build_dictionary();
-            println!("{:#?}", dict.nouns_with_groups(vec![String::from("Metal")]));
+            println!("{:#?}", dict.templates);
+            // println!("{:#?}", dict.nouns_with_groups(vec![String::from("Metal")], LogicalOperator::AND));
         }
     }
 }

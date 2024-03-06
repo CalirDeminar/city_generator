@@ -1,13 +1,11 @@
 pub mod templater2 {
-    use rand::seq::SliceRandom;
     use regex::Regex;
-    use uuid::Uuid;
 
-    use crate::language2::language2::{Dictionary, Noun};
+    use crate::language2::language2::{Dictionary, LogicalOperator, WordType};
 
-    const AND_TOKEN: &str = "AND";
+    // const AND_TOKEN: &str = "AND";
 
-    const OR_TOKEN: &str = "OR";
+    // const OR_TOKEN: &str = "OR";
 
     const REGEXP: &str = r"([^NOUN_AND|^NOUN_OR|^ADJECTIVE_AND|^ADJECTIVE_OR]*)([NOUN_AND|NOUN_OR|ADJECTIVE_AND|ADJECTIVE_OR]+\([a-zA-Z ,-:]+\))([^(NOUN_AND|NOUN_OR|ADJECTIVE_AND|ADJECTIVE_OR)]*)";
 
@@ -23,21 +21,13 @@ pub mod templater2 {
             .map(|s| String::from(s.trim()))
             .collect();
         if token.contains("NOUN_AND(") {
-            let mut options = dict.nouns_with_groups(arguments);
-            options.shuffle(&mut rand::thread_rng());
-            return &options.first().unwrap().base;
+            return dict.get_word_base_with_groups(WordType::Noun, arguments, LogicalOperator::AND);
         } else if token.contains("NOUN_OR(") {
-            let mut options = dict.nouns_with_any_groups(arguments);
-            options.shuffle(&mut rand::thread_rng());
-            return &options.first().unwrap().base;
+            return dict.get_word_base_with_groups(WordType::Noun, arguments, LogicalOperator::OR);
         } else if token.contains("ADJECTIVE_AND(") {
-            let mut options = dict.adjectives_with_groups(arguments);
-            options.shuffle(&mut rand::thread_rng());
-            return &options.first().unwrap().base;
+            return dict.get_word_base_with_groups(WordType::Adjective, arguments, LogicalOperator::AND);
         } else if token.contains("ADJECTIVE_OR(") {
-            let mut options = dict.adjectives_with_any_groups(arguments);
-            options.shuffle(&mut rand::thread_rng());
-            return &options.first().unwrap().base;
+            return dict.get_word_base_with_groups(WordType::Adjective, arguments, LogicalOperator::OR);
         } else {
             return "";
         }
@@ -74,7 +64,7 @@ pub mod templater2 {
             for _i in 0..10 {
                 println!(
                     "{:?}",
-                    render_template("ADJECTIVE_AND(Quality) NOUN_AND(Metal) Harpoon", &dict)
+                    render_template("ADJECTIVE_AND(Quality) NOUN_OR(Metal, Wood) and NOUN_OR(Metal,Wood) Harpoon", &dict)
                 );
             }
         }
