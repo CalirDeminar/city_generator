@@ -1,0 +1,2 @@
+ADJECTIVE_OR(Position,Quality,Age,Colour) NOUN_AND(Last Name), TEMPLATE, HAS_GROUP(Food Shop)
+NOUN_AND(Last Name)'s, TEMPLATE, HAS_GROUP(Food Shop)
